@@ -182,6 +182,10 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
         return;
     };
     tcvc.alwaysUseDETwitterCredentials = YES;
+    //[tcvc setInitialText:@"aaa"];
+    //DETweetTextView *detextView = tcvc.textView;
+    //UITextView *textView = (UITextView*)detextView;
+    //[textView becomeFirstResponder];
     [self presentViewController:tcvc animated:YES completion:nil];
     
     // TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] initWithNibName:@"TweetEditViewController" bundle:nil];

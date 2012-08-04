@@ -34,6 +34,9 @@ static BOOL waitingForAccess = NO;
 
 
 @interface DETweetComposeViewController ()
+{
+    NSMutableArray *sheetItems;
+}
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, retain) NSMutableArray *images;
@@ -540,9 +543,9 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
         return NO;
     }
     
-    if ([self isPresented]) {
-        return NO;
-    }
+    // if ([self isPresented]) {
+    //    return NO;
+    //}
     
     if ([self.images count] >= DETweetMaxImages) {
         return NO;
@@ -1068,6 +1071,48 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     else {
         [self dismissModalViewControllerAnimated:YES];
     }
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    [self addImage:image];
+    [self updateAttachments];
+    [picker dismissModalViewControllerAnimated:YES];
+}
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == actionSheet.cancelButtonIndex){
+        return;
+    }
+    NSLog(@"firstOtherButtonIndex=%d\n", actionSheet.firstOtherButtonIndex);
+    NSNumber *typeNumber = (NSNumber*)[sheetItems objectAtIndex:(buttonIndex-1)];
+    int type = typeNumber.intValue;
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = type;
+    picker.delegate = self;
+    [self presentModalViewController:picker animated:YES];
+    
+}
+- (IBAction)openImage:(id)sender
+{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:nil otherButtonTitles:nil];
+    sheetItems = [[NSMutableArray alloc] init];
+    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]){
+        [sheet addButtonWithTitle:NSLocalizedString(@"Photo Library", @"")];
+        [sheetItems addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypePhotoLibrary]];
+    }
+    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
+        [sheet addButtonWithTitle:NSLocalizedString(@"Camera", @"")];
+        [sheetItems addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeCamera]];
+    }
+    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]){
+        [sheet addButtonWithTitle:NSLocalizedString(@"Saved Photos Album", @"")];
+        [sheetItems addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeSavedPhotosAlbum]];
+    }
+    [sheet showInView:self.view];
+    [sheet release];
 }
 
 

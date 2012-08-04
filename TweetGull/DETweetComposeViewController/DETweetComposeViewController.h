@@ -25,7 +25,7 @@
 
 @interface DETweetComposeViewController : UIViewController <UITextViewDelegate, UIAlertViewDelegate,
 UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverControllerDelegate, DETweetAccountSelectorViewControllerDelegate,
-DETweetPosterDelegate, TwitterDialogDelegate, TwitterLoginDialogDelegate>
+DETweetPosterDelegate, TwitterDialogDelegate, TwitterLoginDialogDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 
 @property (retain, nonatomic) IBOutlet DETweetSheetCardView *cardView;
 @property (retain, nonatomic) IBOutlet UILabel *titleLabel;
@@ -48,6 +48,7 @@ DETweetPosterDelegate, TwitterDialogDelegate, TwitterLoginDialogDelegate>
 
 - (IBAction)send;
 - (IBAction)cancel;
+- (IBAction)openImage:(id)sender;
 
 enum DETweetComposeViewControllerResult {
     DETweetComposeViewControllerResultCancelled,
