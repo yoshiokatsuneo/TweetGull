@@ -23,6 +23,7 @@
 #import "MediaImageCache.h"
 
 #import "UIAlertView+alert.h"
+#import "DETweetComposeViewController/DETweetComposeViewController.h"
 
 static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 @interface MasterViewController () {
@@ -167,10 +168,29 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 }
 - (void)insertNewObject:(id)sender
 {
+    DETweetComposeViewController *tcvc = [[DETweetComposeViewController alloc] init];
+    tcvc.completionHandler = ^(DETweetComposeViewControllerResult result){
+        switch(result){
+            case DETweetComposeViewControllerResultCancelled:
+                NSLog(@"Twitter result: Cancelled");
+                break;
+            case DETweetComposeViewControllerResultDone:
+                NSLog(@"Twitter result: Sent");
+                break;
+        }
+        [self dismissModalViewControllerAnimated:YES];
+        return;
+    };
+    tcvc.alwaysUseDETwitterCredentials = YES;
+    [self presentViewController:tcvc animated:YES completion:nil];
+    
     // TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] initWithNibName:@"TweetEditViewController" bundle:nil];
+    
+#if 0
     TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] init];
     tweetEditViewController.delegate = self;
     [self presentViewController:tweetEditViewController animated:YES completion:nil];
+#endif
     
 #if 0
     if (!tweets) {

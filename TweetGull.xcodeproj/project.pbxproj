@@ -72,6 +72,57 @@
 		079AD43A15CD15D7000309A2 /* ProfileImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0D15CD143200C8D273 /* ProfileImageCache.m */; };
 		079AD43C15CD15D7000309A2 /* MediaImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0F15CD143200C8D273 /* MediaImageCache.m */; };
 		079AD4BF15CD20E2000309A2 /* UIAlertView+alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4BE15CD20E1000309A2 /* UIAlertView+alert.m */; };
+		079AD4F415CD320A000309A2 /* DEEmbossedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4C715CD320A000309A2 /* DEEmbossedLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4F515CD320A000309A2 /* DERuledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4C915CD320A000309A2 /* DERuledView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4F615CD320A000309A2 /* DETweetAccountSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4CB15CD320A000309A2 /* DETweetAccountSelectorViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4F715CD320A000309A2 /* DETweetComposeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4CC15CD320A000309A2 /* DETweetComposeView.xib */; };
+		079AD4F815CD320A000309A2 /* DETweetComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4CE15CD320A000309A2 /* DETweetComposeViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4F915CD320A000309A2 /* DETweetGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4D015CD320A000309A2 /* DETweetGradientView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FA15CD320A000309A2 /* DETweetPoster.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4D215CD320A000309A2 /* DETweetPoster.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FB15CD320A000309A2 /* DETweetSheetCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4D415CD320A000309A2 /* DETweetSheetCardView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FC15CD320A000309A2 /* DETweetTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4D615CD320A000309A2 /* DETweetTextView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FD15CD320A000309A2 /* OAuth+DEExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4D815CD320A000309A2 /* OAuth+DEExtensions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FE15CD320A000309A2 /* OAuth+DEUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4DA15CD320A000309A2 /* OAuth+DEUserDefaults.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD4FF15CD320A000309A2 /* DETweetAttachmentFrame.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4DC15CD320A000309A2 /* DETweetAttachmentFrame.png */; };
+		079AD50015CD320A000309A2 /* DETweetAttachmentFrame@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4DD15CD320A000309A2 /* DETweetAttachmentFrame@2x.png */; };
+		079AD50115CD320A000309A2 /* DETweetCancelButtonLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4DE15CD320A000309A2 /* DETweetCancelButtonLandscape.png */; };
+		079AD50215CD320A000309A2 /* DETweetCancelButtonLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4DF15CD320A000309A2 /* DETweetCancelButtonLandscape@2x.png */; };
+		079AD50315CD320A000309A2 /* DETweetCancelButtonPortrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E015CD320A000309A2 /* DETweetCancelButtonPortrait.png */; };
+		079AD50415CD320A000309A2 /* DETweetCancelButtonPortrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E115CD320A000309A2 /* DETweetCancelButtonPortrait@2x.png */; };
+		079AD50515CD320A000309A2 /* DETweetCardAccountLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E215CD320A000309A2 /* DETweetCardAccountLine.png */; };
+		079AD50615CD320A000309A2 /* DETweetCardAccountLine@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E315CD320A000309A2 /* DETweetCardAccountLine@2x.png */; };
+		079AD50715CD320A000309A2 /* DETweetCardBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E415CD320A000309A2 /* DETweetCardBackground.png */; };
+		079AD50815CD320A000309A2 /* DETweetCardBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E515CD320A000309A2 /* DETweetCardBackground@2x.png */; };
+		079AD50915CD320A000309A2 /* DETweetCardHeaderLine.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E615CD320A000309A2 /* DETweetCardHeaderLine.png */; };
+		079AD50A15CD320A000309A2 /* DETweetCardHeaderLine@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E715CD320A000309A2 /* DETweetCardHeaderLine@2x.png */; };
+		079AD50B15CD320A000309A2 /* DETweetPaperClip.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E815CD320A000309A2 /* DETweetPaperClip.png */; };
+		079AD50C15CD320A000309A2 /* DETweetPaperClip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4E915CD320A000309A2 /* DETweetPaperClip@2x.png */; };
+		079AD50D15CD320A000309A2 /* DETweetSendButtonLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4EA15CD320A000309A2 /* DETweetSendButtonLandscape.png */; };
+		079AD50E15CD320A000309A2 /* DETweetSendButtonLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4EB15CD320A000309A2 /* DETweetSendButtonLandscape@2x.png */; };
+		079AD50F15CD320A000309A2 /* DETweetSendButtonPortrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4EC15CD320A000309A2 /* DETweetSendButtonPortrait.png */; };
+		079AD51015CD320A000309A2 /* DETweetSendButtonPortrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4ED15CD320A000309A2 /* DETweetSendButtonPortrait@2x.png */; };
+		079AD51115CD320A000309A2 /* DETweetURLAttachment.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4EE15CD320A000309A2 /* DETweetURLAttachment.png */; };
+		079AD51215CD320A000309A2 /* DETweetURLAttachment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD4EF15CD320A000309A2 /* DETweetURLAttachment@2x.png */; };
+		079AD51315CD320A000309A2 /* UIApplication+DETweetComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4F115CD320A000309A2 /* UIApplication+DETweetComposeViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD51415CD320A000309A2 /* UIDevice+DETweetComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD4F315CD320A000309A2 /* UIDevice+DETweetComposeViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD53F15CD3222000309A2 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD51915CD3222000309A2 /* NSObject+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54015CD3222000309A2 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD51B15CD3222000309A2 /* NSString+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54115CD3222000309A2 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD51D15CD3222000309A2 /* SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54215CD3222000309A2 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD51F15CD3222000309A2 /* SBJsonBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54315CD3222000309A2 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52115CD3222000309A2 /* SBJsonParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54415CD3222000309A2 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52315CD3222000309A2 /* SBJsonWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54515CD3222000309A2 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52715CD3222000309A2 /* Base64Transcoder.c */; };
+		079AD54615CD3222000309A2 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52915CD3222000309A2 /* hmac.c */; };
+		079AD54715CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52C15CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54815CD3222000309A2 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 079AD52E15CD3222000309A2 /* sha1.c */; };
+		079AD54915CD3222000309A2 /* DEHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53115CD3222000309A2 /* DEHTTPRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54A15CD3222000309A2 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53315CD3222000309A2 /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54B15CD3222000309A2 /* OAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53515CD3222000309A2 /* OAuth.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD54C15CD3222000309A2 /* tclose.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD53B15CD3222000309A2 /* tclose.png */; };
+		079AD54D15CD3222000309A2 /* ticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 079AD53C15CD3222000309A2 /* ticon.png */; };
+		079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53E15CD3222000309A2 /* TwitterDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		079AD55015CD3901000309A2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD54F15CD3900000309A2 /* Accounts.framework */; };
+		079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD55115CD3975000309A2 /* Twitter.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +216,89 @@
 		07289E0F15CD143200C8D273 /* MediaImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaImageCache.m; sourceTree = "<group>"; };
 		079AD4BD15CD20E1000309A2 /* UIAlertView+alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+alert.h"; sourceTree = "<group>"; };
 		079AD4BE15CD20E1000309A2 /* UIAlertView+alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+alert.m"; sourceTree = "<group>"; };
+		079AD4C615CD320A000309A2 /* DEEmbossedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEEmbossedLabel.h; sourceTree = "<group>"; };
+		079AD4C715CD320A000309A2 /* DEEmbossedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEEmbossedLabel.m; sourceTree = "<group>"; };
+		079AD4C815CD320A000309A2 /* DERuledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DERuledView.h; sourceTree = "<group>"; };
+		079AD4C915CD320A000309A2 /* DERuledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DERuledView.m; sourceTree = "<group>"; };
+		079AD4CA15CD320A000309A2 /* DETweetAccountSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetAccountSelectorViewController.h; sourceTree = "<group>"; };
+		079AD4CB15CD320A000309A2 /* DETweetAccountSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetAccountSelectorViewController.m; sourceTree = "<group>"; };
+		079AD4CC15CD320A000309A2 /* DETweetComposeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DETweetComposeView.xib; sourceTree = "<group>"; };
+		079AD4CD15CD320A000309A2 /* DETweetComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetComposeViewController.h; sourceTree = "<group>"; };
+		079AD4CE15CD320A000309A2 /* DETweetComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetComposeViewController.m; sourceTree = "<group>"; };
+		079AD4CF15CD320A000309A2 /* DETweetGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetGradientView.h; sourceTree = "<group>"; };
+		079AD4D015CD320A000309A2 /* DETweetGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetGradientView.m; sourceTree = "<group>"; };
+		079AD4D115CD320A000309A2 /* DETweetPoster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetPoster.h; sourceTree = "<group>"; };
+		079AD4D215CD320A000309A2 /* DETweetPoster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetPoster.m; sourceTree = "<group>"; };
+		079AD4D315CD320A000309A2 /* DETweetSheetCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetSheetCardView.h; sourceTree = "<group>"; };
+		079AD4D415CD320A000309A2 /* DETweetSheetCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetSheetCardView.m; sourceTree = "<group>"; };
+		079AD4D515CD320A000309A2 /* DETweetTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DETweetTextView.h; sourceTree = "<group>"; };
+		079AD4D615CD320A000309A2 /* DETweetTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DETweetTextView.m; sourceTree = "<group>"; };
+		079AD4D715CD320A000309A2 /* OAuth+DEExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OAuth+DEExtensions.h"; sourceTree = "<group>"; };
+		079AD4D815CD320A000309A2 /* OAuth+DEExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OAuth+DEExtensions.m"; sourceTree = "<group>"; };
+		079AD4D915CD320A000309A2 /* OAuth+DEUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OAuth+DEUserDefaults.h"; sourceTree = "<group>"; };
+		079AD4DA15CD320A000309A2 /* OAuth+DEUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OAuth+DEUserDefaults.m"; sourceTree = "<group>"; };
+		079AD4DC15CD320A000309A2 /* DETweetAttachmentFrame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetAttachmentFrame.png; sourceTree = "<group>"; };
+		079AD4DD15CD320A000309A2 /* DETweetAttachmentFrame@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetAttachmentFrame@2x.png"; sourceTree = "<group>"; };
+		079AD4DE15CD320A000309A2 /* DETweetCancelButtonLandscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetCancelButtonLandscape.png; sourceTree = "<group>"; };
+		079AD4DF15CD320A000309A2 /* DETweetCancelButtonLandscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetCancelButtonLandscape@2x.png"; sourceTree = "<group>"; };
+		079AD4E015CD320A000309A2 /* DETweetCancelButtonPortrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetCancelButtonPortrait.png; sourceTree = "<group>"; };
+		079AD4E115CD320A000309A2 /* DETweetCancelButtonPortrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetCancelButtonPortrait@2x.png"; sourceTree = "<group>"; };
+		079AD4E215CD320A000309A2 /* DETweetCardAccountLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetCardAccountLine.png; sourceTree = "<group>"; };
+		079AD4E315CD320A000309A2 /* DETweetCardAccountLine@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetCardAccountLine@2x.png"; sourceTree = "<group>"; };
+		079AD4E415CD320A000309A2 /* DETweetCardBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetCardBackground.png; sourceTree = "<group>"; };
+		079AD4E515CD320A000309A2 /* DETweetCardBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetCardBackground@2x.png"; sourceTree = "<group>"; };
+		079AD4E615CD320A000309A2 /* DETweetCardHeaderLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetCardHeaderLine.png; sourceTree = "<group>"; };
+		079AD4E715CD320A000309A2 /* DETweetCardHeaderLine@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetCardHeaderLine@2x.png"; sourceTree = "<group>"; };
+		079AD4E815CD320A000309A2 /* DETweetPaperClip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetPaperClip.png; sourceTree = "<group>"; };
+		079AD4E915CD320A000309A2 /* DETweetPaperClip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetPaperClip@2x.png"; sourceTree = "<group>"; };
+		079AD4EA15CD320A000309A2 /* DETweetSendButtonLandscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetSendButtonLandscape.png; sourceTree = "<group>"; };
+		079AD4EB15CD320A000309A2 /* DETweetSendButtonLandscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetSendButtonLandscape@2x.png"; sourceTree = "<group>"; };
+		079AD4EC15CD320A000309A2 /* DETweetSendButtonPortrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetSendButtonPortrait.png; sourceTree = "<group>"; };
+		079AD4ED15CD320A000309A2 /* DETweetSendButtonPortrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetSendButtonPortrait@2x.png"; sourceTree = "<group>"; };
+		079AD4EE15CD320A000309A2 /* DETweetURLAttachment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DETweetURLAttachment.png; sourceTree = "<group>"; };
+		079AD4EF15CD320A000309A2 /* DETweetURLAttachment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DETweetURLAttachment@2x.png"; sourceTree = "<group>"; };
+		079AD4F015CD320A000309A2 /* UIApplication+DETweetComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+DETweetComposeViewController.h"; sourceTree = "<group>"; };
+		079AD4F115CD320A000309A2 /* UIApplication+DETweetComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+DETweetComposeViewController.m"; sourceTree = "<group>"; };
+		079AD4F215CD320A000309A2 /* UIDevice+DETweetComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+DETweetComposeViewController.h"; sourceTree = "<group>"; };
+		079AD4F315CD320A000309A2 /* UIDevice+DETweetComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+DETweetComposeViewController.m"; sourceTree = "<group>"; };
+		079AD51715CD3222000309A2 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		079AD51815CD3222000309A2 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
+		079AD51915CD3222000309A2 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
+		079AD51A15CD3222000309A2 /* NSString+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
+		079AD51B15CD3222000309A2 /* NSString+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SBJSON.m"; sourceTree = "<group>"; };
+		079AD51C15CD3222000309A2 /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
+		079AD51D15CD3222000309A2 /* SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJSON.m; sourceTree = "<group>"; };
+		079AD51E15CD3222000309A2 /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
+		079AD51F15CD3222000309A2 /* SBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonBase.m; sourceTree = "<group>"; };
+		079AD52015CD3222000309A2 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
+		079AD52115CD3222000309A2 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
+		079AD52215CD3222000309A2 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
+		079AD52315CD3222000309A2 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		079AD52715CD3222000309A2 /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Base64Transcoder.c; sourceTree = "<group>"; };
+		079AD52815CD3222000309A2 /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64Transcoder.h; sourceTree = "<group>"; };
+		079AD52915CD3222000309A2 /* hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hmac.c; sourceTree = "<group>"; };
+		079AD52A15CD3222000309A2 /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
+		079AD52B15CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAHMAC_SHA1SignatureProvider.h; sourceTree = "<group>"; };
+		079AD52C15CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAHMAC_SHA1SignatureProvider.m; sourceTree = "<group>"; };
+		079AD52D15CD3222000309A2 /* OASignatureProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OASignatureProviding.h; sourceTree = "<group>"; };
+		079AD52E15CD3222000309A2 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+		079AD52F15CD3222000309A2 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
+		079AD53015CD3222000309A2 /* DEHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEHTTPRequest.h; sourceTree = "<group>"; };
+		079AD53115CD3222000309A2 /* DEHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEHTTPRequest.m; sourceTree = "<group>"; };
+		079AD53215CD3222000309A2 /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		079AD53315CD3222000309A2 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		079AD53415CD3222000309A2 /* OAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuth.h; sourceTree = "<group>"; };
+		079AD53515CD3222000309A2 /* OAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuth.m; sourceTree = "<group>"; };
+		079AD53615CD3222000309A2 /* OAuthConsumerCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumerCredentials.h; sourceTree = "<group>"; };
+		079AD53815CD3222000309A2 /* OAuthTwitterCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthTwitterCallbacks.h; sourceTree = "<group>"; };
+		079AD53915CD3222000309A2 /* TwitterLoginPopupDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginPopupDelegate.h; sourceTree = "<group>"; };
+		079AD53A15CD3222000309A2 /* TwitterLoginUiFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginUiFeedback.h; sourceTree = "<group>"; };
+		079AD53B15CD3222000309A2 /* tclose.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tclose.png; sourceTree = "<group>"; };
+		079AD53C15CD3222000309A2 /* ticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ticon.png; sourceTree = "<group>"; };
+		079AD53D15CD3222000309A2 /* TwitterDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterDialog.h; sourceTree = "<group>"; };
+		079AD53E15CD3222000309A2 /* TwitterDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterDialog.m; sourceTree = "<group>"; };
+		079AD54F15CD3900000309A2 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		079AD55115CD3975000309A2 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +306,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */,
+				079AD55015CD3901000309A2 /* Accounts.framework in Frameworks */,
 				07289DEF15CD12F500C8D273 /* QuartzCore.framework in Frameworks */,
 				07289DE915CD103100C8D273 /* SystemConfiguration.framework in Frameworks */,
 				07289DE715CD101800C8D273 /* Security.framework in Frameworks */,
@@ -199,6 +335,8 @@
 		07289D2A15CD0B3600C8D273 = {
 			isa = PBXGroup;
 			children = (
+				079AD55115CD3975000309A2 /* Twitter.framework */,
+				079AD54F15CD3900000309A2 /* Accounts.framework */,
 				07289D4115CD0B3600C8D273 /* TweetGull */,
 				07289D6915CD0B3600C8D273 /* TweetGullTests */,
 				07289D3815CD0B3600C8D273 /* Frameworks */,
@@ -233,6 +371,8 @@
 		07289D4115CD0B3600C8D273 /* TweetGull */ = {
 			isa = PBXGroup;
 			children = (
+				079AD51515CD3222000309A2 /* unoffical-twitter-sdk */,
+				079AD4C515CD320A000309A2 /* DETweetComposeViewController */,
 				07289DEA15CD12C600C8D273 /* PullToRefresh */,
 				07289D8E15CD0D7B00C8D273 /* GTMOAuth */,
 				07289D4A15CD0B3600C8D273 /* AppDelegate.h */,
@@ -370,6 +510,149 @@
 			path = PullToRefresh;
 			sourceTree = "<group>";
 		};
+		079AD4C515CD320A000309A2 /* DETweetComposeViewController */ = {
+			isa = PBXGroup;
+			children = (
+				079AD4C615CD320A000309A2 /* DEEmbossedLabel.h */,
+				079AD4C715CD320A000309A2 /* DEEmbossedLabel.m */,
+				079AD4C815CD320A000309A2 /* DERuledView.h */,
+				079AD4C915CD320A000309A2 /* DERuledView.m */,
+				079AD4CA15CD320A000309A2 /* DETweetAccountSelectorViewController.h */,
+				079AD4CB15CD320A000309A2 /* DETweetAccountSelectorViewController.m */,
+				079AD4CC15CD320A000309A2 /* DETweetComposeView.xib */,
+				079AD4CD15CD320A000309A2 /* DETweetComposeViewController.h */,
+				079AD4CE15CD320A000309A2 /* DETweetComposeViewController.m */,
+				079AD4CF15CD320A000309A2 /* DETweetGradientView.h */,
+				079AD4D015CD320A000309A2 /* DETweetGradientView.m */,
+				079AD4D115CD320A000309A2 /* DETweetPoster.h */,
+				079AD4D215CD320A000309A2 /* DETweetPoster.m */,
+				079AD4D315CD320A000309A2 /* DETweetSheetCardView.h */,
+				079AD4D415CD320A000309A2 /* DETweetSheetCardView.m */,
+				079AD4D515CD320A000309A2 /* DETweetTextView.h */,
+				079AD4D615CD320A000309A2 /* DETweetTextView.m */,
+				079AD4D715CD320A000309A2 /* OAuth+DEExtensions.h */,
+				079AD4D815CD320A000309A2 /* OAuth+DEExtensions.m */,
+				079AD4D915CD320A000309A2 /* OAuth+DEUserDefaults.h */,
+				079AD4DA15CD320A000309A2 /* OAuth+DEUserDefaults.m */,
+				079AD4DB15CD320A000309A2 /* Resources */,
+				079AD4F015CD320A000309A2 /* UIApplication+DETweetComposeViewController.h */,
+				079AD4F115CD320A000309A2 /* UIApplication+DETweetComposeViewController.m */,
+				079AD4F215CD320A000309A2 /* UIDevice+DETweetComposeViewController.h */,
+				079AD4F315CD320A000309A2 /* UIDevice+DETweetComposeViewController.m */,
+			);
+			path = DETweetComposeViewController;
+			sourceTree = "<group>";
+		};
+		079AD4DB15CD320A000309A2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				079AD4DC15CD320A000309A2 /* DETweetAttachmentFrame.png */,
+				079AD4DD15CD320A000309A2 /* DETweetAttachmentFrame@2x.png */,
+				079AD4DE15CD320A000309A2 /* DETweetCancelButtonLandscape.png */,
+				079AD4DF15CD320A000309A2 /* DETweetCancelButtonLandscape@2x.png */,
+				079AD4E015CD320A000309A2 /* DETweetCancelButtonPortrait.png */,
+				079AD4E115CD320A000309A2 /* DETweetCancelButtonPortrait@2x.png */,
+				079AD4E215CD320A000309A2 /* DETweetCardAccountLine.png */,
+				079AD4E315CD320A000309A2 /* DETweetCardAccountLine@2x.png */,
+				079AD4E415CD320A000309A2 /* DETweetCardBackground.png */,
+				079AD4E515CD320A000309A2 /* DETweetCardBackground@2x.png */,
+				079AD4E615CD320A000309A2 /* DETweetCardHeaderLine.png */,
+				079AD4E715CD320A000309A2 /* DETweetCardHeaderLine@2x.png */,
+				079AD4E815CD320A000309A2 /* DETweetPaperClip.png */,
+				079AD4E915CD320A000309A2 /* DETweetPaperClip@2x.png */,
+				079AD4EA15CD320A000309A2 /* DETweetSendButtonLandscape.png */,
+				079AD4EB15CD320A000309A2 /* DETweetSendButtonLandscape@2x.png */,
+				079AD4EC15CD320A000309A2 /* DETweetSendButtonPortrait.png */,
+				079AD4ED15CD320A000309A2 /* DETweetSendButtonPortrait@2x.png */,
+				079AD4EE15CD320A000309A2 /* DETweetURLAttachment.png */,
+				079AD4EF15CD320A000309A2 /* DETweetURLAttachment@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		079AD51515CD3222000309A2 /* unoffical-twitter-sdk */ = {
+			isa = PBXGroup;
+			children = (
+				079AD51615CD3222000309A2 /* JSON */,
+				079AD52415CD3222000309A2 /* OAuth */,
+				079AD53B15CD3222000309A2 /* tclose.png */,
+				079AD53C15CD3222000309A2 /* ticon.png */,
+				079AD53D15CD3222000309A2 /* TwitterDialog.h */,
+				079AD53E15CD3222000309A2 /* TwitterDialog.m */,
+			);
+			path = "unoffical-twitter-sdk";
+			sourceTree = "<group>";
+		};
+		079AD51615CD3222000309A2 /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				079AD51715CD3222000309A2 /* JSON.h */,
+				079AD51815CD3222000309A2 /* NSObject+SBJSON.h */,
+				079AD51915CD3222000309A2 /* NSObject+SBJSON.m */,
+				079AD51A15CD3222000309A2 /* NSString+SBJSON.h */,
+				079AD51B15CD3222000309A2 /* NSString+SBJSON.m */,
+				079AD51C15CD3222000309A2 /* SBJSON.h */,
+				079AD51D15CD3222000309A2 /* SBJSON.m */,
+				079AD51E15CD3222000309A2 /* SBJsonBase.h */,
+				079AD51F15CD3222000309A2 /* SBJsonBase.m */,
+				079AD52015CD3222000309A2 /* SBJsonParser.h */,
+				079AD52115CD3222000309A2 /* SBJsonParser.m */,
+				079AD52215CD3222000309A2 /* SBJsonWriter.h */,
+				079AD52315CD3222000309A2 /* SBJsonWriter.m */,
+			);
+			path = JSON;
+			sourceTree = "<group>";
+		};
+		079AD52415CD3222000309A2 /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				079AD52515CD3222000309A2 /* Guts */,
+				079AD53615CD3222000309A2 /* OAuthConsumerCredentials.h */,
+				079AD53715CD3222000309A2 /* Protocols */,
+			);
+			path = OAuth;
+			sourceTree = "<group>";
+		};
+		079AD52515CD3222000309A2 /* Guts */ = {
+			isa = PBXGroup;
+			children = (
+				079AD52615CD3222000309A2 /* Crypto */,
+				079AD53015CD3222000309A2 /* DEHTTPRequest.h */,
+				079AD53115CD3222000309A2 /* DEHTTPRequest.m */,
+				079AD53215CD3222000309A2 /* NSString+URLEncoding.h */,
+				079AD53315CD3222000309A2 /* NSString+URLEncoding.m */,
+				079AD53415CD3222000309A2 /* OAuth.h */,
+				079AD53515CD3222000309A2 /* OAuth.m */,
+			);
+			path = Guts;
+			sourceTree = "<group>";
+		};
+		079AD52615CD3222000309A2 /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				079AD52715CD3222000309A2 /* Base64Transcoder.c */,
+				079AD52815CD3222000309A2 /* Base64Transcoder.h */,
+				079AD52915CD3222000309A2 /* hmac.c */,
+				079AD52A15CD3222000309A2 /* hmac.h */,
+				079AD52B15CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.h */,
+				079AD52C15CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.m */,
+				079AD52D15CD3222000309A2 /* OASignatureProviding.h */,
+				079AD52E15CD3222000309A2 /* sha1.c */,
+				079AD52F15CD3222000309A2 /* sha1.h */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		079AD53715CD3222000309A2 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				079AD53815CD3222000309A2 /* OAuthTwitterCallbacks.h */,
+				079AD53915CD3222000309A2 /* TwitterLoginPopupDelegate.h */,
+				079AD53A15CD3222000309A2 /* TwitterLoginUiFeedback.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -447,6 +730,29 @@
 				07289DDE15CD0D7B00C8D273 /* GTMOAuthViewTouch.xib in Resources */,
 				07289DDF15CD0D7B00C8D273 /* UnitTests-Info.plist in Resources */,
 				07289DF715CD141B00C8D273 /* MainStoryboard_iPhone.storyboard in Resources */,
+				079AD4F715CD320A000309A2 /* DETweetComposeView.xib in Resources */,
+				079AD4FF15CD320A000309A2 /* DETweetAttachmentFrame.png in Resources */,
+				079AD50015CD320A000309A2 /* DETweetAttachmentFrame@2x.png in Resources */,
+				079AD50115CD320A000309A2 /* DETweetCancelButtonLandscape.png in Resources */,
+				079AD50215CD320A000309A2 /* DETweetCancelButtonLandscape@2x.png in Resources */,
+				079AD50315CD320A000309A2 /* DETweetCancelButtonPortrait.png in Resources */,
+				079AD50415CD320A000309A2 /* DETweetCancelButtonPortrait@2x.png in Resources */,
+				079AD50515CD320A000309A2 /* DETweetCardAccountLine.png in Resources */,
+				079AD50615CD320A000309A2 /* DETweetCardAccountLine@2x.png in Resources */,
+				079AD50715CD320A000309A2 /* DETweetCardBackground.png in Resources */,
+				079AD50815CD320A000309A2 /* DETweetCardBackground@2x.png in Resources */,
+				079AD50915CD320A000309A2 /* DETweetCardHeaderLine.png in Resources */,
+				079AD50A15CD320A000309A2 /* DETweetCardHeaderLine@2x.png in Resources */,
+				079AD50B15CD320A000309A2 /* DETweetPaperClip.png in Resources */,
+				079AD50C15CD320A000309A2 /* DETweetPaperClip@2x.png in Resources */,
+				079AD50D15CD320A000309A2 /* DETweetSendButtonLandscape.png in Resources */,
+				079AD50E15CD320A000309A2 /* DETweetSendButtonLandscape@2x.png in Resources */,
+				079AD50F15CD320A000309A2 /* DETweetSendButtonPortrait.png in Resources */,
+				079AD51015CD320A000309A2 /* DETweetSendButtonPortrait@2x.png in Resources */,
+				079AD51115CD320A000309A2 /* DETweetURLAttachment.png in Resources */,
+				079AD51215CD320A000309A2 /* DETweetURLAttachment@2x.png in Resources */,
+				079AD54C15CD3222000309A2 /* tclose.png in Resources */,
+				079AD54D15CD3222000309A2 /* ticon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +820,32 @@
 				07289DDD15CD0D7B00C8D273 /* GTMOAuthViewControllerTouch.m in Sources */,
 				07289DED15CD12C600C8D273 /* PullRefreshTableViewController.m in Sources */,
 				079AD4BF15CD20E2000309A2 /* UIAlertView+alert.m in Sources */,
+				079AD4F415CD320A000309A2 /* DEEmbossedLabel.m in Sources */,
+				079AD4F515CD320A000309A2 /* DERuledView.m in Sources */,
+				079AD4F615CD320A000309A2 /* DETweetAccountSelectorViewController.m in Sources */,
+				079AD4F815CD320A000309A2 /* DETweetComposeViewController.m in Sources */,
+				079AD4F915CD320A000309A2 /* DETweetGradientView.m in Sources */,
+				079AD4FA15CD320A000309A2 /* DETweetPoster.m in Sources */,
+				079AD4FB15CD320A000309A2 /* DETweetSheetCardView.m in Sources */,
+				079AD4FC15CD320A000309A2 /* DETweetTextView.m in Sources */,
+				079AD4FD15CD320A000309A2 /* OAuth+DEExtensions.m in Sources */,
+				079AD4FE15CD320A000309A2 /* OAuth+DEUserDefaults.m in Sources */,
+				079AD51315CD320A000309A2 /* UIApplication+DETweetComposeViewController.m in Sources */,
+				079AD51415CD320A000309A2 /* UIDevice+DETweetComposeViewController.m in Sources */,
+				079AD53F15CD3222000309A2 /* NSObject+SBJSON.m in Sources */,
+				079AD54015CD3222000309A2 /* NSString+SBJSON.m in Sources */,
+				079AD54115CD3222000309A2 /* SBJSON.m in Sources */,
+				079AD54215CD3222000309A2 /* SBJsonBase.m in Sources */,
+				079AD54315CD3222000309A2 /* SBJsonParser.m in Sources */,
+				079AD54415CD3222000309A2 /* SBJsonWriter.m in Sources */,
+				079AD54515CD3222000309A2 /* Base64Transcoder.c in Sources */,
+				079AD54615CD3222000309A2 /* hmac.c in Sources */,
+				079AD54715CD3222000309A2 /* OAHMAC_SHA1SignatureProvider.m in Sources */,
+				079AD54815CD3222000309A2 /* sha1.c in Sources */,
+				079AD54915CD3222000309A2 /* DEHTTPRequest.m in Sources */,
+				079AD54A15CD3222000309A2 /* NSString+URLEncoding.m in Sources */,
+				079AD54B15CD3222000309A2 /* OAuth.m in Sources */,
+				079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
