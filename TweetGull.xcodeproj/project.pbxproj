@@ -1,0 +1,492 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07289D3A15CD0B3600C8D273 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3915CD0B3600C8D273 /* UIKit.framework */; };
+		07289D3C15CD0B3600C8D273 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3B15CD0B3600C8D273 /* Foundation.framework */; };
+		07289D3E15CD0B3600C8D273 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3D15CD0B3600C8D273 /* CoreGraphics.framework */; };
+		07289D4015CD0B3600C8D273 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3F15CD0B3600C8D273 /* CoreData.framework */; };
+		07289D4615CD0B3600C8D273 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07289D4415CD0B3600C8D273 /* InfoPlist.strings */; };
+		07289D4815CD0B3600C8D273 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289D4715CD0B3600C8D273 /* main.m */; };
+		07289D4C15CD0B3600C8D273 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289D4B15CD0B3600C8D273 /* AppDelegate.m */; };
+		07289D4F15CD0B3600C8D273 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07289D4D15CD0B3600C8D273 /* MainStoryboard_iPhone.storyboard */; };
+		07289D5215CD0B3600C8D273 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07289D5015CD0B3600C8D273 /* MainStoryboard_iPad.storyboard */; };
+		07289D5515CD0B3600C8D273 /* TweetGull.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07289D5315CD0B3600C8D273 /* TweetGull.xcdatamodeld */; };
+		07289D5815CD0B3600C8D273 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289D5715CD0B3600C8D273 /* MasterViewController.m */; };
+		07289D5B15CD0B3600C8D273 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289D5A15CD0B3600C8D273 /* DetailViewController.m */; };
+		07289D6315CD0B3600C8D273 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D6215CD0B3600C8D273 /* SenTestingKit.framework */; };
+		07289D6415CD0B3600C8D273 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3915CD0B3600C8D273 /* UIKit.framework */; };
+		07289D6515CD0B3600C8D273 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3B15CD0B3600C8D273 /* Foundation.framework */; };
+		07289D6615CD0B3600C8D273 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3F15CD0B3600C8D273 /* CoreData.framework */; };
+		07289D6E15CD0B3600C8D273 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07289D6C15CD0B3600C8D273 /* InfoPlist.strings */; };
+		07289D7115CD0B3600C8D273 /* TweetGullTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289D7015CD0B3600C8D273 /* TweetGullTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07289D6715CD0B3600C8D273 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07289D2C15CD0B3600C8D273 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07289D3415CD0B3600C8D273;
+			remoteInfo = TweetGull;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07289D3515CD0B3600C8D273 /* TweetGull.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TweetGull.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07289D3915CD0B3600C8D273 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		07289D3B15CD0B3600C8D273 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		07289D3D15CD0B3600C8D273 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		07289D3F15CD0B3600C8D273 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		07289D4315CD0B3600C8D273 /* TweetGull-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TweetGull-Info.plist"; sourceTree = "<group>"; };
+		07289D4515CD0B3600C8D273 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		07289D4715CD0B3600C8D273 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		07289D4915CD0B3600C8D273 /* TweetGull-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TweetGull-Prefix.pch"; sourceTree = "<group>"; };
+		07289D4A15CD0B3600C8D273 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		07289D4B15CD0B3600C8D273 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		07289D4E15CD0B3600C8D273 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		07289D5115CD0B3600C8D273 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		07289D5415CD0B3600C8D273 /* TweetGull.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TweetGull.xcdatamodel; sourceTree = "<group>"; };
+		07289D5615CD0B3600C8D273 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		07289D5715CD0B3600C8D273 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		07289D5915CD0B3600C8D273 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		07289D5A15CD0B3600C8D273 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		07289D6115CD0B3600C8D273 /* TweetGullTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TweetGullTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07289D6215CD0B3600C8D273 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		07289D6B15CD0B3600C8D273 /* TweetGullTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TweetGullTests-Info.plist"; sourceTree = "<group>"; };
+		07289D6D15CD0B3600C8D273 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		07289D6F15CD0B3600C8D273 /* TweetGullTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweetGullTests.h; sourceTree = "<group>"; };
+		07289D7015CD0B3600C8D273 /* TweetGullTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweetGullTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07289D3215CD0B3600C8D273 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D3A15CD0B3600C8D273 /* UIKit.framework in Frameworks */,
+				07289D3C15CD0B3600C8D273 /* Foundation.framework in Frameworks */,
+				07289D3E15CD0B3600C8D273 /* CoreGraphics.framework in Frameworks */,
+				07289D4015CD0B3600C8D273 /* CoreData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07289D5D15CD0B3600C8D273 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D6315CD0B3600C8D273 /* SenTestingKit.framework in Frameworks */,
+				07289D6415CD0B3600C8D273 /* UIKit.framework in Frameworks */,
+				07289D6515CD0B3600C8D273 /* Foundation.framework in Frameworks */,
+				07289D6615CD0B3600C8D273 /* CoreData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07289D2A15CD0B3600C8D273 = {
+			isa = PBXGroup;
+			children = (
+				07289D4115CD0B3600C8D273 /* TweetGull */,
+				07289D6915CD0B3600C8D273 /* TweetGullTests */,
+				07289D3815CD0B3600C8D273 /* Frameworks */,
+				07289D3615CD0B3600C8D273 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		07289D3615CD0B3600C8D273 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07289D3515CD0B3600C8D273 /* TweetGull.app */,
+				07289D6115CD0B3600C8D273 /* TweetGullTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		07289D3815CD0B3600C8D273 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07289D3915CD0B3600C8D273 /* UIKit.framework */,
+				07289D3B15CD0B3600C8D273 /* Foundation.framework */,
+				07289D3D15CD0B3600C8D273 /* CoreGraphics.framework */,
+				07289D3F15CD0B3600C8D273 /* CoreData.framework */,
+				07289D6215CD0B3600C8D273 /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		07289D4115CD0B3600C8D273 /* TweetGull */ = {
+			isa = PBXGroup;
+			children = (
+				07289D4A15CD0B3600C8D273 /* AppDelegate.h */,
+				07289D4B15CD0B3600C8D273 /* AppDelegate.m */,
+				07289D4D15CD0B3600C8D273 /* MainStoryboard_iPhone.storyboard */,
+				07289D5015CD0B3600C8D273 /* MainStoryboard_iPad.storyboard */,
+				07289D5615CD0B3600C8D273 /* MasterViewController.h */,
+				07289D5715CD0B3600C8D273 /* MasterViewController.m */,
+				07289D5915CD0B3600C8D273 /* DetailViewController.h */,
+				07289D5A15CD0B3600C8D273 /* DetailViewController.m */,
+				07289D5315CD0B3600C8D273 /* TweetGull.xcdatamodeld */,
+				07289D4215CD0B3600C8D273 /* Supporting Files */,
+			);
+			path = TweetGull;
+			sourceTree = "<group>";
+		};
+		07289D4215CD0B3600C8D273 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				07289D4315CD0B3600C8D273 /* TweetGull-Info.plist */,
+				07289D4415CD0B3600C8D273 /* InfoPlist.strings */,
+				07289D4715CD0B3600C8D273 /* main.m */,
+				07289D4915CD0B3600C8D273 /* TweetGull-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		07289D6915CD0B3600C8D273 /* TweetGullTests */ = {
+			isa = PBXGroup;
+			children = (
+				07289D6F15CD0B3600C8D273 /* TweetGullTests.h */,
+				07289D7015CD0B3600C8D273 /* TweetGullTests.m */,
+				07289D6A15CD0B3600C8D273 /* Supporting Files */,
+			);
+			path = TweetGullTests;
+			sourceTree = "<group>";
+		};
+		07289D6A15CD0B3600C8D273 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				07289D6B15CD0B3600C8D273 /* TweetGullTests-Info.plist */,
+				07289D6C15CD0B3600C8D273 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07289D3415CD0B3600C8D273 /* TweetGull */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07289D7415CD0B3600C8D273 /* Build configuration list for PBXNativeTarget "TweetGull" */;
+			buildPhases = (
+				07289D3115CD0B3600C8D273 /* Sources */,
+				07289D3215CD0B3600C8D273 /* Frameworks */,
+				07289D3315CD0B3600C8D273 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TweetGull;
+			productName = TweetGull;
+			productReference = 07289D3515CD0B3600C8D273 /* TweetGull.app */;
+			productType = "com.apple.product-type.application";
+		};
+		07289D6015CD0B3600C8D273 /* TweetGullTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07289D7715CD0B3600C8D273 /* Build configuration list for PBXNativeTarget "TweetGullTests" */;
+			buildPhases = (
+				07289D5C15CD0B3600C8D273 /* Sources */,
+				07289D5D15CD0B3600C8D273 /* Frameworks */,
+				07289D5E15CD0B3600C8D273 /* Resources */,
+				07289D5F15CD0B3600C8D273 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07289D6815CD0B3600C8D273 /* PBXTargetDependency */,
+			);
+			name = TweetGullTests;
+			productName = TweetGullTests;
+			productReference = 07289D6115CD0B3600C8D273 /* TweetGullTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07289D2C15CD0B3600C8D273 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "Yoshioka Tsuneo";
+			};
+			buildConfigurationList = 07289D2F15CD0B3600C8D273 /* Build configuration list for PBXProject "TweetGull" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 07289D2A15CD0B3600C8D273;
+			productRefGroup = 07289D3615CD0B3600C8D273 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07289D3415CD0B3600C8D273 /* TweetGull */,
+				07289D6015CD0B3600C8D273 /* TweetGullTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07289D3315CD0B3600C8D273 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D4615CD0B3600C8D273 /* InfoPlist.strings in Resources */,
+				07289D4F15CD0B3600C8D273 /* MainStoryboard_iPhone.storyboard in Resources */,
+				07289D5215CD0B3600C8D273 /* MainStoryboard_iPad.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07289D5E15CD0B3600C8D273 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D6E15CD0B3600C8D273 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07289D5F15CD0B3600C8D273 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07289D3115CD0B3600C8D273 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D4815CD0B3600C8D273 /* main.m in Sources */,
+				07289D4C15CD0B3600C8D273 /* AppDelegate.m in Sources */,
+				07289D5515CD0B3600C8D273 /* TweetGull.xcdatamodeld in Sources */,
+				07289D5815CD0B3600C8D273 /* MasterViewController.m in Sources */,
+				07289D5B15CD0B3600C8D273 /* DetailViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07289D5C15CD0B3600C8D273 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07289D7115CD0B3600C8D273 /* TweetGullTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07289D6815CD0B3600C8D273 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07289D3415CD0B3600C8D273 /* TweetGull */;
+			targetProxy = 07289D6715CD0B3600C8D273 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		07289D4415CD0B3600C8D273 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07289D4515CD0B3600C8D273 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		07289D4D15CD0B3600C8D273 /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07289D4E15CD0B3600C8D273 /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		07289D5015CD0B3600C8D273 /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07289D5115CD0B3600C8D273 /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+		07289D6C15CD0B3600C8D273 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07289D6D15CD0B3600C8D273 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		07289D7215CD0B3600C8D273 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		07289D7315CD0B3600C8D273 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		07289D7515CD0B3600C8D273 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				INFOPLIST_FILE = "TweetGull/TweetGull-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		07289D7615CD0B3600C8D273 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				INFOPLIST_FILE = "TweetGull/TweetGull-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		07289D7815CD0B3600C8D273 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/TweetGull.app/TweetGull";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				INFOPLIST_FILE = "TweetGullTests/TweetGullTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		07289D7915CD0B3600C8D273 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/TweetGull.app/TweetGull";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				INFOPLIST_FILE = "TweetGullTests/TweetGullTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07289D2F15CD0B3600C8D273 /* Build configuration list for PBXProject "TweetGull" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07289D7215CD0B3600C8D273 /* Debug */,
+				07289D7315CD0B3600C8D273 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07289D7415CD0B3600C8D273 /* Build configuration list for PBXNativeTarget "TweetGull" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07289D7515CD0B3600C8D273 /* Debug */,
+				07289D7615CD0B3600C8D273 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		07289D7715CD0B3600C8D273 /* Build configuration list for PBXNativeTarget "TweetGullTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07289D7815CD0B3600C8D273 /* Debug */,
+				07289D7915CD0B3600C8D273 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		07289D5315CD0B3600C8D273 /* TweetGull.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				07289D5415CD0B3600C8D273 /* TweetGull.xcdatamodel */,
+			);
+			currentVersion = 07289D5415CD0B3600C8D273 /* TweetGull.xcdatamodel */;
+			path = TweetGull.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 07289D2C15CD0B3600C8D273 /* Project object */;
+}
