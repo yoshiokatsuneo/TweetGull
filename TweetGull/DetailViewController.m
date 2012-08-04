@@ -1,12 +1,16 @@
 //
 //  DetailViewController.m
-//  TweetGull
+//  tweettest1
 //
-//  Created by Yoshioka Tsuneo on 8/4/12.
-//  Copyright (c) 2012 Yoshioka Tsuneo. All rights reserved.
+//  Created by Tsuneo Yoshioka on 7/12/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import "DetailViewController.h"
+#import "WebViewCache.h"
+#import "Tweet.h"
+#import "ProfileImageCache.h"
+#import "MediaImageCache.h"
 
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -15,19 +19,91 @@
 
 @implementation DetailViewController
 
+@synthesize detailItem = _detailItem;
+@synthesize detailDescriptionLabel = _detailDescriptionLabel;
+@synthesize profileImage = _profileImage;
+@synthesize nameLabel = _nameLabel;
+@synthesize tweetLabel = _tweetLabel;
+@synthesize webViewSuperView = _webViewSuperView;
+@synthesize retweetUserNameLabel = _retweetUserNameLabel;
+@synthesize created_atLabel = _created_atLabel;
+@synthesize masterPopoverController = _masterPopoverController;
+
 #pragma mark - Managing the detail item
 
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        ;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    self.webView = nil;
+    sleep(0);
+}
+-(void)setMediaWebView:(UIView *)mediaWebView
+{
+    if(mediaWebView_){
+        [mediaWebView_ removeFromSuperview];
+        if([mediaWebView_ isKindOfClass:[MyWebView class]]){
+            MyWebView *webView = (MyWebView*)mediaWebView_;
+            webView.userInteractionEnabled = NO;
+        }
+        [mediaWebView_ setFrame:orig_webViewFrame];
+        [orig_superView addSubview:mediaWebView_];
+    }
+    mediaWebView_ = mediaWebView;
+    if(mediaWebView){
+        orig_webViewFrame = mediaWebView.frame;
+        orig_superView =  mediaWebView.superview;
+        CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
+        mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [mediaWebView setFrame:frame];
+        [self.webViewSuperView addSubview:mediaWebView];
+
+    }
+}
+-(void)setWebView:(MyWebView *)webView
+{
+    webView.userInteractionEnabled = YES;
+    [self setMediaWebView:webView];
+}
+-(void)setMediaImageView:(UIImageView *)imageView
+{
+    [self setMediaWebView:imageView];
+}
+-(MyWebView *)webView
+{
+    if([mediaWebView_ isKindOfClass:[MyWebView class]]){
+        return (MyWebView*)mediaWebView_;
+    }else{
+        return nil;
+    }
+}
+-(UIImageView *)mediaImageView
+{
+    if([mediaWebView_ isKindOfClass:[UIImageView class]]){
+        return (UIImageView*)mediaWebView_;
+    }else{
+        return nil;
+    }    
+}
 - (void)setDetailItem:(id)newDetailItem
 {
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
         
         // Update the view.
-        [self configureView];
+        // [self configureView];
     }
 
     if (self.masterPopoverController != nil) {
         [self.masterPopoverController dismissPopoverAnimated:YES];
+        
     }        
 }
 
@@ -36,7 +112,41 @@
     // Update the user interface for the detail item.
 
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [[self.detailItem valueForKey:@"timeStamp"] description];
+        Tweet *tweet = self.detailItem;
+        self.nameLabel.text = tweet.user_name;
+        self.tweetLabel.text = tweet.display_text;
+        self.tweetLabel.lineBreakMode = UILineBreakModeWordWrap;
+        self.tweetLabel.numberOfLines = 0;
+        self.retweetUserNameLabel.text = tweet.retweet_user_name;
+        self.created_atLabel.text = tweet.created_at_str;
+
+        if(tweet.mediaURLString){
+            NSString *url = tweet.mediaURLString;
+            UIImageView *imageView = [[UIImageView alloc] init];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            self.mediaImageView = imageView;
+            MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
+            [mediaImageCache loadToImageView:imageView fromURLString:url];
+        
+        }else if(tweet.linkURLString){
+            NSString *url = tweet.linkURLString;
+        
+            MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url];
+            self.webView = aWebView;
+        }
+        
+        ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
+        self.profileImage.image = [profileImageCache getImage:tweet.user_screen_name];
+#if 0
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *imageUrl = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.profileImage.image = [UIImage imageWithData:data];
+            });
+                            
+        });
+#endif
     }
 }
 
@@ -49,8 +159,15 @@
 
 - (void)viewDidUnload
 {
+    [self setProfileImage:nil];
+    [self setNameLabel:nil];
+    [self setTweetLabel:nil];
+    [self setWebViewSuperView:nil];
+    [self setRetweetUserNameLabel:nil];
+    [self setCreated_atLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
+    self.detailDescriptionLabel = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

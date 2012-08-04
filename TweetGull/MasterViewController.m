@@ -1,21 +1,116 @@
 //
 //  MasterViewController.m
-//  TweetGull
+//  tweettest1
 //
-//  Created by Yoshioka Tsuneo on 8/4/12.
-//  Copyright (c) 2012 Yoshioka Tsuneo. All rights reserved.
+//  Created by Tsuneo Yoshioka on 7/12/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import "MasterViewController.h"
 
 #import "DetailViewController.h"
+#import "WebViewCache.h"
+#import "GTMOAuthAuthentication.h"
+// #import "GTMOAuthWindowController.h"
+#import "GTMOAuthViewControllerTouch.h"
+#import "TweetEditViewController.h"
+#import "TweetTableViewCellViewController.h"
+#import "TweetTableViewCell.h"
+#import "Tweets.h"
+#import "Tweet.h"
+#import "NSString+Parse.h"
+#import "ProfileImageCache.h"
+#import "MediaImageCache.h"
 
-@interface MasterViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+#import "UIAlertView+alert.h"
+
+static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
+@interface MasterViewController () {
+    Tweets *tweets;
+    GTMOAuthAuthentication *auth;
+    void (^signInCallback)(void);
+}
 @end
 
 @implementation MasterViewController
 
+@synthesize detailViewController = _detailViewController;
+
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if(!self){return nil;}
+    
+    TweetTableViewCellViewController *cellViewController = [[TweetTableViewCellViewController alloc] init];
+    [cellViewController loadView];
+    TweetTableViewCell *cell = cellViewController.tableViewCell;
+    cellHeight = cell.frame.size.height;
+    
+    return self;
+}
+- (GTMOAuthAuthentication*)getNewAuth
+{
+    NSString *myConsumerKey = @"1Tfg491UZho03mDZdhpkuA";
+    NSString *myConsumerSecret = @"XTUnvinSXim4NXTVNY8sqwQbGXhkLDV5qtIev4Drt0";
+
+    GTMOAuthAuthentication *newauth = [[GTMOAuthAuthentication alloc] initWithSignatureMethod:kGTMOAuthSignatureMethodHMAC_SHA1 consumerKey:myConsumerKey privateKey:myConsumerSecret];
+    [newauth setServiceProvider:@"Twitter"];
+    return newauth;
+    
+}
+
+-(void)viewController:(GTMOAuthViewControllerTouch*)viewController finishedWithAuth:(GTMOAuthAuthentication*)auth2 error:(NSError*)error
+{
+    if(error == nil){
+        NSLog(@"login success");
+    }else{
+        NSLog(@"login failed");
+        [UIAlertView alertError:error];
+        // [self dismissModalViewControllerAnimated:YES];
+        [[self navigationController] popViewControllerAnimated:YES];
+        [self stopLoading];
+        return;
+    }
+    NSLog(@"auth=%@", auth);
+    NSLog(@"auth2=%@", auth2);
+    auth = auth2;
+    //[self dismissModalViewControllerAnimated:YES];
+    [[self navigationController] popViewControllerAnimated:YES];
+    signInCallback();
+    // [self fetchTweets];
+}
+- (void)signInReal:(void (^)(void))callback
+{
+    NSURL *requestURL = [NSURL URLWithString:@"http://twitter.com/oauth/request_token"];
+    NSURL *accessURL = [NSURL URLWithString:@"http://twitter.com/oauth/access_token"];
+    NSURL *authrizeURL = [NSURL URLWithString:@"http://twitter.com/oauth/authorize"];
+    NSString *scope = @"http://api.twitter.com";
+    GTMOAuthAuthentication *auth2 = [self getNewAuth];
+    
+    [auth setCallback:@"http://www.example.com/OAuthCallback"];
+    
+    GTMOAuthViewControllerTouch *viewController = [[GTMOAuthViewControllerTouch alloc] initWithScope:scope language:nil requestTokenURL:requestURL authorizeTokenURL:authrizeURL accessTokenURL:accessURL authentication:auth2 appServiceName:kTwitterKeychainItemName delegate:self finishedSelector:@selector(viewController:finishedWithAuth:error:)];
+    
+    [[self navigationController] pushViewController:viewController animated:YES];
+
+}
+- (void)signIn:(void (^)(void))callback
+{
+    signInCallback = callback;
+    if(auth){
+        callback();
+        return;
+    }
+    GTMOAuthAuthentication *auth2 = [self getNewAuth];
+    BOOL didAuth = [GTMOAuthViewControllerTouch authorizeFromKeychainForName:kTwitterKeychainItemName authentication:auth2];
+    if(!didAuth){
+        [self signInReal:callback];
+    }else{
+        auth = auth2;
+        signInCallback();
+    }// [self fetchTweets];
+}
 - (void)awakeFromNib
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -28,8 +123,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [WebViewCache defaultWebViewCache].delegate = self;
+    if(!tweets){
+        [self signIn:^{
+            [self fetchTweets];
+        }];
+    }
+    // [self signIn];
+    
 	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
@@ -51,43 +154,159 @@
     }
 }
 
+-(void)tweetEditViewControllerSend:(TweetEditViewController *)tweetEditViewController text:(NSString *)text
+{
+    NSLog(@"%s: text=%@", __func__, text);
+    [tweetEditViewController dismissViewControllerAnimated:YES completion:nil];
+    [self postTweet:text];
+}
+-(void)tweetEditViewControllerCancel:(TweetEditViewController *)tweetEditViewController
+{
+    NSLog(@"%s", __func__);
+    [tweetEditViewController dismissViewControllerAnimated:YES completion:nil];
+}
 - (void)insertNewObject:(id)sender
 {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    // TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] initWithNibName:@"TweetEditViewController" bundle:nil];
+    TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] init];
+    tweetEditViewController.delegate = self;
+    [self presentViewController:tweetEditViewController animated:YES completion:nil];
     
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+#if 0
+    if (!tweets) {
+        tweets = [[NSMutableArray alloc] init];
     }
+    [tweets insertObject:[NSDate date] atIndex:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+#endif
 }
 
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [[self.fetchedResultsController sections] count];
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    return [sectionInfo numberOfObjects];
+    return tweets.count;
 }
+- (void)setTweetLinkInfo:(Tweet*)tweet cellViewController:(TweetTableViewCellViewController*)cellViewController
+{
+    NSString *url = tweet.linkURLString;
+    
+    WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+    if(! [webViewCache isLoaded:url]){
+        return;
+    }
+    MyWebView *myWebView = [webViewCache getWebView:url];
+    if(myWebView.startLoadCount > 0){
+        cellViewController.progressView.hidden = NO;
+        cellViewController.progressView.progress = 1.0*myWebView.startLoadCount / (1.0*myWebView.finishLoadCount);
+        // cellViewController.tableViewCell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+    }
+}
+
+-(void)updateVisibleCellsLink
+{
+    for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
+        int index = tableViewCell.tag;
+        Tweet *tweet = [tweets objectAtIndex:index];
+        if(tweet.mediaURLString){
+            ;
+        }else if(tweet.linkURLString){
+            NSString *url = tweet.linkURLString;
+            if(url){
+                WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+                [webViewCache addURL:url];
+            }
+        }
+    }
+    
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    [self configureCell:cell atIndexPath:indexPath];
+    TweetTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
+    TweetTableViewCellViewController *cellViewController;
+    
+    if(cell == nil){
+        cellViewController = [[TweetTableViewCellViewController alloc] init];
+        [cellViewController loadView];
+        cell = cellViewController.tableViewCell;
+        cell.viewController = cellViewController;
+        // cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TweetCell"];
+    }
+    cellViewController = cell.viewController;
+    int index = indexPath.row;
+    Tweet *tweet = [tweets objectAtIndex:index];
+
+    [cellViewController reset];
+    
+    cell.tag = index;
+    // cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    // cell.textLabel.text = text;
+    // cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@", name];
+    // cell.imageView.image = nil;
+    cellViewController.tweetText.text = tweet.display_text;
+    cellViewController.userNameLabel.text = tweet.user_name;
+    cellViewController.retweetUserNameLabel.text = tweet.retweet_user_name;
+    cellViewController.profileImageView.image = nil;
+    cellViewController.progressView.progress = 0.0;
+    cellViewController.progressView.hidden = YES;
+    cellViewController.created_atLabel.text = tweet.created_at_str;
+    cellViewController.tweet = tweet;
+    
+    [self setTweetLinkInfo:tweet cellViewController:cellViewController];
+    // cell.imageView.image = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
+    
+    ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
+    cellViewController.profileImageView.image= [profileImageCache getImage:tweet.user_screen_name];
+
+    if(cellViewController.profileImageView.image == nil){
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *imageUrl = tweet.user_profile_image_url;
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImage *image = [UIImage imageWithData:data];
+                [profileImageCache addImage:image screen_name:tweet.user_screen_name];
+                if(tweet == cell.viewController.tweet){
+                    cellViewController.profileImageView.image = image;
+                    // [cell.imageView setNeedsDisplay];
+                    // [cell.imageView setNeedsLayout];
+                    // [cell setNeedsLayout];
+                    // [cell setNeedsDisplay];
+                }
+            });
+            
+        });
+    }
+
+    
+//    [self setTweetLinkProgress:tweet progressView:cellViewController.progressView];
+    
+    NSLog(@"%s: indexPath.row=%d\n", __func__, indexPath.row);
+    
+    NSString *linkURL = tweet.linkURLString;
+    NSString *mediaURL = tweet.mediaURLString;
+    
+    if(mediaURL){
+        MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
+        UIImage *image = [mediaImageCache getImage:mediaURL];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        cellViewController.mediaImageView = imageView;
+        [mediaImageCache loadToImageView:imageView fromURLString:mediaURL];
+    }else if(linkURL){
+        WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+        [webViewCache addURL:linkURL];
+        MyWebView *webView = [webViewCache getWebView:linkURL];
+        cellViewController.webView = webView;
+    }
+    
+    [self updateVisibleCellsLink];
     return cell;
 }
 
@@ -100,145 +319,175 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        NSError *error = nil;
-        if (![context save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }   
+        [tweets removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }
 }
 
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // The table view should not be re-orderable.
-    return NO;
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
 }
+*/
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        NSDate *object = [tweets objectAtIndex:indexPath.row];
         self.detailViewController.detailItem = object;
+    }else{
+        [self performSegueWithIdentifier:@"showTweet" sender:self];
     }
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return cellHeight;
+}
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+    if ([[segue identifier] isEqualToString:@"showTweet"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[segue destinationViewController] setDetailItem:object];
+        NSDictionary *tweet = [tweets objectAtIndex:indexPath.row];
+        [[segue destinationViewController] setDetailItem:tweet];
     }
 }
 
-#pragma mark - Fetched results controller
-
-- (NSFetchedResultsController *)fetchedResultsController
+-(void)fetchTweets
 {
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
+    // NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/home_timeline.json?count=200&include_entities=1"]];
+    // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
+    [self signIn:^{
+        [auth authorizeRequest:request];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError *error = nil;
+            NSURLResponse *response = nil;
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(data == nil){
+                    [UIAlertView alertError:error];
+                    [self stopLoading];
+                    return;
+                }
+                // NSLog(@"data=[%@]", data);
+                // NSLog(@"error=[%@]", error);
+                NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                //NSLog(@"response=[%@]", response_str);
+                tweets = [[Tweets alloc] initWithJSONString:response_str];
+                    [self.tableView reloadData];
+                    // [self prefetchTweets];
+                    [self stopLoading];
+                });
+        });
+        
+    }];
+}
+-(void)postTweetFetcher:(GTMHTTPFetcher*)fetcher finishedWithData:(NSData*)data error:(NSError*)error
+{
+    if(error != nil){
+        NSLog(@"Fetch error: %@", error);
+        return;
+    }
+    [self fetchTweets];
+}
+-(void)postTweet:(NSString*)text
+{
+    NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/update.json"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    NSString *encodedText = [GTMOAuthAuthentication encodedOAuthParameterForString:text];
+    NSString *body = [NSString stringWithFormat:@"status=%@", encodedText];
+    [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
+    [self signIn:^{
+        [auth authorizeRequest:request];
+        
+        GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+        [fetcher beginFetchWithDelegate:self didFinishSelector:@selector(postTweetFetcher:finishedWithData:error:)];
+    }];
+}
+- (IBAction)logout:(id)sender {
+    [GTMOAuthViewControllerTouch removeParamsFromKeychainForName:kTwitterKeychainItemName];
+    auth = nil;
+}
+- (void)refresh
+{
+    [self fetchTweets];
+    // [self.tableView reloadData];
+}
+#if 0
+-(int)getTableViewCellIndexFromURL:(NSString*)url
+{
+    int index = -1;
+    for(int i=0;i<tweets.count;i++){
+        Tweet *tweet = [tweets objectAtIndex:i];
+        NSString *url_  = tweet.urlString;
+        if([url isEqual:url_]){
+            index = i;
+        }
+    }
+    return index;
+}
+#endif
+#if 0
+-(void)setTweetStatus:(NSString*)url accessoryType:(UITableViewCellAccessoryType)accessoryType
+{
+    for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
+        int index = tableViewCell.tag;
+        Tweet *tweet = [tweets objectAtIndex:index];
+        NSString *url_ = tweet.urlString;
+        if([url isEqual:url_]){
+            UITableViewCell *tableViewCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            tableViewCell.accessoryType = accessoryType; 
+        }
+        
     }
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
-    
-    // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-	NSError *error = nil;
-	if (![self.fetchedResultsController performFetch:&error]) {
-	     // Replace this implementation with code to handle the error appropriately.
-	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
-	}
-    
-    return _fetchedResultsController;
-}    
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView beginUpdates];
 }
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+#endif
+-(void)updateProgress:(NSString*)url progress:(double)progress
 {
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
+    for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
+        int index = tableViewCell.tag;
+        Tweet *tweet = [tweets objectAtIndex:index];
+        NSString *url_ = tweet.linkURLString;
+        if([url isEqual:url_]){
+            TweetTableViewCell *tableViewCell = (TweetTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            TweetTableViewCellViewController *cellViewController =  tableViewCell.viewController;
+            cellViewController.progressView.hidden = NO;
+            cellViewController.progressView.progress = progress;
+        }
+        
     }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    UITableView *tableView = self.tableView;
     
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+-(void)webViewCacheUpdateCounter:(NSString *)url start_counter:(int)start_counter finish_counter:(int)finish_counter
 {
-    [self.tableView endUpdates];
+    [self updateProgress:url progress:(1.0*finish_counter)/(1.0*start_counter)];
 }
-
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+-(void)webViewCacheDidFinishLoad:(NSString *)url
 {
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
+    ;
+    // [self setTweetStatus:url accessoryType:UITableViewCellAccessoryDetailDisclosureButton];
 }
- */
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+-(void)webViewLost:(NSString *)url
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    ;
+    // [self setTweetStatus:url accessoryType:UITableViewCellAccessoryDisclosureIndicator];
 }
-
 @end
+

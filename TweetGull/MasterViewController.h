@@ -1,22 +1,28 @@
 //
 //  MasterViewController.h
-//  TweetGull
+//  tweettest1
 //
-//  Created by Yoshioka Tsuneo on 8/4/12.
-//  Copyright (c) 2012 Yoshioka Tsuneo. All rights reserved.
+//  Created by Tsuneo Yoshioka on 7/12/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "PullRefreshTableViewController.h"
+#import "WebViewCache.h"
+#import "TweetEditViewController.h"
 
 @class DetailViewController;
 
-#import <CoreData/CoreData.h>
+// @interface MasterViewController : UITableViewController
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface MasterViewController : PullRefreshTableViewController<WebViewCacheDelegate, TweetEditViewControllerDelegate>
+{
+    int cellHeight;
+}
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
-
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+-(void)fetchTweets;
+- (IBAction)logout:(id)sender;
 
 @end
