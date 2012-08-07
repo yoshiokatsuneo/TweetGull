@@ -10,9 +10,6 @@
 
 #import "DetailViewController.h"
 #import "WebViewCache.h"
-#import "GTMOAuthAuthentication.h"
-// #import "GTMOAuthWindowController.h"
-#import "GTMOAuthViewControllerTouch.h"
 #import "TweetEditViewController.h"
 #import "TweetTableViewCellViewController.h"
 #import "TweetTableViewCell.h"
@@ -23,13 +20,10 @@
 #import "MediaImageCache.h"
 
 #import "UIAlertView+alert.h"
-#import "DETweetComposeViewController/DETweetComposeViewController.h"
+#import "TwitterAPI.h"
 
-static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 @interface MasterViewController () {
     Tweets *tweets;
-    GTMOAuthAuthentication *auth;
-    void (^signInCallback)(void);
 }
 @end
 
@@ -50,68 +44,6 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
     
     return self;
 }
-- (GTMOAuthAuthentication*)getNewAuth
-{
-    NSString *myConsumerKey = @"1Tfg491UZho03mDZdhpkuA";
-    NSString *myConsumerSecret = @"XTUnvinSXim4NXTVNY8sqwQbGXhkLDV5qtIev4Drt0";
-
-    GTMOAuthAuthentication *newauth = [[GTMOAuthAuthentication alloc] initWithSignatureMethod:kGTMOAuthSignatureMethodHMAC_SHA1 consumerKey:myConsumerKey privateKey:myConsumerSecret];
-    [newauth setServiceProvider:@"Twitter"];
-    return newauth;
-    
-}
-
--(void)viewController:(GTMOAuthViewControllerTouch*)viewController finishedWithAuth:(GTMOAuthAuthentication*)auth2 error:(NSError*)error
-{
-    if(error == nil){
-        NSLog(@"login success");
-    }else{
-        NSLog(@"login failed");
-        [UIAlertView alertError:error];
-        // [self dismissModalViewControllerAnimated:YES];
-        [[self navigationController] popViewControllerAnimated:YES];
-        [self stopLoading];
-        return;
-    }
-    NSLog(@"auth=%@", auth);
-    NSLog(@"auth2=%@", auth2);
-    auth = auth2;
-    //[self dismissModalViewControllerAnimated:YES];
-    [[self navigationController] popViewControllerAnimated:YES];
-    signInCallback();
-    // [self fetchTweets];
-}
-- (void)signInReal:(void (^)(void))callback
-{
-    NSURL *requestURL = [NSURL URLWithString:@"http://twitter.com/oauth/request_token"];
-    NSURL *accessURL = [NSURL URLWithString:@"http://twitter.com/oauth/access_token"];
-    NSURL *authrizeURL = [NSURL URLWithString:@"http://twitter.com/oauth/authorize"];
-    NSString *scope = @"http://api.twitter.com";
-    GTMOAuthAuthentication *auth2 = [self getNewAuth];
-    
-    [auth setCallback:@"http://www.example.com/OAuthCallback"];
-    
-    GTMOAuthViewControllerTouch *viewController = [[GTMOAuthViewControllerTouch alloc] initWithScope:scope language:nil requestTokenURL:requestURL authorizeTokenURL:authrizeURL accessTokenURL:accessURL authentication:auth2 appServiceName:kTwitterKeychainItemName delegate:self finishedSelector:@selector(viewController:finishedWithAuth:error:)];
-    
-    [[self navigationController] pushViewController:viewController animated:YES];
-
-}
-- (void)signIn:(void (^)(void))callback
-{
-    signInCallback = callback;
-    if(auth){
-        callback();
-        return;
-    }
-    GTMOAuthAuthentication *auth2 = [self getNewAuth];
-    BOOL didAuth = [GTMOAuthViewControllerTouch authorizeFromKeychainForName:kTwitterKeychainItemName authentication:auth2];
-    if(!didAuth){
-        [self signInReal:callback];
-    }else{
-        auth = auth2;
-        signInCallback();
-    }// [self fetchTweets];
-}
 - (void)awakeFromNib
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -126,18 +58,27 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
     [super viewDidLoad];
     [WebViewCache defaultWebViewCache].delegate = self;
     if(!tweets){
-        [self signIn:^{
+        [[TwitterAPI defaultTwitterAPI] signIn:self callback:^{
             [self fetchTweets];
         }];
     }
-    // [self signIn];
     
 	// Do any additional setup after loading the view, typically from a nib.
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    if(self.user_screen_name == nil){
+        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
+        self.navigationItem.leftItemsSupplementBackButton = YES;
+        self.navigationItem.leftBarButtonItems  = [NSArray arrayWithObject:logoutButton];
+        
+    }
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+    if(self.user_screen_name){
+        self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
+    }
 }
 
 - (void)viewDidUnload
@@ -155,6 +96,7 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
     }
 }
 
+#if 0
 -(void)tweetEditViewControllerSend:(TweetEditViewController *)tweetEditViewController text:(NSString *)text
 {
     NSLog(@"%s: text=%@", __func__, text);
@@ -166,44 +108,11 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
     NSLog(@"%s", __func__);
     [tweetEditViewController dismissViewControllerAnimated:YES completion:nil];
 }
+#endif
+
 - (void)insertNewObject:(id)sender
 {
-    DETweetComposeViewController *tcvc = [[DETweetComposeViewController alloc] init];
-    tcvc.completionHandler = ^(DETweetComposeViewControllerResult result){
-        switch(result){
-            case DETweetComposeViewControllerResultCancelled:
-                NSLog(@"Twitter result: Cancelled");
-                break;
-            case DETweetComposeViewControllerResultDone:
-                NSLog(@"Twitter result: Sent");
-                break;
-        }
-        [self dismissModalViewControllerAnimated:YES];
-        return;
-    };
-    tcvc.alwaysUseDETwitterCredentials = YES;
-    //[tcvc setInitialText:@"aaa"];
-    //DETweetTextView *detextView = tcvc.textView;
-    //UITextView *textView = (UITextView*)detextView;
-    //[textView becomeFirstResponder];
-    [self presentViewController:tcvc animated:YES completion:nil];
-    
-    // TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] initWithNibName:@"TweetEditViewController" bundle:nil];
-    
-#if 0
-    TweetEditViewController *tweetEditViewController = [[TweetEditViewController alloc] init];
-    tweetEditViewController.delegate = self;
-    [self presentViewController:tweetEditViewController animated:YES completion:nil];
-#endif
-    
-#if 0
-    if (!tweets) {
-        tweets = [[NSMutableArray alloc] init];
-    }
-    [tweets insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-#endif
+    [[TwitterAPI defaultTwitterAPI] composeTweet:self text:@""];
 }
 
 #pragma mark - Table View
@@ -391,34 +300,14 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 
 -(void)fetchTweets
 {
-    // NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/home_timeline.json?count=200&include_entities=1"]];
-    // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
-    [self signIn:^{
-        [auth authorizeRequest:request];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSError *error = nil;
-            NSURLResponse *response = nil;
-            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(data == nil){
-                    [UIAlertView alertError:error];
-                    [self stopLoading];
-                    return;
-                }
-                // NSLog(@"data=[%@]", data);
-                // NSLog(@"error=[%@]", error);
-                NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                //NSLog(@"response=[%@]", response_str);
-                tweets = [[Tweets alloc] initWithJSONString:response_str];
-                    [self.tableView reloadData];
-                    // [self prefetchTweets];
-                    [self stopLoading];
-                });
-        });
+    [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name callback:^(Tweets * tweets_){
+        tweets = tweets_;
+        [self.tableView reloadData];
+        [self stopLoading];
         
-    }];
+    } ];
 }
+#if 0
 -(void)postTweetFetcher:(GTMHTTPFetcher*)fetcher finishedWithData:(NSData*)data error:(NSError*)error
 {
     if(error != nil){
@@ -443,9 +332,9 @@ static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
         [fetcher beginFetchWithDelegate:self didFinishSelector:@selector(postTweetFetcher:finishedWithData:error:)];
     }];
 }
+#endif
 - (IBAction)logout:(id)sender {
-    [GTMOAuthViewControllerTouch removeParamsFromKeychainForName:kTwitterKeychainItemName];
-    auth = nil;
+    [[TwitterAPI defaultTwitterAPI] signOut];
 }
 - (void)refresh
 {

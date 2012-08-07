@@ -31,6 +31,7 @@ DETweetPosterDelegate, TwitterDialogDelegate, TwitterLoginDialogDelegate, UIImag
 @property (retain, nonatomic) IBOutlet UILabel *titleLabel;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
+@property (retain, nonatomic) IBOutlet UIButton *imageButton;
 @property (retain, nonatomic) IBOutlet UIView *cardHeaderLineView;
 @property (retain, nonatomic) IBOutlet DETweetTextView *textView;
 @property (retain, nonatomic) IBOutlet UIView *textViewContainer;

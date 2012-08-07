@@ -22,7 +22,8 @@
 
 @interface DETweetSheetCardView ()
 
-@property (nonatomic, retain) UIView *backgroundView;
+// @property (nonatomic, retain) UIView *backgroundView;
+@property (nonatomic, retain) UIImageView *backgroundView;
 
 - (void)tweetSheetCardViewInit;
 
@@ -71,10 +72,12 @@
         // Add the background image.
         // We can't put the image on the root view because we need to clip the
         // edges, which we can't do if we want the shadow.
-    self.backgroundView = [[[UIView alloc] initWithFrame:self.bounds] autorelease];
+    // self.backgroundView = [[[UIView alloc] initWithFrame:self.bounds] autorelease];
+    self.backgroundView = [[[UIImageView alloc] initWithFrame:self.bounds] autorelease];
     self.backgroundView.layer.masksToBounds = YES;
     self.backgroundView.layer.cornerRadius = self.layer.cornerRadius + 1.0f;
-    self.backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"DETweetCardBackground"]];
+    self.backgroundView.image = [UIImage imageNamed:@"DETweetCardBackground"];
+    // self.backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"DETweetCardBackground"]];
     self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self insertSubview:self.backgroundView atIndex:0];
 }

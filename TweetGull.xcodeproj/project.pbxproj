@@ -123,6 +123,7 @@
 		079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53E15CD3222000309A2 /* TwitterDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		079AD55015CD3901000309A2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD54F15CD3900000309A2 /* Accounts.framework */; };
 		079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD55115CD3975000309A2 /* Twitter.framework */; };
+		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -299,6 +300,8 @@
 		079AD53E15CD3222000309A2 /* TwitterDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterDialog.m; sourceTree = "<group>"; };
 		079AD54F15CD3900000309A2 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		079AD55115CD3975000309A2 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		07ABBBF115D1552A0023890E /* TwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAPI.h; sourceTree = "<group>"; };
+		07ABBBF215D1552A0023890E /* TwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAPI.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -411,6 +414,8 @@
 				07289D4215CD0B3600C8D273 /* Supporting Files */,
 				079AD4BD15CD20E1000309A2 /* UIAlertView+alert.h */,
 				079AD4BE15CD20E1000309A2 /* UIAlertView+alert.m */,
+				07ABBBF115D1552A0023890E /* TwitterAPI.h */,
+				07ABBBF215D1552A0023890E /* TwitterAPI.m */,
 			);
 			path = TweetGull;
 			sourceTree = "<group>";
@@ -846,6 +851,7 @@
 				079AD54A15CD3222000309A2 /* NSString+URLEncoding.m in Sources */,
 				079AD54B15CD3222000309A2 /* OAuth.m in Sources */,
 				079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */,
+				07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

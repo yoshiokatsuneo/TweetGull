@@ -15,13 +15,14 @@
 
 // @interface MasterViewController : UITableViewController
 
-@interface MasterViewController : PullRefreshTableViewController<WebViewCacheDelegate, TweetEditViewControllerDelegate>
+@interface MasterViewController : PullRefreshTableViewController<WebViewCacheDelegate /*, TweetEditViewControllerDelegate */>
 {
     int cellHeight;
 }
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) NSString *user_screen_name;
 -(void)fetchTweets;
 - (IBAction)logout:(id)sender;
 

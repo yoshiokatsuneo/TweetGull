@@ -75,6 +75,7 @@ static BOOL waitingForAccess = NO;
 @synthesize titleLabel = _titleLabel;
 @synthesize cancelButton = _cancelButton;
 @synthesize sendButton = _sendButton;
+@synthesize imageButton = _imageButton;
 @synthesize cardHeaderLineView = _cardHeaderLineView;
 @synthesize textView = _textView;
 @synthesize textViewContainer = _textViewContainer;
@@ -270,6 +271,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     [_titleLabel release], _titleLabel = nil;
     [_cancelButton release], _cancelButton = nil;
     [_sendButton release], _sendButton = nil;
+    [_imageButton release], _imageButton = nil;
     [_cardHeaderLineView release], _cardHeaderLineView = nil;
     [_textView release], _textView = nil;
     [_textViewContainer release], _textViewContainer = nil;
@@ -494,6 +496,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     self.titleLabel = nil;
     self.cancelButton = nil;
     self.sendButton = nil;
+    self.imageButton = nil;
     self.cardHeaderLineView = nil;
     self.textView = nil;
     self.textViewContainer = nil;
@@ -514,6 +517,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     self.accountPickerPopoverController = nil;
     self.oAuth = nil;
     
+    [self setImageButton:nil];
     [super viewDidUnload];
 }
 
@@ -624,7 +628,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
 {    
     CGFloat buttonHorizontalMargin = 8.0f;
     CGFloat cardWidth, cardTop, cardHeight, cardHeaderLineTop, buttonTop;
-    UIImage *cancelButtonImage, *sendButtonImage;
+    UIImage *cancelButtonImage, *sendButtonImage, *imageButtonImage;
     CGFloat titleLabelFontSize, titleLabelTop;
     CGFloat characterCountLeft, characterCountTop;
     
@@ -636,6 +640,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
             buttonTop = 7.0f;
             cancelButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
             sendButtonImage = [[UIImage imageNamed:@"DETweetSendButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
+            imageButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
             cardHeaderLineTop = 41.0f;
             titleLabelFontSize = 20.0f;
             titleLabelTop = 9.0f;
@@ -646,6 +651,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
             buttonTop = 6.0f;
             cancelButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonLandscape"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
             sendButtonImage = [[UIImage imageNamed:@"DETweetSendButtonLandscape"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
+            imageButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonLandscape"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
             cardHeaderLineTop = 32.0f;
             titleLabelFontSize = 17.0f;
             titleLabelTop = 5.0f;
@@ -657,6 +663,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
         buttonTop = 7.0f;
         cancelButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
         sendButtonImage = [[UIImage imageNamed:@"DETweetSendButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
+        imageButtonImage = [[UIImage imageNamed:@"DETweetCancelButtonPortrait"] stretchableImageWithLeftCapWidth:4 topCapHeight:0];
         cardHeaderLineTop = 41.0f;
         titleLabelFontSize = 20.0f;
         titleLabelTop = 9.0f;
@@ -679,6 +686,8 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     
     [self.sendButton setBackgroundImage:sendButtonImage forState:UIControlStateNormal];
     self.sendButton.frame = CGRectMake(self.cardView.bounds.size.width - buttonHorizontalMargin - self.sendButton.frame.size.width, buttonTop, self.sendButton.frame.size.width, sendButtonImage.size.height);
+
+    [self.imageButton setBackgroundImage:imageButtonImage forState:UIControlStateNormal];
     
     self.cardHeaderLineView.frame = CGRectMake(0.0f, cardHeaderLineTop, self.cardView.bounds.size.width, self.cardHeaderLineView.frame.size.height);
     

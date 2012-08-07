@@ -11,6 +11,8 @@
 #import "Tweet.h"
 #import "ProfileImageCache.h"
 #import "MediaImageCache.h"
+#import "MasterViewController.h"
+#import "TwitterAPI.h"
 
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -149,12 +151,34 @@
 #endif
     }
 }
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == actionSheet.cancelButtonIndex){
+        return;
+    }
+    if(buttonIndex == 1 /*Reply*/){
+        Tweet *tweet = self.detailItem;
+        NSString *text = [NSString stringWithFormat:@"@%@ ",tweet.user_screen_name];
+        [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text];
+    }
+}
+- (void)startActionSheet:(id)sender
+{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:nil otherButtonTitles:nil];
+    [sheet addButtonWithTitle:@"Reply"];
+    [sheet addButtonWithTitle:@"Retweet"];
+    [sheet addButtonWithTitle:@"Favorite"];
+    [sheet showInView:self.view];
 
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    [self configureView];
+    // [self configureView];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(startActionSheet:)];
+    self.navigationItem.rightBarButtonItem = addButton;
+
 }
 
 - (void)viewDidUnload
@@ -169,7 +193,15 @@
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
 }
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    sleep(0);
+    [self configureView];
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+    sleep(0);
+}
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
@@ -195,4 +227,18 @@
     self.masterPopoverController = nil;
 }
 
+- (IBAction)gotoUser:(id)sender {
+    // Tweet *tweet = self.detailItem;
+    sleep(0);
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"showTweets"]){
+        Tweet *tweet = self.detailItem;
+        MasterViewController *masterViewController = [segue destinationViewController];
+        masterViewController.user_screen_name = tweet.user_screen_name;
+    }
+}
 @end
