@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MyWebView.h"
+#import "Tweet.h"
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate>
 {
@@ -17,15 +18,17 @@
 }
 - (IBAction)gotoUser:(id)sender;
 
-@property (strong, nonatomic) id detailItem;
+@property (strong, nonatomic) Tweet *tweet;
 
 @property (strong, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *profileImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *tweetLabel;
+@property (strong, nonatomic) IBOutlet UITextView *tweetTextView;
 @property (strong, nonatomic) IBOutlet UIView *webViewSuperView;
 @property (strong, nonatomic) IBOutlet UILabel *retweetUserNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *created_atLabel;
+@property (strong, nonatomic) IBOutlet UILabel *retweetedLabel;
+@property (strong, nonatomic) IBOutlet UILabel *favoritedLabel;
 @property MyWebView *webView;
 @property UIImageView *mediaImageView;
 @end

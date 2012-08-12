@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Tweet : NSDictionary
+@interface Tweet : NSMutableDictionary
 {
     NSMutableDictionary *dic;
 }
 @property(readonly) NSString *text;
+@property(readonly) NSString *id_str;
+@property(readwrite) BOOL retweeted;
+@property(readwrite) BOOL favorited;
 @property(readonly) NSString *display_text;
 @property(readonly) NSString *user_name;
 @property(readonly) NSString *user_screen_name;
@@ -30,4 +33,6 @@
 @property(readonly) NSDictionary *orig_user;
 @property(readonly) Tweet *retweeted_status;
 @property(readonly) Tweet *origTweet;
+
+-(void)setDictionary:(NSDictionary*)otherDictionary;
 @end

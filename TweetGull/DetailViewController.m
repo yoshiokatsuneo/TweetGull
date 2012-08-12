@@ -21,14 +21,15 @@
 
 @implementation DetailViewController
 
-@synthesize detailItem = _detailItem;
 @synthesize detailDescriptionLabel = _detailDescriptionLabel;
 @synthesize profileImage = _profileImage;
 @synthesize nameLabel = _nameLabel;
-@synthesize tweetLabel = _tweetLabel;
+@synthesize tweetTextView = _tweetTextView;
 @synthesize webViewSuperView = _webViewSuperView;
 @synthesize retweetUserNameLabel = _retweetUserNameLabel;
 @synthesize created_atLabel = _created_atLabel;
+@synthesize retweetedLabel = _retweetedLabel;
+@synthesize favoritedLabel = _favoritedLabel;
 @synthesize masterPopoverController = _masterPopoverController;
 
 #pragma mark - Managing the detail item
@@ -94,6 +95,7 @@
         return nil;
     }    
 }
+#if 0
 - (void)setDetailItem:(id)newDetailItem
 {
     if (_detailItem != newDetailItem) {
@@ -108,37 +110,37 @@
         
     }        
 }
-
+#endif
 - (void)configureView
 {
     // Update the user interface for the detail item.
 
-    if (self.detailItem) {
-        Tweet *tweet = self.detailItem;
-        self.nameLabel.text = tweet.user_name;
-        self.tweetLabel.text = tweet.display_text;
-        self.tweetLabel.lineBreakMode = UILineBreakModeWordWrap;
-        self.tweetLabel.numberOfLines = 0;
-        self.retweetUserNameLabel.text = tweet.retweet_user_name;
-        self.created_atLabel.text = tweet.created_at_str;
-
-        if(tweet.mediaURLString){
-            NSString *url = tweet.mediaURLString;
+    if (self.tweet) {
+        self.nameLabel.text = self.tweet.user_name;
+        self.tweetTextView.text = self.tweet.display_text;
+        self.retweetUserNameLabel.text = self.tweet.retweet_user_name;
+        self.created_atLabel.text = self.tweet.created_at_str;
+        self.retweetedLabel.hidden = (self.tweet.retweeted == NO);
+        self.favoritedLabel.hidden = (self.tweet.favorited == NO);
+        [self.view setNeedsDisplay];
+        [self.view setNeedsLayout];
+        if(self.tweet.mediaURLString){
+            NSString *url = self.tweet.mediaURLString;
             UIImageView *imageView = [[UIImageView alloc] init];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             self.mediaImageView = imageView;
             MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
             [mediaImageCache loadToImageView:imageView fromURLString:url];
         
-        }else if(tweet.linkURLString){
-            NSString *url = tweet.linkURLString;
+        }else if(self.tweet.linkURLString){
+            NSString *url = self.tweet.linkURLString;
         
             MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url];
             self.webView = aWebView;
         }
         
         ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
-        self.profileImage.image = [profileImageCache getImage:tweet.user_screen_name];
+        self.profileImage.image = [profileImageCache getImage:self.tweet.user_screen_name];
 #if 0
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *imageUrl = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
@@ -157,17 +159,54 @@
         return;
     }
     if(buttonIndex == 1 /*Reply*/){
-        Tweet *tweet = self.detailItem;
-        NSString *text = [NSString stringWithFormat:@"@%@ ",tweet.user_screen_name];
+        NSString *text = [NSString stringWithFormat:@"@%@ ",self.tweet.user_screen_name];
         [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text];
+    }else if(buttonIndex == 2 /* Retweet */){
+        if(self.tweet.retweeted){
+            [[TwitterAPI defaultTwitterAPI] unretweet:self tweet_id_str:self.tweet.id_str ];
+            self.tweet.retweeted = NO;
+            [self configureView];
+        }else{
+            [[TwitterAPI defaultTwitterAPI] retweet:self tweet_id_str:self.tweet.id_str];
+            self.tweet.retweeted = YES;
+            [self configureView];
+        }
+    }else if(buttonIndex == 3){
+        if(self.tweet.favorited){
+            [[TwitterAPI defaultTwitterAPI] unfavorite:self tweet_id_str:self.tweet.id_str ];
+            self.tweet.favorited = NO;
+            [self configureView];
+        }else{
+            [[TwitterAPI defaultTwitterAPI] favorite:self tweet_id_str:self.tweet.id_str];
+            self.tweet.favorited = YES;
+            [self configureView];
+        }
+    }else if (buttonIndex == 4){
+        NSString *urlstr = [NSString stringWithFormat:@"https://mobile.twitter.com/%@/status/%@", self.tweet.user_screen_name, self.tweet.id_str];
+        NSURL *url = [NSURL URLWithString:urlstr];
+        [[UIApplication sharedApplication] openURL:url];
+    }else if (buttonIndex == 5){
+        NSString *urlstr = self.tweet.urlString;
+        NSURL *url = [NSURL URLWithString:urlstr];
+        [[UIApplication sharedApplication] openURL:url];
     }
 }
 - (void)startActionSheet:(id)sender
 {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:nil otherButtonTitles:nil];
     [sheet addButtonWithTitle:@"Reply"];
-    [sheet addButtonWithTitle:@"Retweet"];
-    [sheet addButtonWithTitle:@"Favorite"];
+    if(self.tweet.retweeted){
+        [sheet addButtonWithTitle:@"Unretweet"];
+    }else{
+        [sheet addButtonWithTitle:@"Retweet"];
+    }
+    if(self.tweet.favorited){
+        [sheet addButtonWithTitle:@"Unfavorite"];
+    }else{
+        [sheet addButtonWithTitle:@"Favorite"];
+    }
+    [sheet addButtonWithTitle:@"Open Tweet in Safari"];
+    [sheet addButtonWithTitle:@"Open Link in Safari"];
     [sheet showInView:self.view];
 
 }
@@ -185,10 +224,12 @@
 {
     [self setProfileImage:nil];
     [self setNameLabel:nil];
-    [self setTweetLabel:nil];
     [self setWebViewSuperView:nil];
     [self setRetweetUserNameLabel:nil];
     [self setCreated_atLabel:nil];
+    [self setRetweetedLabel:nil];
+    [self setFavoritedLabel:nil];
+    [self setTweetTextView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
@@ -236,9 +277,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showTweets"]){
-        Tweet *tweet = self.detailItem;
         MasterViewController *masterViewController = [segue destinationViewController];
-        masterViewController.user_screen_name = tweet.user_screen_name;
+        masterViewController.user_screen_name = self.tweet.user_screen_name;
     }
 }
 @end

@@ -14,11 +14,7 @@
 -(id)initWithDictionary:(NSDictionary *)otherDictionary
 {
     self = [super init];
-    dic = [[NSMutableDictionary alloc] initWithDictionary:otherDictionary];
-    NSDictionary *retweeted_status_dic = [dic objectForKey:@"retweeted_status"];
-    if(retweeted_status_dic){
-        retweeted_status = [[Tweet alloc] initWithDictionary:retweeted_status_dic];
-    }
+    [self setDictionary:otherDictionary];
     return self;
 }
 -(NSUInteger)count
@@ -33,6 +29,22 @@
 {
     return [dic keyEnumerator];
 }
+-(void)setObject:(id)anObject forKey:(id)aKey
+{
+    [dic setObject:anObject forKey:aKey];
+}
+-(void)removeObjectForKey:(id)aKey
+{
+    [dic removeObjectForKey:aKey];
+}
+-(void)setDictionary:(NSDictionary*)otherDictionary
+{
+    dic = [[NSMutableDictionary alloc] initWithDictionary:otherDictionary];
+    NSDictionary *retweeted_status_dic = [dic objectForKey:@"retweeted_status"];
+    if(retweeted_status_dic){
+        retweeted_status = [[Tweet alloc] initWithDictionary:retweeted_status_dic];
+    }
+}
 -(NSDictionary*)origTweet
 {
     if(self.retweeted_status){
@@ -46,6 +58,35 @@
     NSString *t = [self.origTweet objectForKey:@"text"];
     return t;
 }
+-(NSString *)id_str
+{
+    NSString *t = [self.origTweet objectForKey:@"id_str"];
+    // NSString *t = [self objectForKey:@"id_str"];
+    return t;
+}
+-(BOOL)retweeted
+{
+    id obj = [self.origTweet objectForKey:@"retweeted"];
+    NSNumber *val = obj;
+    return [val boolValue];
+}
+-(void)setRetweeted:(BOOL)retweeted
+{
+    NSNumber *val = [NSNumber numberWithBool:retweeted];
+    [self.origTweet setValue:val forKey:@"retweeted"];
+}
+-(BOOL)favorited
+{
+    id obj = [self.origTweet objectForKey:@"favorited"];
+    NSNumber *val = obj;
+    return [val boolValue];
+}
+-(void)setFavorited:(BOOL)favorited
+{
+    NSNumber *val = [NSNumber numberWithBool:favorited];
+    [self.origTweet setValue:val forKey:@"favorited"];
+}
+
 -(NSArray *)entities_urls
 {
     NSArray *urls = [[self.origTweet objectForKey:@"entities"] objectForKey:@"urls"];

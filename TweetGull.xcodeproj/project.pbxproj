@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0714520F15D5295D00F786B9 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0714520E15D5295D00F786B9 /* MessageUI.framework */; };
 		07289D3A15CD0B3600C8D273 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3915CD0B3600C8D273 /* UIKit.framework */; };
 		07289D3C15CD0B3600C8D273 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3B15CD0B3600C8D273 /* Foundation.framework */; };
 		07289D3E15CD0B3600C8D273 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07289D3D15CD0B3600C8D273 /* CoreGraphics.framework */; };
@@ -123,6 +124,7 @@
 		079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 079AD53E15CD3222000309A2 /* TwitterDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		079AD55015CD3901000309A2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD54F15CD3900000309A2 /* Accounts.framework */; };
 		079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD55115CD3975000309A2 /* Twitter.framework */; };
+		079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 079FAC2B15D554BA00C50316 /* libBlocksKit.a */; };
 		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
 /* End PBXBuildFile section */
 
@@ -137,6 +139,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0714520E15D5295D00F786B9 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		07289D3515CD0B3600C8D273 /* TweetGull.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TweetGull.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07289D3915CD0B3600C8D273 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		07289D3B15CD0B3600C8D273 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -300,6 +303,38 @@
 		079AD53E15CD3222000309A2 /* TwitterDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterDialog.m; sourceTree = "<group>"; };
 		079AD54F15CD3900000309A2 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		079AD55115CD3975000309A2 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		079FAC2B15D554BA00C50316 /* libBlocksKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBlocksKit.a; sourceTree = "<group>"; };
+		079FAC2E15D554E600C50316 /* A2BlockDelegate+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "A2BlockDelegate+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC2F15D554E600C50316 /* A2BlockDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A2BlockDelegate.h; sourceTree = "<group>"; };
+		079FAC3015D554E600C50316 /* A2DynamicDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A2DynamicDelegate.h; sourceTree = "<group>"; };
+		079FAC3115D554E600C50316 /* BKGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKGlobals.h; sourceTree = "<group>"; };
+		079FAC3215D554E600C50316 /* BKMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKMacros.h; sourceTree = "<group>"; };
+		079FAC3315D554E600C50316 /* BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlocksKit.h; sourceTree = "<group>"; };
+		079FAC3415D554E600C50316 /* MFMailComposeViewController+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MFMailComposeViewController+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3515D554E600C50316 /* MFMessageComposeViewController+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MFMessageComposeViewController+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3615D554E600C50316 /* NSArray+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3715D554E600C50316 /* NSCache+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCache+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3815D554E600C50316 /* NSDictionary+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3915D554E600C50316 /* NSIndexSet+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3A15D554E600C50316 /* NSInvocation+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSInvocation+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3B15D554E600C50316 /* NSMutableArray+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3C15D554E600C50316 /* NSMutableDictionary+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3D15D554E600C50316 /* NSMutableIndexSet+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableIndexSet+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3E15D554E600C50316 /* NSMutableSet+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableSet+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC3F15D554E600C50316 /* NSObject+AssociatedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+AssociatedObjects.h"; sourceTree = "<group>"; };
+		079FAC4015D554E600C50316 /* NSObject+BlockObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlockObservation.h"; sourceTree = "<group>"; };
+		079FAC4115D554E600C50316 /* NSObject+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4215D554E600C50316 /* NSSet+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4315D554E600C50316 /* NSTimer+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4415D554E600C50316 /* NSURLConnection+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLConnection+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4515D554E600C50316 /* UIActionSheet+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4615D554E600C50316 /* UIAlertView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4715D554E600C50316 /* UIBarButtonItem+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4815D554E600C50316 /* UIControl+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4915D554E600C50316 /* UIGestureRecognizer+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4A15D554E600C50316 /* UIPopoverController+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPopoverController+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4B15D554E600C50316 /* UIView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+BlocksKit.h"; sourceTree = "<group>"; };
+		079FAC4C15D554E600C50316 /* UIWebView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+BlocksKit.h"; sourceTree = "<group>"; };
 		07ABBBF115D1552A0023890E /* TwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAPI.h; sourceTree = "<group>"; };
 		07ABBBF215D1552A0023890E /* TwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAPI.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -309,6 +344,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0714520F15D5295D00F786B9 /* MessageUI.framework in Frameworks */,
 				079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */,
 				079AD55015CD3901000309A2 /* Accounts.framework in Frameworks */,
 				07289DEF15CD12F500C8D273 /* QuartzCore.framework in Frameworks */,
@@ -318,6 +354,7 @@
 				07289D3C15CD0B3600C8D273 /* Foundation.framework in Frameworks */,
 				07289D3E15CD0B3600C8D273 /* CoreGraphics.framework in Frameworks */,
 				07289D4015CD0B3600C8D273 /* CoreData.framework in Frameworks */,
+				079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +375,9 @@
 		07289D2A15CD0B3600C8D273 = {
 			isa = PBXGroup;
 			children = (
+				079FAC2D15D554E600C50316 /* BlocksKit */,
+				079FAC2B15D554BA00C50316 /* libBlocksKit.a */,
+				0714520E15D5295D00F786B9 /* MessageUI.framework */,
 				079AD55115CD3975000309A2 /* Twitter.framework */,
 				079AD54F15CD3900000309A2 /* Accounts.framework */,
 				07289D4115CD0B3600C8D273 /* TweetGull */,
@@ -658,6 +698,44 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		079FAC2D15D554E600C50316 /* BlocksKit */ = {
+			isa = PBXGroup;
+			children = (
+				079FAC2E15D554E600C50316 /* A2BlockDelegate+BlocksKit.h */,
+				079FAC2F15D554E600C50316 /* A2BlockDelegate.h */,
+				079FAC3015D554E600C50316 /* A2DynamicDelegate.h */,
+				079FAC3115D554E600C50316 /* BKGlobals.h */,
+				079FAC3215D554E600C50316 /* BKMacros.h */,
+				079FAC3315D554E600C50316 /* BlocksKit.h */,
+				079FAC3415D554E600C50316 /* MFMailComposeViewController+BlocksKit.h */,
+				079FAC3515D554E600C50316 /* MFMessageComposeViewController+BlocksKit.h */,
+				079FAC3615D554E600C50316 /* NSArray+BlocksKit.h */,
+				079FAC3715D554E600C50316 /* NSCache+BlocksKit.h */,
+				079FAC3815D554E600C50316 /* NSDictionary+BlocksKit.h */,
+				079FAC3915D554E600C50316 /* NSIndexSet+BlocksKit.h */,
+				079FAC3A15D554E600C50316 /* NSInvocation+BlocksKit.h */,
+				079FAC3B15D554E600C50316 /* NSMutableArray+BlocksKit.h */,
+				079FAC3C15D554E600C50316 /* NSMutableDictionary+BlocksKit.h */,
+				079FAC3D15D554E600C50316 /* NSMutableIndexSet+BlocksKit.h */,
+				079FAC3E15D554E600C50316 /* NSMutableSet+BlocksKit.h */,
+				079FAC3F15D554E600C50316 /* NSObject+AssociatedObjects.h */,
+				079FAC4015D554E600C50316 /* NSObject+BlockObservation.h */,
+				079FAC4115D554E600C50316 /* NSObject+BlocksKit.h */,
+				079FAC4215D554E600C50316 /* NSSet+BlocksKit.h */,
+				079FAC4315D554E600C50316 /* NSTimer+BlocksKit.h */,
+				079FAC4415D554E600C50316 /* NSURLConnection+BlocksKit.h */,
+				079FAC4515D554E600C50316 /* UIActionSheet+BlocksKit.h */,
+				079FAC4615D554E600C50316 /* UIAlertView+BlocksKit.h */,
+				079FAC4715D554E600C50316 /* UIBarButtonItem+BlocksKit.h */,
+				079FAC4815D554E600C50316 /* UIControl+BlocksKit.h */,
+				079FAC4915D554E600C50316 /* UIGestureRecognizer+BlocksKit.h */,
+				079FAC4A15D554E600C50316 /* UIPopoverController+BlocksKit.h */,
+				079FAC4B15D554E600C50316 /* UIView+BlocksKit.h */,
+				079FAC4C15D554E600C50316 /* UIWebView+BlocksKit.h */,
+			);
+			path = BlocksKit;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -968,9 +1046,22 @@
 		07289D7515CD0B3600C8D273 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "TweetGull/TweetGull-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -979,9 +1070,22 @@
 		07289D7615CD0B3600C8D273 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "TweetGull/TweetGull-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -997,6 +1101,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "TweetGullTests/TweetGullTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1014,6 +1119,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TweetGull/TweetGull-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "TweetGullTests/TweetGullTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

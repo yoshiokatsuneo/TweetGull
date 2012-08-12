@@ -21,6 +21,10 @@
 
 #import "UIAlertView+alert.h"
 #import "TwitterAPI.h"
+// #import <BlocksKit/BlocksKit.h>
+#import <BlocksKit/BlocksKit.h>
+
+// #import <BlocksKit/UIActionSheet+BlocksKit.h>
 
 @interface MasterViewController () {
     Tweets *tweets;
@@ -53,6 +57,30 @@
     [super awakeFromNib];
 }
 
+- (void)leftButtonActionSheet:(id)sender
+{
+    UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
+
+    [sheet addButtonWithTitle:@"Logout" handler:^{
+        [[TwitterAPI defaultTwitterAPI] signOut];
+    }];
+    
+    [sheet addButtonWithTitle:@"Search" handler:^{
+        UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
+        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+        [alertView addButtonWithTitle:@"Search" handler:^{
+            self.user_screen_name = nil;
+            self.search_query = [alertView textFieldAtIndex:0].text;
+            [self performSegueWithIdentifier:@"showTweets" sender:self];
+        }];
+        [alertView show];
+    }];
+    [sheet addButtonWithTitle:@"Cancel" handler:^{
+        ;
+    }];
+
+    [sheet showInView:self.view];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -68,9 +96,13 @@
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     if(self.user_screen_name == nil){
+#if 0
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
         self.navigationItem.leftItemsSupplementBackButton = YES;
         self.navigationItem.leftBarButtonItems  = [NSArray arrayWithObject:logoutButton];
+#endif
+        UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(leftButtonActionSheet:)];
+        self.navigationItem.leftBarButtonItem = leftButton;
         
     }
     self.navigationItem.rightBarButtonItem = addButton;
@@ -278,8 +310,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSDate *object = [tweets objectAtIndex:indexPath.row];
-        self.detailViewController.detailItem = object;
+        Tweet *tweet = [tweets objectAtIndex:indexPath.row];
+        self.detailViewController.tweet = tweet;
     }else{
         [self performSegueWithIdentifier:@"showTweet" sender:self];
     }
@@ -293,14 +325,19 @@
 {
     if ([[segue identifier] isEqualToString:@"showTweet"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDictionary *tweet = [tweets objectAtIndex:indexPath.row];
-        [[segue destinationViewController] setDetailItem:tweet];
+        Tweet *tweet = [tweets objectAtIndex:indexPath.row];
+        DetailViewController * detailViewController = [segue destinationViewController];
+        detailViewController.tweet = tweet;
+    }
+    if ([[segue identifier] isEqualToString:@"showTweets"]){
+        MasterViewController *masterViewController = [segue destinationViewController];
+        masterViewController.search_query = self.next_view_search_query;
     }
 }
 
 -(void)fetchTweets
 {
-    [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name callback:^(Tweets * tweets_){
+    [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name search_query:self.search_query callback:^(Tweets * tweets_){
         tweets = tweets_;
         [self.tableView reloadData];
         [self stopLoading];

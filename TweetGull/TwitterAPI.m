@@ -33,6 +33,12 @@ static TwitterAPI *m_current = nil;
     return m_current;
 }
 
+- (NSString*)percentEncodeString:(NSString*)string
+{
+    return (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(NULL,  (__bridge CFStringRef)string, NULL, (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ", kCFStringEncodingUTF8);
+}
+
+
 - (GTMOAuthAuthentication*)getNewAuth
 {
     NSString *myConsumerKey = @"1Tfg491UZho03mDZdhpkuA";
@@ -137,14 +143,16 @@ static TwitterAPI *m_current = nil;
 #endif
 
 }
--(void)fetchTweets:(UIViewController*)viewController user_screen_name:(NSString*)user_screen_name callback:(void (^)(Tweets *tweets))callback
+-(void)fetchTweets:(UIViewController*)viewController user_screen_name:(NSString*)user_screen_name search_query:(NSString*)search_query callback:(void (^)(Tweets *tweets))callback
 {
     // NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
     NSString *timeline_url = nil;
-    if(user_screen_name == nil){
-        timeline_url = @"http://api.twitter.com/1/statuses/home_timeline.json?";
-    }else{
+    if(user_screen_name){
         timeline_url = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?screen_name=%@&", user_screen_name];
+    }else if(search_query){
+        timeline_url = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=5&include_entities=true&result_type=mixed", [self percentEncodeString:search_query]];
+    }else{
+        timeline_url = @"http://api.twitter.com/1/statuses/home_timeline.json?";
     }
     timeline_url = [timeline_url stringByAppendingString:@"count=200&include_entities=1"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:timeline_url]];
@@ -169,6 +177,136 @@ static TwitterAPI *m_current = nil;
         });
         
     }];
+}
+
+#if 0
+-(void)postTweet:(NSString*)text
+{
+    NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/update.json"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    NSString *encodedText = [GTMOAuthAuthentication encodedOAuthParameterForString:text];
+    NSString *body = [NSString stringWithFormat:@"status=%@", encodedText];
+    [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
+    [self signIn:^{
+        [auth authorizeRequest:request];
+        
+        GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+        [fetcher beginFetchWithDelegate:self didFinishSelector:@selector(postTweetFetcher:finishedWithData:error:)];
+    }];
+}
+#endif
+
+-(Tweet *)retweet_or_favorite:(NSString*)api_url viewController:(UIViewController*)viewController tweet_id_str:(NSString *)tweet_id_str
+{
+    NSString *urlstr = [NSString stringWithFormat:@"%@%@.json?include_entities=true",api_url,tweet_id_str];
+    NSURL *url = [NSURL URLWithString:urlstr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    // [request setValue:nil forHTTPHeaderField:@"Cookie"];
+    [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPMethod:@"POST"];
+    
+    [auth authorizeRequest:request];
+    NSError *error = nil;
+    NSHTTPURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"response=%@", response_str);
+    if(response.statusCode != 200){
+        [UIAlertView alertString:response_str];
+        return nil;
+    }
+    
+    
+    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_dic];
+    return tweet;
+}
+-(Tweet *)retweet:(UIViewController *)viewController tweet_id_str:(NSString *)tweet_id_str
+{
+    return [self retweet_or_favorite:@"http://api.twitter.com/1/statuses/retweet/" viewController:viewController tweet_id_str:tweet_id_str];
+}
+-(Tweet *)favorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    return [self retweet_or_favorite:@"https://api.twitter.com/1/favorites/create/" viewController:viewController tweet_id_str:tweet_id_str];
+}
+-(Tweet *)unfavorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    return [self retweet_or_favorite:@"https://api.twitter.com/1/favorites/destroy/" viewController:viewController tweet_id_str:tweet_id_str];
+}
+
+
+
+-(Tweet*)destroyTweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    
+    NSString *urlstr = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/destroy/%@.json?include_entities=true", tweet_id_str];
+    NSURL *url = [NSURL URLWithString:urlstr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPShouldHandleCookies:NO];
+    [auth authorizeRequest:request];
+    NSError *error = nil;
+    NSHTTPURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if(response.statusCode != 200){
+        [UIAlertView alertString:response_str];
+        return nil;
+    }
+    
+    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_dic];
+    return tweet;
+    
+}
+-(Tweet*)getTweet:(NSString*)tweet_id_str
+{
+    NSString *urlstr = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/show/%@.json?include_entities=true&include_my_retweet=true", tweet_id_str];
+    NSURL *url = [NSURL URLWithString:urlstr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPShouldHandleCookies:NO];
+    [auth authorizeRequest:request];
+    NSError *error = nil;
+    NSHTTPURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if(response.statusCode != 200){
+        [UIAlertView alertString:response_str];
+        return nil;
+    }
+    
+    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_dic];
+    return tweet;
+    
+}
+-(void)unretweet:(UIViewController *)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    Tweet *tweet = [self getTweet:tweet_id_str];
+    if(!tweet){
+        return;
+    }
+    
+    NSDictionary *current_user_retweet = [tweet objectForKey:@"current_user_retweet"];
+    NSString *current_user_retweet_id_str = [current_user_retweet objectForKey:@"id_str"];
+    
+    
+    [self destroyTweet:viewController tweet_id_str:current_user_retweet_id_str];
+    
 }
 -(void)signOut
 {

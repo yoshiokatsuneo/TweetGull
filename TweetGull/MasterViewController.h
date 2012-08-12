@@ -23,6 +23,8 @@
 @property (strong, nonatomic) DetailViewController *detailViewController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSString *user_screen_name;
+@property (strong, nonatomic) NSString *next_view_search_query;
+@property (strong, nonatomic) NSString *search_query;
 -(void)fetchTweets;
 - (IBAction)logout:(id)sender;
 

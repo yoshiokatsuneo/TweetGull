@@ -10,4 +10,5 @@
 
 @interface UIAlertView (alert)
 + (void)alertError:(NSError*)error;
++ (void)alertString:(NSString*)str;
 @end
