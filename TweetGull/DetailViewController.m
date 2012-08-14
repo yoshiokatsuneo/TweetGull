@@ -119,7 +119,9 @@
     if (self.tweet) {
         self.nameLabel.text = self.tweet.user_name;
         // self.tweetTextView.text = self.tweet.display_text;
-        NSString *html = [NSString stringWithFormat:@"<BODY style=\"font-size:small; font-familly:System; padding:0px; margin:0px; vertical-align:middle; height:100%%;\"><div style=\"vertical-align:middle;\">%@</div></BODY>", self.tweet.display_html];
+        
+        /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
+        NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", self.tweet.display_html];
         [self.tweetWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
         // [self.tweetTextView setValue:self.tweet.htmlText forKey:@"contentToHTMLString"];
         self.retweetUserNameLabel.text = self.tweet.retweet_user_name;
