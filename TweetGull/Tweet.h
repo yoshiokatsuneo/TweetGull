@@ -13,10 +13,12 @@
     NSMutableDictionary *dic;
 }
 @property(readonly) NSString *text;
+@property(readonly) NSString *htmlText;
 @property(readonly) NSString *id_str;
 @property(readwrite) BOOL retweeted;
 @property(readwrite) BOOL favorited;
 @property(readonly) NSString *display_text;
+@property(readonly) NSString *display_html;
 @property(readonly) NSString *user_name;
 @property(readonly) NSString *user_screen_name;
 @property(readonly) NSString *user_profile_image_url;

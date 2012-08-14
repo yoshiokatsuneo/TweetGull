@@ -24,7 +24,8 @@
 @synthesize detailDescriptionLabel = _detailDescriptionLabel;
 @synthesize profileImage = _profileImage;
 @synthesize nameLabel = _nameLabel;
-@synthesize tweetTextView = _tweetTextView;
+// @synthesize tweetTextView = _tweetTextView;
+@synthesize tweetWebView = _tweetWebView;
 @synthesize webViewSuperView = _webViewSuperView;
 @synthesize retweetUserNameLabel = _retweetUserNameLabel;
 @synthesize created_atLabel = _created_atLabel;
@@ -117,7 +118,10 @@
 
     if (self.tweet) {
         self.nameLabel.text = self.tweet.user_name;
-        self.tweetTextView.text = self.tweet.display_text;
+        // self.tweetTextView.text = self.tweet.display_text;
+        NSString *html = [NSString stringWithFormat:@"<BODY style=\"font-size:small; font-familly:System; padding:0px; margin:0px; vertical-align:middle; height:100%%;\"><div style=\"vertical-align:middle;\">%@</div></BODY>", self.tweet.display_html];
+        [self.tweetWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
+        // [self.tweetTextView setValue:self.tweet.htmlText forKey:@"contentToHTMLString"];
         self.retweetUserNameLabel.text = self.tweet.retweet_user_name;
         self.created_atLabel.text = self.tweet.created_at_str;
         self.retweetedLabel.hidden = (self.tweet.retweeted == NO);
@@ -160,7 +164,7 @@
     }
     if(buttonIndex == 1 /*Reply*/){
         NSString *text = [NSString stringWithFormat:@"@%@ ",self.tweet.user_screen_name];
-        [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text];
+        [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text in_reply_to_status_id_str:self.tweet.id_str];
     }else if(buttonIndex == 2 /* Retweet */){
         if(self.tweet.retweeted){
             [[TwitterAPI defaultTwitterAPI] unretweet:self tweet_id_str:self.tweet.id_str ];
@@ -229,7 +233,8 @@
     [self setCreated_atLabel:nil];
     [self setRetweetedLabel:nil];
     [self setFavoritedLabel:nil];
-    [self setTweetTextView:nil];
+    // [self setTweetTextView:nil];
+    [self setTweetWebView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
@@ -273,12 +278,30 @@
     sleep(0);
 }
 
+-(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    NSString *urlstr = request.URL.description;
+    NSLog(@"url=%@", urlstr);
+    if([urlstr isEqual:@"http://dummy.example.com/"]){
+        return YES;
+    }
+    if([[urlstr substringToIndex:19] isEqual:@"http://screen_name:"]){
+        NSString *screen_name2 = [urlstr substringFromIndex:19];
+        [self performSegueWithIdentifier:@"showTweets" sender:screen_name2];
+    }
+    sleep(0);
+    return NO;
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
-        masterViewController.user_screen_name = self.tweet.user_screen_name;
+        if([sender isKindOfClass:[NSString class]]){
+            masterViewController.user_screen_name = sender;
+        }else{
+            masterViewController.user_screen_name = self.tweet.user_screen_name;
+        }
     }
 }
 @end

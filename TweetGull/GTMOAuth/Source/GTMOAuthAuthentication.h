@@ -139,6 +139,9 @@ _EXTERN NSString* const kGTMOAuthSignatureMethodRSA_SHA1  _INITIALIZE_AS(@"RSA-S
 @property (nonatomic, copy) NSString *userEmail;
 @property (nonatomic, copy) NSString *userEmailIsVerified;
 
+@property (nonatomic, copy) NSString *screenName;
+@property (nonatomic, copy) NSString *userId;
+
 // property for using a previously-authorized access token
 @property (nonatomic, copy) NSString *accessToken;
 

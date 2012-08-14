@@ -1068,7 +1068,7 @@ static NSString * const DETweetLastAccountIdentifier = @"DETweetLastAccountIdent
     
     DETweetPoster *tweetPoster = [[[DETweetPoster alloc] init] autorelease];
     tweetPoster.delegate = self;
-    [tweetPoster postTweet:tweet withImages:self.images fromAccount:self.twitterAccount];
+    [tweetPoster postTweet:tweet in_reply_to_status_id_str:self.in_reply_to_status_id_str withImages:self.images fromAccount:self.twitterAccount];
 }
 
 

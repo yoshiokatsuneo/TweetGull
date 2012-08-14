@@ -27,8 +27,8 @@
 + (NSArray *)accounts;
 
     // Public
-- (void)postTweet:(NSString *)tweetText withImages:(NSArray *)images;
-- (void)postTweet:(NSString *)tweetText withImages:(NSArray *)images fromAccount:(id)account;
+- (void)postTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str  withImages:(NSArray *)images;
+- (void)postTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str withImages:(NSArray *)images fromAccount:(id)account;
 
 @end
 

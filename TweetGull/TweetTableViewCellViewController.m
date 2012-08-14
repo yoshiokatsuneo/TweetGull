@@ -36,6 +36,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setMediaWebView:nil];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -80,6 +81,13 @@
     mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.webViewSuperView addSubview:mediaWebView];
     mediaWebView_ = mediaWebView;
+    if(mediaWebView == nil){
+        CGRect tweetTextFrame = CGRectMake(tweetText.frame.origin.x, tweetText.frame.origin.y, tweetText.superview.bounds.size.width - tweetText.frame.origin.x, tweetText.frame.size.height);
+        [tweetText setFrame:tweetTextFrame];
+    }else{
+        CGRect tweetTextFrame = CGRectMake(tweetText.frame.origin.x, tweetText.frame.origin.y, tweetText.superview.bounds.size.width - tweetText.frame.origin.x - self.webViewSuperView.frame.size.width, tweetText.frame.size.height);
+        [tweetText setFrame:tweetTextFrame];
+    }
 }
 -(void)setWebView:(MyWebView *)webView
 {

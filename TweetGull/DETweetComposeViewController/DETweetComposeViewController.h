@@ -43,6 +43,7 @@ DETweetPosterDelegate, TwitterDialogDelegate, TwitterLoginDialogDelegate, UIImag
 @property (retain, nonatomic) IBOutlet UIImageView *attachment2ImageView;
 @property (retain, nonatomic) IBOutlet UIImageView *attachment3ImageView;
 @property (retain, nonatomic) IBOutlet UILabel *characterCountLabel;
+@property (retain, nonatomic) NSString *in_reply_to_status_id_str;
 
     // Public
 + (void)displayNoTwitterAccountsAlert;

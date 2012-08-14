@@ -10,7 +10,7 @@
 #import "MyWebView.h"
 #import "Tweet.h"
 
-@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate>
+@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate>
 {
     UIView *mediaWebView_;
     CGRect orig_webViewFrame;
@@ -23,7 +23,8 @@
 @property (strong, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *profileImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UITextView *tweetTextView;
+// @property (strong, nonatomic) IBOutlet UITextView *tweetTextView;
+@property (strong, nonatomic) IBOutlet UIWebView *tweetWebView;
 @property (strong, nonatomic) IBOutlet UIView *webViewSuperView;
 @property (strong, nonatomic) IBOutlet UILabel *retweetUserNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *created_atLabel;

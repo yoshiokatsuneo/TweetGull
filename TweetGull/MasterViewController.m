@@ -70,7 +70,7 @@
         alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
         [alertView addButtonWithTitle:@"Search" handler:^{
             self.user_screen_name = nil;
-            self.search_query = [alertView textFieldAtIndex:0].text;
+            self.next_view_search_query = [alertView textFieldAtIndex:0].text;
             [self performSegueWithIdentifier:@"showTweets" sender:self];
         }];
         [alertView show];
@@ -95,7 +95,7 @@
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    if(self.user_screen_name == nil){
+    if(self.user_screen_name == nil && self.search_query == nil){
 #if 0
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
         self.navigationItem.leftItemsSupplementBackButton = YES;
@@ -110,6 +110,8 @@
     
     if(self.user_screen_name){
         self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
+    }else if(self.search_query){
+        self.title = [NSString stringWithFormat:@"%@", self.search_query];
     }
 }
 
@@ -144,7 +146,7 @@
 
 - (void)insertNewObject:(id)sender
 {
-    [[TwitterAPI defaultTwitterAPI] composeTweet:self text:@""];
+    [[TwitterAPI defaultTwitterAPI] composeTweet:self text:@"" in_reply_to_status_id_str:nil];
 }
 
 #pragma mark - Table View
@@ -309,12 +311,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+#if 0
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         Tweet *tweet = [tweets objectAtIndex:indexPath.row];
         self.detailViewController.tweet = tweet;
     }else{
+#endif
         [self performSegueWithIdentifier:@"showTweet" sender:self];
+#if 0
     }
+#endif
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -339,6 +345,9 @@
 {
     [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name search_query:self.search_query callback:^(Tweets * tweets_){
         tweets = tweets_;
+        if(self.user_screen_name == nil && self.search_query == nil){
+            self.title = [NSString stringWithFormat:@"Home(@%@)", [TwitterAPI defaultTwitterAPI].screen_name ];
+        }
         [self.tableView reloadData];
         [self stopLoading];
         

@@ -54,6 +54,8 @@ static NSString *const kOAuthMobileKey            = @"btmpl";
 static NSString *const kServiceProviderKey        = @"serviceProvider";
 static NSString *const kUserEmailKey              = @"email";
 static NSString *const kUserEmailIsVerifiedKey    = @"isVerified";
+static NSString *const kScreenNameKey             = @"screen_name";
+static NSString *const kUserIdKey                 = @"user_id";
 
 @interface GTMOAuthAuthentication (PrivateMethods)
 
@@ -476,6 +478,17 @@ static NSString *const kUserEmailIsVerifiedKey    = @"isVerified";
   if (verified) {
     [self setUserEmailIsVerified:verified];
   }
+
+    NSString *screen_name = [dict objectForKey:kScreenNameKey];
+    if (screen_name) {
+        [self setScreenName:screen_name];
+    }
+
+    NSString *user_id = [dict objectForKey:kUserIdKey];
+    if (user_id) {
+        [self setUserId:user_id];
+    }
+
 }
 
 - (void)setKeysForResponseData:(NSData *)data {
@@ -724,6 +737,8 @@ static NSString *const kUserEmailIsVerifiedKey    = @"isVerified";
                               kServiceProviderKey,
                               kUserEmailKey,
                               kUserEmailIsVerifiedKey,
+                              kUserIdKey,
+                              kScreenNameKey,
                               nil];
   
   NSMutableArray *params = [self paramsForKeys:persistenceKeys request:nil];
@@ -879,6 +894,24 @@ static NSString *const kUserEmailIsVerifiedKey    = @"isVerified";
 - (void)setUserEmailIsVerified:(NSString *)str {
   [paramValues_ setValue:[[str copy] autorelease]
                   forKey:kUserEmailIsVerifiedKey];
+}
+
+- (NSString *)screenName {
+    return [paramValues_ objectForKey:kScreenNameKey];
+}
+
+- (void)setScreenName:(NSString *)str {
+    [paramValues_ setValue:[[str copy] autorelease]
+                    forKey:kScreenNameKey];
+}
+
+- (NSString *)userId {
+    return [paramValues_ objectForKey:kUserIdKey];
+}
+
+- (void)setUserId:(NSString *)str {
+    [paramValues_ setValue:[[str copy] autorelease]
+                    forKey:kUserIdKey];
 }
 
 - (NSString *)tokenSecret {

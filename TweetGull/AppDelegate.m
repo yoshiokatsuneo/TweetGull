@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 #import "MasterViewController.h"
+#import "DetailViewController.h"
 
 @implementation AppDelegate
 
@@ -18,8 +19,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#if 0
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+#if 0
+        UIStoryboard *storyboard_iphone = [UIStoryboard storyboardWithName:@"MainStoryboard_iphone" bundle:nil];
+
+        MasterViewController *masterViewController_iphone = [storyboard_iphone instantiateInitialViewController];
+        DetailViewController *detailViewController_iphone = [storyboard_iphone instantiateViewControllerWithIdentifier:@"MyDetailViewController"];
+        UISplitViewController *splitViewController = [[UISplitViewController alloc] init];
+        splitViewController.viewControllers = [NSArray arrayWithObjects:masterViewController_iphone, detailViewController_iphone, nil];
+#endif
+
+        
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
@@ -28,10 +40,13 @@
         MasterViewController *controller = (MasterViewController *)masterNavigationController.topViewController;
         controller.managedObjectContext = self.managedObjectContext;
     } else {
+#endif
         UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
         MasterViewController *controller = (MasterViewController *)navigationController.topViewController;
         controller.managedObjectContext = self.managedObjectContext;
+#if 0
     }
+#endif
     return YES;
 }
 							
@@ -158,4 +173,9 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    NSLog(@"openURL:%@", url);
+    return NO;
+}
 @end

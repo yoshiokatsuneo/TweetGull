@@ -30,7 +30,7 @@
 
 @property (nonatomic, retain) NSURLConnection *postConnection;
 
-- (NSURLRequest *)NSURLRequestForTweet:(NSString *)tweetText withImages:(NSArray *)images;
+- (NSURLRequest *)NSURLRequestForTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str withImages:(NSArray *)images;
 - (void)sendFailedToDelegate;
 - (void)sendFailedAuthenticationToDelegate;
 - (void)sendSuccessToDelegate;
@@ -43,7 +43,7 @@
 NSString * const twitterPostURLString = @"https://api.twitter.com/1/statuses/update.json";
 NSString * const twitterPostWithImagesURLString = @"https://upload.twitter.com/1/statuses/update_with_media.json";
 NSString * const twitterStatusKey = @"status";
-
+NSString * const twitterInReplyToStatusIdKey = @"in_reply_to_status_id";
 @synthesize delegate = _delegate;
 @synthesize postConnection = _postConnection;
 
@@ -76,7 +76,7 @@ NSString * const twitterStatusKey = @"status";
 
 #pragma mark - Public
 
-- (void)postTweet:(NSString *)tweetText withImages:(NSArray *)images
+-(void)postTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString *)in_reply_to_status_id_str withImages:(NSArray *)images
     // Posts the tweet with the first available account on iOS 5.
 {
     id account = nil;  // An ACAccount. But that didn't exist on iOS 4.
@@ -84,19 +84,19 @@ NSString * const twitterStatusKey = @"status";
         NSArray *twitterAccounts = [[self class] accounts];
         if ([twitterAccounts count] > 0) {
             account = [twitterAccounts objectAtIndex:0];
-            [self postTweet:tweetText withImages:images fromAccount:account];
+            [self postTweet:tweetText in_reply_to_status_id_str:in_reply_to_status_id_str withImages:images fromAccount:account];
         }
         else {
             [self sendFailedToDelegate];
         }
     }
     else {
-        [self postTweet:tweetText withImages:images fromAccount:account];
+        [self postTweet:tweetText in_reply_to_status_id_str:in_reply_to_status_id_str withImages:images fromAccount:account];
     }
 }
 
 
-- (void)postTweet:(NSString *)tweetText withImages:(NSArray *)images fromAccount:(id)account
+-(void)postTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString *)in_reply_to_status_id_str withImages:(NSArray *)images fromAccount:(id)account
 {
     NSURLRequest *postRequest = nil;
     if ([UIDevice de_isIOS5] && account != nil) {        
@@ -112,9 +112,15 @@ NSString * const twitterStatusKey = @"status";
             
             [twRequest addMultiPartData:[tweetText dataUsingEncoding:NSUTF8StringEncoding] 
                              withName:twitterStatusKey type:@"multipart/form-data"];
+            if(in_reply_to_status_id_str){
+                [twRequest addMultiPartData:[in_reply_to_status_id_str dataUsingEncoding:NSUTF8StringEncoding] withName:twitterInReplyToStatusIdKey type:@"multipart/form-data"];
+            }
         }
         else {
-            NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:tweetText, twitterStatusKey, nil];
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:tweetText, twitterStatusKey, nil];
+            if(in_reply_to_status_id_str){
+                [parameters setObject:in_reply_to_status_id_str forKey:twitterInReplyToStatusIdKey];
+            }
             twRequest = [[[TWRequest alloc] initWithURL:[NSURL URLWithString:twitterPostURLString]
                                             parameters:parameters requestMethod:TWRequestMethodPOST] autorelease];
         }
@@ -125,7 +131,7 @@ NSString * const twitterStatusKey = @"status";
         postRequest = [twRequest signedURLRequest];
     }
     else {
-        postRequest = [self NSURLRequestForTweet:tweetText withImages:images];
+        postRequest = [self NSURLRequestForTweet:tweetText in_reply_to_status_id_str:in_reply_to_status_id_str withImages:images];
     }
     
     if ([NSURLConnection canHandleRequest:postRequest]) {
@@ -138,13 +144,16 @@ NSString * const twitterStatusKey = @"status";
 }
 
 
-- (NSURLRequest *)NSURLRequestForTweet:(NSString *)tweetText withImages:(NSArray *)images
+- (NSURLRequest *)NSURLRequestForTweet:(NSString *)tweetText in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str withImages:(NSArray *)images
 {
     NSMutableData *postData = nil;
     NSMutableDictionary *tweetParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                             tweetText, twitterStatusKey,
                                             @"t", @"trim_user",
                                             nil];
+    if(in_reply_to_status_id_str){
+        [tweetParameters setObject:in_reply_to_status_id_str forKey:twitterInReplyToStatusIdKey];
+    }
     
     NSMutableArray *postKeysAndValues = [NSMutableArray array];
     

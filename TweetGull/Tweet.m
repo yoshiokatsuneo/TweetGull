@@ -142,20 +142,78 @@
     }
     return t;
 }
+
+-(NSString*)display_html
+{
+    NSString *t = self.display_text;
+    NSRange search_range = NSMakeRange(0, t.length);
+    while (search_range.length > 0){
+        NSRange range = [t rangeOfString:@"@" options:0 range:search_range];
+        if(range.location == NSNotFound){
+            break;
+        }
+        if(!(range.location == 0 || [t characterAtIndex:(range.location - 1)] == ' ')){
+            search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
+            continue;
+        }
+        NSCharacterSet *screenNameCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
+        if(![screenNameCharacterSet characterIsMember:[t characterAtIndex:range.location+1]]){
+            search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
+            continue;
+        }
+        int pos = range.location + 1;
+        while(pos<t.length){
+            unichar c = [t characterAtIndex:pos];
+            if(![screenNameCharacterSet characterIsMember:c]){
+                break;
+            }
+            pos++;
+        }
+        NSRange range2 = NSMakeRange(range.location+1, pos - (range.location+1));
+        
+        // NSRange range2 = [t rangeOfCharacterFromSet:screenNameCharacterSet options:0 range:NSMakeRange(range.location+1, t.length - (range.location+1))];
+        NSString *screen_name2 = [t substringWithRange:range2];
+        NSString *linkString = [NSString stringWithFormat:@"<a href=\"http://screen_name:%@\"  style=\"text-decoration:none\">@%@</a>", screen_name2, screen_name2];
+        
+        NSString *t2 = [NSString stringWithFormat:@"%@%@%@", [t substringToIndex:range.location], linkString, [t substringFromIndex:range2.location + range2.length]];
+        
+        t = t2;
+        search_range = NSMakeRange(range.location + linkString.length, t2.length - (range.location + linkString.length));
+    }
+    
+    return t;
+}
+
+
 -(NSDictionary*)orig_user
 {
     return [self.origTweet objectForKey:@"user"];
 }
 -(NSString *)user_name
 {
+    NSString *str = [self objectForKey:@"from_user_name"];
+    if(str){
+        /* search API */
+        return str;
+    }
     return [self.orig_user objectForKey:@"name"];
 }
 -(NSString *)user_screen_name
 {
+    NSString *str = [self objectForKey:@"from_user"];
+    if(str){
+        /* search API */
+        return str;
+    }
     return [self.orig_user objectForKey:@"screen_name"];
 }
 -(NSString *)user_profile_image_url
 {
+    NSString *str = [self objectForKey:@"profile_image_url"];
+    if(str){
+        /* search API */
+        return str;
+    }
     return [self.orig_user objectForKey:@"profile_image_url"];
 }
 
@@ -250,6 +308,11 @@
     // "Thu Jul 26 09:48:16 +0000 2012"
     [dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
     NSDate *date = [dateFormatter dateFromString:str];
+    if(date == nil){
+        /* search API */
+        [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss ZZZ"];
+        date = [dateFormatter dateFromString:str];
+    }
     return date;
 }
 -(NSString*)created_at_str

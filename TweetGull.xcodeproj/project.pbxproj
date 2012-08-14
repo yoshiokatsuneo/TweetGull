@@ -57,6 +57,7 @@
 		07289E1A15CD143200C8D273 /* NSString+Parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0B15CD143200C8D273 /* NSString+Parse.m */; };
 		07289E1B15CD143200C8D273 /* ProfileImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0D15CD143200C8D273 /* ProfileImageCache.m */; };
 		07289E1C15CD143200C8D273 /* MediaImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0F15CD143200C8D273 /* MediaImageCache.m */; };
+		075D7AB215DAE20900904E8D /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D7AB115DAE20900904E8D /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		079AD42215CD15D7000309A2 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289DF115CD13FD00C8D273 /* MasterViewController.m */; };
 		079AD42415CD15D7000309A2 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289DF315CD13FD00C8D273 /* DetailViewController.m */; };
 		079AD42615CD15D7000309A2 /* LRUCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289DF915CD143200C8D273 /* LRUCache.m */; };
@@ -218,6 +219,9 @@
 		07289E0D15CD143200C8D273 /* ProfileImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileImageCache.m; sourceTree = "<group>"; };
 		07289E0E15CD143200C8D273 /* MediaImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaImageCache.h; sourceTree = "<group>"; };
 		07289E0F15CD143200C8D273 /* MediaImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaImageCache.m; sourceTree = "<group>"; };
+		075D7AB015DAE20900904E8D /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		075D7AB115DAE20900904E8D /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		075D7AB415DAE5D000904E8D /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		079AD4BD15CD20E1000309A2 /* UIAlertView+alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+alert.h"; sourceTree = "<group>"; };
 		079AD4BE15CD20E1000309A2 /* UIAlertView+alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+alert.m"; sourceTree = "<group>"; };
 		079AD4C615CD320A000309A2 /* DEEmbossedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEEmbossedLabel.h; sourceTree = "<group>"; };
@@ -414,6 +418,7 @@
 		07289D4115CD0B3600C8D273 /* TweetGull */ = {
 			isa = PBXGroup;
 			children = (
+				075D7AAF15DAE20900904E8D /* google-toolbox-for-mac */,
 				079AD51515CD3222000309A2 /* unoffical-twitter-sdk */,
 				079AD4C515CD320A000309A2 /* DETweetComposeViewController */,
 				07289DEA15CD12C600C8D273 /* PullToRefresh */,
@@ -553,6 +558,16 @@
 				07289DEC15CD12C600C8D273 /* PullRefreshTableViewController.m */,
 			);
 			path = PullToRefresh;
+			sourceTree = "<group>";
+		};
+		075D7AAF15DAE20900904E8D /* google-toolbox-for-mac */ = {
+			isa = PBXGroup;
+			children = (
+				075D7AB415DAE5D000904E8D /* GTMDefines.h */,
+				075D7AB015DAE20900904E8D /* GTMNSString+HTML.h */,
+				075D7AB115DAE20900904E8D /* GTMNSString+HTML.m */,
+			);
+			path = "google-toolbox-for-mac";
 			sourceTree = "<group>";
 		};
 		079AD4C515CD320A000309A2 /* DETweetComposeViewController */ = {
@@ -930,6 +945,7 @@
 				079AD54B15CD3222000309A2 /* OAuth.m in Sources */,
 				079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */,
 				07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */,
+				075D7AB215DAE20900904E8D /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

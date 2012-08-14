@@ -32,7 +32,10 @@ static TwitterAPI *m_current = nil;
     }
     return m_current;
 }
-
+- (NSString *)screen_name
+{
+    return auth.screenName;
+}
 - (NSString*)percentEncodeString:(NSString*)string
 {
     return (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(NULL,  (__bridge CFStringRef)string, NULL, (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ", kCFStringEncodingUTF8);
@@ -104,7 +107,7 @@ static TwitterAPI *m_current = nil;
 }
 
 
--(void)composeTweet:(UIViewController*)viewController text:(NSString*)text
+-(void)composeTweet:(UIViewController*)viewController text:(NSString*)text in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str
 {
     NSString *oauth_token = auth.token;
     NSString *oauth_token_secret = auth.tokenSecret;
@@ -115,6 +118,7 @@ static TwitterAPI *m_current = nil;
     [defaults setBool:YES forKey:@"detwitter_oauth_token_authorized"];
     
     DETweetComposeViewController *tcvc = [[DETweetComposeViewController alloc] init];
+    tcvc.in_reply_to_status_id_str = in_reply_to_status_id_str;
     
     [tcvc setInitialText:text];
     tcvc.completionHandler = ^(DETweetComposeViewControllerResult result){
@@ -149,8 +153,9 @@ static TwitterAPI *m_current = nil;
     NSString *timeline_url = nil;
     if(user_screen_name){
         timeline_url = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?screen_name=%@&", user_screen_name];
+        search_query = nil;
     }else if(search_query){
-        timeline_url = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=5&include_entities=true&result_type=mixed", [self percentEncodeString:search_query]];
+        timeline_url = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=100&include_entities=true&result_type=mixed", [self percentEncodeString:search_query]];
     }else{
         timeline_url = @"http://api.twitter.com/1/statuses/home_timeline.json?";
     }
@@ -171,6 +176,13 @@ static TwitterAPI *m_current = nil;
                     return;
                 }
                 NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if(search_query){
+                    NSError *error;
+                    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+                    NSArray *json_array = [json_dic objectForKey:@"results"];
+                    NSData *json_data = [NSJSONSerialization dataWithJSONObject:json_array options:NSJSONWritingPrettyPrinted error:&error];
+                    response_str = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
+                }
                 Tweets *tweets = [[Tweets alloc] initWithJSONString:response_str];
                 callback(tweets);
             });
