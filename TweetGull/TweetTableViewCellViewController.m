@@ -110,7 +110,11 @@
 -(MyWebView*)webView
 {
     if([mediaWebView_ isKindOfClass:[MyWebView class]]){
-        return (MyWebView*)mediaWebView_;
+        if([self.webViewSuperView.subviews containsObject:mediaWebView_]){
+            return (MyWebView*)mediaWebView_;
+        }else{
+            return nil;
+        }
     }else{
         return nil;
     }

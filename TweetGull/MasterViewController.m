@@ -28,6 +28,7 @@
 
 @interface MasterViewController () {
     Tweets *tweets;
+    NSMutableDictionary *tweetWebViewDic;
 }
 @end
 
@@ -45,6 +46,7 @@
     [cellViewController loadView];
     TweetTableViewCell *cell = cellViewController.tableViewCell;
     cellHeight = cell.frame.size.height;
+    tweetWebViewDic = [[NSMutableDictionary alloc] init];
     
     return self;
 }
@@ -114,7 +116,11 @@
         self.title = [NSString stringWithFormat:@"%@", self.search_query];
     }
 }
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateVisibleCellsLink:nil];
+}
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -176,10 +182,17 @@
     }
 }
 
--(void)updateVisibleCellsLink
+-(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
 {
-    for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
-        int index = tableViewCell.tag;
+    NSMutableDictionary *new_dic = [[NSMutableDictionary alloc] init];
+    NSMutableArray *visibleCells = [NSMutableArray arrayWithArray:self.tableView.visibleCells];
+    if(current_cell){
+        [visibleCells addObject:current_cell];
+    }
+    
+    for(TweetTableViewCell *cell in visibleCells){
+        int index = cell.tag;
+        TweetTableViewCellViewController *cellViewController = cell.viewController;
         Tweet *tweet = [tweets objectAtIndex:index];
         if(tweet.mediaURLString){
             ;
@@ -188,10 +201,23 @@
             if(url){
                 WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
                 [webViewCache addURL:url];
+                if(cellViewController.webView == nil){
+                    MyWebView *webView = [webViewCache getWebView:url];
+                    cellViewController.webView = webView;
+                }
             }
         }
+        UIWebView *webView = [tweetWebViewDic objectForKey:tweet.id_str];
+        if(webView == nil){
+            webView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,274,77)];
+            /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
+            NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", tweet.display_html];
+            [webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
+        }
+        [new_dic setObject:webView forKey:tweet.id_str];
     }
     
+    tweetWebViewDic = new_dic;
 }
 
 
@@ -267,13 +293,14 @@
         cellViewController.mediaImageView = imageView;
         [mediaImageCache loadToImageView:imageView fromURLString:mediaURL];
     }else if(linkURL){
-        WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
-        [webViewCache addURL:linkURL];
-        MyWebView *webView = [webViewCache getWebView:linkURL];
-        cellViewController.webView = webView;
+        ;
+        // WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+        // [webViewCache addURL:linkURL];
+        // MyWebView *webView = [webViewCache getWebView:linkURL];
+        // cellViewController.webView = webView;
     }
     
-    [self updateVisibleCellsLink];
+    [self updateVisibleCellsLink:cell];
     return cell;
 }
 
@@ -332,8 +359,10 @@
     if ([[segue identifier] isEqualToString:@"showTweet"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         Tweet *tweet = [tweets objectAtIndex:indexPath.row];
+        UIWebView *tweetWebView = [tweetWebViewDic objectForKey:tweet.id_str];
         DetailViewController * detailViewController = [segue destinationViewController];
         detailViewController.tweet = tweet;
+        detailViewController.tweetWebView = tweetWebView;
     }
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];

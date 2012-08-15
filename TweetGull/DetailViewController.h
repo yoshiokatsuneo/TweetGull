@@ -13,10 +13,9 @@
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate>
 {
     UIView *mediaWebView_;
-    CGRect orig_webViewFrame;
-    UIView *orig_superView;
+    // CGRect orig_webViewFrame;
+    // UIView *orig_superView;
 }
-- (IBAction)gotoUser:(id)sender;
 
 @property (strong, nonatomic) Tweet *tweet;
 
@@ -24,9 +23,11 @@
 @property (strong, nonatomic) IBOutlet UIImageView *profileImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 // @property (strong, nonatomic) IBOutlet UITextView *tweetTextView;
+@property (strong, nonatomic) IBOutlet UIView *tweetSuperView;
 @property (strong, nonatomic) IBOutlet UIWebView *tweetWebView;
 @property (strong, nonatomic) IBOutlet UIView *webViewSuperView;
 @property (strong, nonatomic) IBOutlet UILabel *retweetUserNameLabel;
+@property (strong, nonatomic) IBOutlet UIButton *retweetUserNameButton;
 @property (strong, nonatomic) IBOutlet UILabel *created_atLabel;
 @property (strong, nonatomic) IBOutlet UILabel *retweetedLabel;
 @property (strong, nonatomic) IBOutlet UILabel *favoritedLabel;

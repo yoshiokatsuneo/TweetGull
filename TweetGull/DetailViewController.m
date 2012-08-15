@@ -25,9 +25,11 @@
 @synthesize profileImage = _profileImage;
 @synthesize nameLabel = _nameLabel;
 // @synthesize tweetTextView = _tweetTextView;
+@synthesize tweetSuperView = _tweetSuperView;
 @synthesize tweetWebView = _tweetWebView;
 @synthesize webViewSuperView = _webViewSuperView;
 @synthesize retweetUserNameLabel = _retweetUserNameLabel;
+@synthesize retweetUserNameButton = _retweetUserNameButton;
 @synthesize created_atLabel = _created_atLabel;
 @synthesize retweetedLabel = _retweetedLabel;
 @synthesize favoritedLabel = _favoritedLabel;
@@ -52,18 +54,19 @@
 -(void)setMediaWebView:(UIView *)mediaWebView
 {
     if(mediaWebView_){
-        [mediaWebView_ removeFromSuperview];
-        if([mediaWebView_ isKindOfClass:[MyWebView class]]){
-            MyWebView *webView = (MyWebView*)mediaWebView_;
-            webView.userInteractionEnabled = NO;
-        }
-        [mediaWebView_ setFrame:orig_webViewFrame];
-        [orig_superView addSubview:mediaWebView_];
+        ;
+        //[mediaWebView_ removeFromSuperview];
+        //if([mediaWebView_ isKindOfClass:[MyWebView class]]){
+        //    MyWebView *webView = (MyWebView*)mediaWebView_;
+        //    webView.userInteractionEnabled = NO;
+        //}
+//        [mediaWebView_ setFrame:orig_webViewFrame];
+//        [orig_superView addSubview:mediaWebView_];
     }
     mediaWebView_ = mediaWebView;
     if(mediaWebView){
-        orig_webViewFrame = mediaWebView.frame;
-        orig_superView =  mediaWebView.superview;
+//        orig_webViewFrame = mediaWebView.frame;
+//        orig_superView =  mediaWebView.superview;
         CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
         mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [mediaWebView setFrame:frame];
@@ -119,12 +122,22 @@
     if (self.tweet) {
         self.nameLabel.text = self.tweet.user_name;
         // self.tweetTextView.text = self.tweet.display_text;
+#if 0
         
         /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
         NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", self.tweet.display_html];
         [self.tweetWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
+#endif
+        self.tweetWebView.delegate = self;
+        [self.tweetWebView setFrame:self.tweetSuperView.bounds];
+        self.tweetWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+        [self.tweetSuperView addSubview:self.tweetWebView];
+        
+        
         // [self.tweetTextView setValue:self.tweet.htmlText forKey:@"contentToHTMLString"];
         self.retweetUserNameLabel.text = self.tweet.retweet_user_name;
+        self.retweetUserNameButton.enabled = (self.tweet.retweet_user_name != nil);
         self.created_atLabel.text = self.tweet.created_at_str;
         self.retweetedLabel.hidden = (self.tweet.retweeted == NO);
         self.favoritedLabel.hidden = (self.tweet.favorited == NO);
@@ -237,6 +250,8 @@
     [self setFavoritedLabel:nil];
     // [self setTweetTextView:nil];
     [self setTweetWebView:nil];
+    [self setTweetSuperView:nil];
+    [self setRetweetUserNameButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
@@ -275,10 +290,7 @@
     self.masterPopoverController = nil;
 }
 
-- (IBAction)gotoUser:(id)sender {
-    // Tweet *tweet = self.detailItem;
-    sleep(0);
-}
+
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -304,6 +316,10 @@
         }else{
             masterViewController.user_screen_name = self.tweet.user_screen_name;
         }
+    }
+    if ([[segue identifier] isEqualToString:@"showRetweetTweets"]){
+        MasterViewController *masterViewController = [segue destinationViewController];
+        masterViewController.user_screen_name = self.tweet.retweet_screen_name;
     }
 }
 @end

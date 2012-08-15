@@ -156,7 +156,7 @@
             search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
             continue;
         }
-        NSCharacterSet *screenNameCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
+        NSCharacterSet *screenNameCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"];
         if(![screenNameCharacterSet characterIsMember:[t characterAtIndex:range.location+1]]){
             search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
             continue;
@@ -221,6 +221,14 @@
 {
     if(self.retweeted_status){
         return [[self objectForKey:@"user"] objectForKey:@"name"];
+    }else{
+        return nil;
+    }
+}
+-(NSString *)retweet_screen_name
+{
+    if(self.retweeted_status){
+        return [[self objectForKey:@"user"] objectForKey:@"screen_name"];
     }else{
         return nil;
     }

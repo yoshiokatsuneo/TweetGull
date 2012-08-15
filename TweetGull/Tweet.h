@@ -27,6 +27,7 @@
 @property(readonly) NSString *linkURLString;
 @property(readonly) NSString *instagramURLString;
 @property(readonly) NSString *retweet_user_name;
+@property(readonly) NSString *retweet_screen_name;
 @property(readonly) NSDate   *created_at_date;
 @property(readonly) NSString *created_at_str;
 @property(readonly) NSArray *entities_urls_and_media;

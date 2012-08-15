@@ -176,12 +176,27 @@ static TwitterAPI *m_current = nil;
                     return;
                 }
                 NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSError *error;
+                id json_obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+                NSDictionary *json_dic = nil;
+                if([json_obj isKindOfClass:[NSDictionary class]]){
+                    json_dic = json_obj;
+                    NSString *error_str = [json_dic objectForKey:@"error"];
+                    if(error_str){
+                        [UIAlertView alertString:error_str];
+                        callback(nil);
+                        return;
+                    }
+                }
                 if(search_query){
-                    NSError *error;
-                    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
                     NSArray *json_array = [json_dic objectForKey:@"results"];
-                    NSData *json_data = [NSJSONSerialization dataWithJSONObject:json_array options:NSJSONWritingPrettyPrinted error:&error];
-                    response_str = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
+                    if(json_array){
+                        NSData *json_data = [NSJSONSerialization dataWithJSONObject:json_array options:NSJSONWritingPrettyPrinted error:&error];
+                        response_str = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
+                    }else{
+                        callback(nil);
+                        return;
+                    }
                 }
                 Tweets *tweets = [[Tweets alloc] initWithJSONString:response_str];
                 callback(tweets);
