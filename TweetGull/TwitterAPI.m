@@ -13,7 +13,10 @@
 #import "DETweetComposeViewController/DETweetComposeViewController.h"
 #import "Tweets.h"
 
-static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
+// static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
+static NSString *const kTwitterKeychainItemName = @""; /* Not to save Keychain from GTMOAuth */
+
+
 static TwitterAPI *m_current = nil;
 
 @interface TwitterAPI ()
@@ -61,14 +64,18 @@ static TwitterAPI *m_current = nil;
         NSLog(@"login failed");
         [UIAlertView alertError:error];
         // [self dismissModalViewControllerAnimated:YES];
-        [signInViewController.navigationController popViewControllerAnimated:YES];
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+        // [signInViewController.navigationController popViewControllerAnimated:YES];
         return;
     }
     NSLog(@"auth=%@", auth);
     NSLog(@"auth2=%@", auth2);
     auth = auth2;
     //[self dismissModalViewControllerAnimated:YES];
+    [viewController dismissViewControllerAnimated:YES completion:nil];
+#if 0
     [signInViewController.navigationController popViewControllerAnimated:YES];
+#endif
     signInCallback();
 }
 - (void)signInReal:(UIViewController*)viewController callback:(void (^)(void))callback
@@ -85,10 +92,12 @@ static TwitterAPI *m_current = nil;
     [auth2 setCallback:@"http://www.example.com/OAuthCallback"];
     
     GTMOAuthViewControllerTouch *authViewController = [[GTMOAuthViewControllerTouch alloc] initWithScope:scope language:nil requestTokenURL:requestURL authorizeTokenURL:authrizeURL accessTokenURL:accessURL authentication:auth2 appServiceName:kTwitterKeychainItemName delegate:self finishedSelector:@selector(viewController:finishedWithAuth:error:)];
-
+    authViewController.browserCookiesURL = [NSURL URLWithString:@"http://api.twitter.com/"];
+    [viewController presentViewController:authViewController animated:YES completion:nil];
+#if 0
     UINavigationController *navigationController = viewController.navigationController;
     [navigationController pushViewController:authViewController animated:YES];
-    
+#endif
 }
 - (void)signIn:(UIViewController*)viewController callback:(void (^)(void))callback
 {
@@ -339,5 +348,15 @@ static TwitterAPI *m_current = nil;
 {
     [GTMOAuthViewControllerTouch removeParamsFromKeychainForName:kTwitterKeychainItemName];
     auth = nil;
+}
+
+- (NSString*)authPersistenceResponseString
+{
+    return [auth persistenceResponseString];
+}
+-(void)setAuthPersistenceResponseString:(NSString *)authPersistenceResponseString
+{
+    auth = [self getNewAuth];
+    [auth setKeysForPersistenceResponseString:authPersistenceResponseString];
 }
 @end

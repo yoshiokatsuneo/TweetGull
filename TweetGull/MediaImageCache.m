@@ -46,15 +46,33 @@ static MediaImageCache *m_mediaImageCache = nil;
             if(range.location == 0){
                 NSString *idstr = [url substringFromIndex:range.length];
                 NSString *url2 = [NSString stringWithFormat:@"http://instagram.com/api/v1/oembed/?url=http://instagr.am/p/%@/&maxwidth=480", idstr];
+                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url2]];
                 NSError *error;
-                NSString *json_str = [NSString stringWithContentsOfURL:[NSURL URLWithString:url2] encoding:NSUTF8StringEncoding error:&error];
+                NSHTTPURLResponse *response = nil;
+                NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+                NSLog(@"Error: %@\n", error);
+                NSLog(@"statusCode: %d\n", response.statusCode);
+                if(error || response.statusCode != 200){
+                    return;
+                }
+                NSString *json_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                // NSString *json_str = [NSString stringWithContentsOfURL:[NSURL URLWithString:url2] encoding:NSUTF8StringEncoding error:&error];
                 
                 NSData *json_data = [json_str dataUsingEncoding:NSUTF8StringEncoding];
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingMutableContainers error:&error];
                 imageurl = [dic objectForKey:@"url"];
                 
             }
-            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageurl]];
+            NSError *error;
+            NSHTTPURLResponse *response = nil;
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageurl]];
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            NSLog(@"Error: %@\n", error);
+            NSLog(@"statusCode: %d\n", response.statusCode);
+            if(error || response.statusCode != 200){
+                return;
+            }
+            // NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageurl]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage *image = [UIImage imageWithData:data];
                 [self addImage:image forURLString:url];

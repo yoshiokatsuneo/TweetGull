@@ -18,11 +18,14 @@
 #import "NSString+Parse.h"
 #import "ProfileImageCache.h"
 #import "MediaImageCache.h"
+#import "Accounts.h"
 
 #import "UIAlertView+alert.h"
 #import "TwitterAPI.h"
 // #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit.h>
+
+
 
 // #import <BlocksKit/UIActionSheet+BlocksKit.h>
 
@@ -59,6 +62,25 @@
     [super awakeFromNib];
 }
 
+- (void)loadTitle
+{
+    if(self.user_screen_name){
+        self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
+    }else if(self.search_query){
+        self.title = [NSString stringWithFormat:@"%@", self.search_query];
+    }else{
+        self.title = [NSString stringWithFormat:@"Home(@%@)", [TwitterAPI defaultTwitterAPI].screen_name ];
+    }
+
+}
+- (void)accountTableViewControllerDidFinish:(AccountTableViewController *)controller
+{
+    [controller dismissModalViewControllerAnimated:YES];
+    tweets = nil;
+    [self loadCurrentAccount];
+    [self.tableView reloadData];
+    [self fetchTweets];
+}
 - (void)leftButtonActionSheet:(id)sender
 {
     UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
@@ -77,26 +99,74 @@
         }];
         [alertView show];
     }];
+    [sheet addButtonWithTitle:@"Switch User" handler:^{
+        AccountTableViewController *controller = [[AccountTableViewController alloc] init];
+        controller.delegate = self;
+        [self presentModalViewController:controller animated:YES];
+    }];
+
     [sheet addButtonWithTitle:@"Cancel" handler:^{
         ;
     }];
 
     [sheet showInView:self.view];
 }
+- (void)loadCurrentAccount
+{
+    TwitterAPI *twitterAPI = [TwitterAPI defaultTwitterAPI];
+    NSString *name = [Accounts currentAccount];
+    if(name){
+        NSString *password = [[Accounts defaultAccounts] passwordForAccount:name];
+        if(password && password.length > 0){
+            [twitterAPI setAuthPersistenceResponseString:password];
+        }
+    }
+}
+- (void)initialSignIn:(void (^)(void))callback
+{
+    TwitterAPI *tmpTwitterAPI = [[TwitterAPI alloc] init ];
+    [tmpTwitterAPI signInReal:self callback:^{
+        if(tmpTwitterAPI.screen_name){
+            NSString *password = tmpTwitterAPI.authPersistenceResponseString;
+            Accounts *accounts = [Accounts defaultAccounts];
+            [accounts setPassword:password forAccount:tmpTwitterAPI.screen_name];
+            [Accounts setCurrentAccount:tmpTwitterAPI.screen_name];
+            callback();
+        }else{
+            [self initialSignIn:callback];
+        }
+    }];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [WebViewCache defaultWebViewCache].delegate = self;
+    
+    
+    TwitterAPI *twitterAPI = [TwitterAPI defaultTwitterAPI];
+    if(twitterAPI.screen_name == nil){
+        [self loadCurrentAccount];
+    }
+    if(twitterAPI.screen_name == nil){
+        [self initialSignIn:^{
+            [self loadCurrentAccount];
+            [self fetchTweets];
+        }];
+    }else{
+        [self fetchTweets];
+    }
+
+#if 0
     if(!tweets){
         [[TwitterAPI defaultTwitterAPI] signIn:self callback:^{
             [self fetchTweets];
         }];
     }
-    
+#endif
 	// Do any additional setup after loading the view, typically from a nib.
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(insertNewObject:)];
     if(self.user_screen_name == nil && self.search_query == nil){
 #if 0
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
@@ -110,11 +180,6 @@
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
-    if(self.user_screen_name){
-        self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
-    }else if(self.search_query){
-        self.title = [NSString stringWithFormat:@"%@", self.search_query];
-    }
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -211,7 +276,8 @@
         if(webView == nil){
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,274,77)];
             /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
-            NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", tweet.display_html];
+            webView.scalesPageToFit = YES;
+            NSString *html = [NSString stringWithFormat:@"<html><head><meta name='viewport' content='initial-scale=1.0'/><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", tweet.display_html];
             [webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
         }
         [new_dic setObject:webView forKey:tweet.id_str];
@@ -372,11 +438,9 @@
 
 -(void)fetchTweets
 {
+    [self loadTitle];
     [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name search_query:self.search_query callback:^(Tweets * tweets_){
         tweets = tweets_;
-        if(self.user_screen_name == nil && self.search_query == nil){
-            self.title = [NSString stringWithFormat:@"Home(@%@)", [TwitterAPI defaultTwitterAPI].screen_name ];
-        }
         [self.tableView reloadData];
         [self stopLoading];
         

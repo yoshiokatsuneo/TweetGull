@@ -57,6 +57,9 @@
 		07289E1A15CD143200C8D273 /* NSString+Parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0B15CD143200C8D273 /* NSString+Parse.m */; };
 		07289E1B15CD143200C8D273 /* ProfileImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0D15CD143200C8D273 /* ProfileImageCache.m */; };
 		07289E1C15CD143200C8D273 /* MediaImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0F15CD143200C8D273 /* MediaImageCache.m */; };
+		073F95FC15DCF75600213A53 /* AccountTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 073F95FA15DCF75500213A53 /* AccountTableViewController.m */; };
+		073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073F95FB15DCF75600213A53 /* AccountTableViewController.xib */; };
+		073F960015DD064600213A53 /* Accounts.m in Sources */ = {isa = PBXBuildFile; fileRef = 073F95FF15DD064600213A53 /* Accounts.m */; };
 		075D7AB215DAE20900904E8D /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D7AB115DAE20900904E8D /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		079AD42215CD15D7000309A2 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289DF115CD13FD00C8D273 /* MasterViewController.m */; };
 		079AD42415CD15D7000309A2 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289DF315CD13FD00C8D273 /* DetailViewController.m */; };
@@ -219,6 +222,11 @@
 		07289E0D15CD143200C8D273 /* ProfileImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileImageCache.m; sourceTree = "<group>"; };
 		07289E0E15CD143200C8D273 /* MediaImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaImageCache.h; sourceTree = "<group>"; };
 		07289E0F15CD143200C8D273 /* MediaImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaImageCache.m; sourceTree = "<group>"; };
+		073F95F915DCF75500213A53 /* AccountTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountTableViewController.h; sourceTree = "<group>"; };
+		073F95FA15DCF75500213A53 /* AccountTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountTableViewController.m; sourceTree = "<group>"; };
+		073F95FB15DCF75600213A53 /* AccountTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountTableViewController.xib; sourceTree = "<group>"; };
+		073F95FE15DD064600213A53 /* Accounts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Accounts.h; sourceTree = "<group>"; };
+		073F95FF15DD064600213A53 /* Accounts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Accounts.m; sourceTree = "<group>"; };
 		075D7AB015DAE20900904E8D /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		075D7AB115DAE20900904E8D /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		075D7AB415DAE5D000904E8D /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
@@ -461,6 +469,11 @@
 				079AD4BE15CD20E1000309A2 /* UIAlertView+alert.m */,
 				07ABBBF115D1552A0023890E /* TwitterAPI.h */,
 				07ABBBF215D1552A0023890E /* TwitterAPI.m */,
+				073F95F915DCF75500213A53 /* AccountTableViewController.h */,
+				073F95FA15DCF75500213A53 /* AccountTableViewController.m */,
+				073F95FB15DCF75600213A53 /* AccountTableViewController.xib */,
+				073F95FE15DD064600213A53 /* Accounts.h */,
+				073F95FF15DD064600213A53 /* Accounts.m */,
 			);
 			path = TweetGull;
 			sourceTree = "<group>";
@@ -851,6 +864,7 @@
 				079AD51215CD320A000309A2 /* DETweetURLAttachment@2x.png in Resources */,
 				079AD54C15CD3222000309A2 /* tclose.png in Resources */,
 				079AD54D15CD3222000309A2 /* ticon.png in Resources */,
+				073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,6 +960,8 @@
 				079AD54E15CD3222000309A2 /* TwitterDialog.m in Sources */,
 				07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */,
 				075D7AB215DAE20900904E8D /* GTMNSString+HTML.m in Sources */,
+				073F95FC15DCF75600213A53 /* AccountTableViewController.m in Sources */,
+				073F960015DD064600213A53 /* Accounts.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@
 @interface TwitterAPI : NSObject
 +(TwitterAPI*)defaultTwitterAPI;
 - (void)signIn:(UIViewController*)viewController callback:(void (^)(void))callback;
+- (void)signInReal:(UIViewController*)viewController callback:(void (^)(void))callback;
 -(void)composeTweet:(UIViewController*)viewController text:(NSString*)text in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str;
 -(void)fetchTweets:(UIViewController*)viewController user_screen_name:(NSString*)user_screen_name search_query:(NSString*)search_query callback:(void (^)(Tweets *tweets))callback;
 
@@ -26,4 +27,5 @@
 -(void)signOut;
 
 @property(readonly) NSString *screen_name;
+@property(readwrite) NSString *authPersistenceResponseString;
 @end

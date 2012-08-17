@@ -8,6 +8,7 @@
 
 #import "Tweet.h"
 #import "NSString+Parse.h"
+#import "google-toolbox-for-mac/GTMNSString+HTML.h"
 
 @implementation Tweet
 @synthesize retweeted_status;
@@ -127,7 +128,7 @@
     }];
     return urls;
 }
--(NSString*)display_text
+-(NSString*)display_text_without_unescape_html
 {
     
     NSMutableString *t = [NSMutableString stringWithString:self.text];
@@ -142,10 +143,15 @@
     }
     return t;
 }
-
+-(NSString*)display_text
+{
+    NSString *t = [self display_text_without_unescape_html];
+    NSString *unescape_str = [t gtm_stringByUnescapingFromHTML];
+    return unescape_str;
+}
 -(NSString*)display_html
 {
-    NSString *t = self.display_text;
+    NSString *t = [self display_text_without_unescape_html];
     NSRange search_range = NSMakeRange(0, t.length);
     while (search_range.length > 0){
         NSRange range = [t rangeOfString:@"@" options:0 range:search_range];

@@ -10,12 +10,13 @@
 #import "PullRefreshTableViewController.h"
 #import "WebViewCache.h"
 #import "TweetEditViewController.h"
+#import "AccountTableViewController.h"
 
 @class DetailViewController;
 
 // @interface MasterViewController : UITableViewController
 
-@interface MasterViewController : PullRefreshTableViewController<WebViewCacheDelegate /*, TweetEditViewControllerDelegate */>
+@interface MasterViewController : PullRefreshTableViewController<WebViewCacheDelegate /*, TweetEditViewControllerDelegate */, AccountTableViewControllerDelegate>
 {
     int cellHeight;
 }
