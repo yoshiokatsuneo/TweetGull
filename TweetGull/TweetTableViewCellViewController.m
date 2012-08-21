@@ -94,6 +94,7 @@
     [self setMediaWebView:webView];
     webView.scalesPageToFit = YES;
     webView.userInteractionEnabled = NO;
+    webView.scrollView.scrollsToTop = NO;
 }
 -(void)setMediaImageView:(UIImageView*)imageView
 {

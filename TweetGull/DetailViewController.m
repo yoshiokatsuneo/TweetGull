@@ -77,6 +77,10 @@
 -(void)setWebView:(MyWebView *)webView
 {
     webView.userInteractionEnabled = YES;
+    webView.scrollView.scrollsToTop = YES;
+    NSString *confirm_func = [NSString stringWithFormat:@"if(window.tweetgull_orig_confirm){window.confirm = window.tweetgull_orig_confirm}; if(window.tweetgull_orig_alert){window.alert = window.tweetgull_orig_alert}"];
+    [webView stringByEvaluatingJavaScriptFromString:confirm_func];
+
     [self setMediaWebView:webView];
 }
 -(void)setMediaImageView:(UIImageView *)imageView
@@ -131,7 +135,7 @@
         self.tweetWebView.delegate = self;
         [self.tweetWebView setFrame:self.tweetSuperView.bounds];
         self.tweetWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
+        self.tweetWebView.scrollView.scrollsToTop = NO;
         [self.tweetSuperView addSubview:self.tweetWebView];
         
         

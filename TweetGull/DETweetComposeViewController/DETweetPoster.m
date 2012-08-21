@@ -107,6 +107,7 @@ NSString * const twitterInReplyToStatusIdKey = @"in_reply_to_status_id";
             
             [images enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 UIImage *image = (UIImage *)obj;
+                
                 [twRequest addMultiPartData:UIImagePNGRepresentation(image) withName:@"media[]" type:@"multipart/form-data"];
             }];
             
@@ -192,8 +193,11 @@ NSString * const twitterInReplyToStatusIdKey = @"in_reply_to_status_id";
         
         for (UIImage *image in images) {
             [postData appendData:[@"Content-Disposition: form-data; name=\"media[]\"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            [postData appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];            
-            [postData appendData:UIImagePNGRepresentation(image)];
+            [postData appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            // [postData appendData:UIImagePNGRepresentation(image)];
+            [postData appendData:UIImageJPEGRepresentation(image, 0.2)];
+
             [postData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", stringBoundary] dataUsingEncoding:NSUTF8StringEncoding]];
         }
     }

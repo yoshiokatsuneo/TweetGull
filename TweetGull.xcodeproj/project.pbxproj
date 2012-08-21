@@ -130,6 +130,7 @@
 		079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD55115CD3975000309A2 /* Twitter.framework */; };
 		079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 079FAC2B15D554BA00C50316 /* libBlocksKit.a */; };
 		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
+		07DCFE5915E41DC100B40ADB /* confirm.html in Resources */ = {isa = PBXBuildFile; fileRef = 07DCFE5815E41DC100B40ADB /* confirm.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -349,6 +350,7 @@
 		079FAC4C15D554E600C50316 /* UIWebView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+BlocksKit.h"; sourceTree = "<group>"; };
 		07ABBBF115D1552A0023890E /* TwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAPI.h; sourceTree = "<group>"; };
 		07ABBBF215D1552A0023890E /* TwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAPI.m; sourceTree = "<group>"; };
+		07DCFE5815E41DC100B40ADB /* confirm.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = confirm.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -485,6 +487,7 @@
 				07289D4415CD0B3600C8D273 /* InfoPlist.strings */,
 				07289D4715CD0B3600C8D273 /* main.m */,
 				07289D4915CD0B3600C8D273 /* TweetGull-Prefix.pch */,
+				07DCFE5815E41DC100B40ADB /* confirm.html */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -865,6 +868,7 @@
 				079AD54C15CD3222000309A2 /* tclose.png in Resources */,
 				079AD54D15CD3222000309A2 /* ticon.png in Resources */,
 				073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */,
+				07DCFE5915E41DC100B40ADB /* confirm.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

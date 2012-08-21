@@ -51,6 +51,7 @@
 {
     return [next_delegate webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
 }
+
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
     self.startLoadCount ++;

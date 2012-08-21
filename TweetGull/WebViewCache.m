@@ -30,6 +30,14 @@
         webView.startURL = url;
         NSURL *aURL = [NSURL URLWithString:url];
         NSURLRequest *aURLRequest = [NSURLRequest requestWithURL:aURL];
+#if 0
+        NSURL *confirm_url = [[NSBundle mainBundle] URLForResource:@"confirm" withExtension:@"html"];
+        NSString *confirm_urlstr = confirm_url.absoluteString;
+        // NSString *confirm_func = [NSString stringWithFormat:@"window.confirm=function(msg){window.showModalDialog('%@', this, \"dialogWidth=800px; dialogHeight=480px;\"); return false;}", confirm_urlstr];
+        NSString *confirm_func = [NSString stringWithFormat:@"window.confirm=function(msg){alert('zzzzzzz');}"];
+#endif
+        NSString *confirm_func = [NSString stringWithFormat:@"window.tweetgull_orig_confirm = window.confirm; window.confirm=function(msg){return false;}; window.tweetgull_orig_alert = window.alert; window.alert=nil"];
+        [webView stringByEvaluatingJavaScriptFromString:confirm_func];
         [webView loadRequest:aURLRequest];
     }
     return self;
@@ -101,6 +109,7 @@ static WebViewCache *webViewCache = nil;
     
     item = [[CacheWebViewItem alloc] init:url];
     item->webView.delegate = self;
+    item->webView.scrollView.scrollsToTop = NO;
     [cache setObject:item forKey:url];
 }
 - (void)addURLs:(NSArray*)urls
