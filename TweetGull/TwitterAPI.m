@@ -12,6 +12,7 @@
 #import "GTMOAuthViewControllerTouch.h"
 #import "DETweetComposeViewController/DETweetComposeViewController.h"
 #import "Tweets.h"
+#import "TweetsRequest.h"
 
 // static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 static NSString *const kTwitterKeychainItemName = @""; /* Not to save Keychain from GTMOAuth */
@@ -38,10 +39,6 @@ static TwitterAPI *m_current = nil;
 - (NSString *)screen_name
 {
     return auth.screenName;
-}
-- (NSString*)percentEncodeString:(NSString*)string
-{
-    return (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(NULL,  (__bridge CFStringRef)string, NULL, (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ", kCFStringEncodingUTF8);
 }
 
 
@@ -156,19 +153,35 @@ static TwitterAPI *m_current = nil;
 #endif
 
 }
--(void)fetchTweets:(UIViewController*)viewController user_screen_name:(NSString*)user_screen_name search_query:(NSString*)search_query callback:(void (^)(Tweets *tweets))callback
+
+-(void)fetchTweets:(UIViewController*)viewController tweetsRequest:(TweetsRequest*)tweetsRequest callback:(void (^)(Tweets *tweets))callback
 {
+#if 0
     // NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
     NSString *timeline_url = nil;
-    if(user_screen_name){
-        timeline_url = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?screen_name=%@&", user_screen_name];
+    if(tweets_kind != TWEETS_KIND_SEARCH){
         search_query = nil;
-    }else if(search_query){
-        timeline_url = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=100&include_entities=true&result_type=mixed", [self percentEncodeString:search_query]];
+    }
+    if(tweets_kind == TWEETS_KIND_FAVORITES){
+        timeline_url = @"http://api.twitter.com/1/favorites.json?";
+        if(user_screen_name){
+            timeline_url = [timeline_url stringByAppendingFormat:@"screen_name=%@&", user_screen_name];
+        }
+    }else if(tweets_kind == TWEETS_KIND_MENSIONS){
+        timeline_url = @"https://api.twitter.com/1/statuses/mentions.json?";
+    }else if(tweets_kind == TWEETS_KIND_SEARCH){
+        timeline_url = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=100&include_entities=true&result_type=mixed&", [self percentEncodeString:search_query]];
+    }else if(tweet_for_related){
+        timeline_url = [NSString stringWithFormat:@"http://api.twitter.com/1/related_results/show/%@.json?include_entities=true&", tweet_for_related.id_str];
+    }else if(user_screen_name){
+        timeline_url = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?screen_name=%@&", user_screen_name];
     }else{
         timeline_url = @"http://api.twitter.com/1/statuses/home_timeline.json?";
     }
     timeline_url = [timeline_url stringByAppendingString:@"count=200&include_entities=1"];
+#endif
+    NSString *timeline_url = tweetsRequest.timeline_url;
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:timeline_url]];
     // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/home_timeline.json?count=200&include_entities=1"]];
     // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/public_timeline.json"]];
@@ -176,17 +189,24 @@ static TwitterAPI *m_current = nil;
         [auth authorizeRequest:request];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSError *error = nil;
-            NSURLResponse *response = nil;
+            NSHTTPURLResponse *response = nil;
             NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if(data == nil){
+                
+                if(error){
                     [UIAlertView alertError:error];
                     callback(nil);
                     return;
                 }
                 NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if(response.statusCode != 200){
+                    [UIAlertView alertString:response_str];
+                    callback(nil);
+                    return;
+                }
                 NSError *error;
                 id json_obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+#if 0
                 NSDictionary *json_dic = nil;
                 if([json_obj isKindOfClass:[NSDictionary class]]){
                     json_dic = json_obj;
@@ -197,9 +217,38 @@ static TwitterAPI *m_current = nil;
                         return;
                     }
                 }
-                if(search_query){
+                if(tweet_for_related){
+                    NSArray *json_array = json_obj;
+                    if(json_array.count == 0){
+                        callback(nil);
+                        return;
+                    }
+                    json_dic = [json_array objectAtIndex:0];
+                    NSString *resultType = [json_dic objectForKey:@"resultType"];
+                    if(![resultType isEqualToString:@"Tweet"]){
+                        callback(nil);
+                        return;
+                    }
+                }
+                if(tweet_for_related || search_query){
                     NSArray *json_array = [json_dic objectForKey:@"results"];
                     if(json_array){
+                        if(tweet_for_related){
+                            NSMutableArray *json_array2 = [[NSMutableArray alloc] init];
+                            for(NSDictionary *json_dic2 in json_array){
+                                NSDictionary *json_dic3 = [json_dic2 objectForKey:@"value"];
+                                [json_array2 addObject:json_dic3];
+                            }
+                            [json_array2 addObject:tweet_for_related];
+                            [json_array2 sortUsingComparator:(NSComparator)^(id obj1, id obj2){
+                                Tweet *tweet1 = [[Tweet alloc] initWithDictionary:obj1];
+                                Tweet *tweet2 = [[Tweet alloc] initWithDictionary:obj2];
+                                NSDate *date1 = tweet1.created_at_date;
+                                NSDate *date2 = tweet2.created_at_date;
+                                return [date2 compare:date1];
+                            }];
+                            json_array = json_array2;   
+                        }
                         NSData *json_data = [NSJSONSerialization dataWithJSONObject:json_array options:NSJSONWritingPrettyPrinted error:&error];
                         response_str = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
                     }else{
@@ -207,6 +256,15 @@ static TwitterAPI *m_current = nil;
                         return;
                     }
                 }
+#endif
+                NSArray *tweetsArray = [tweetsRequest tweetArrayFromResponseJSONObj:json_obj];
+                if(tweetsArray == nil){
+                    [UIAlertView alertString:@"No tweets found."];
+                    callback(nil);
+                    return;
+                }
+                NSData *json_data = [NSJSONSerialization dataWithJSONObject:tweetsArray options:NSJSONWritingPrettyPrinted error:&error];
+                response_str = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
                 Tweets *tweets = [[Tweets alloc] initWithJSONString:response_str];
                 callback(tweets);
             });

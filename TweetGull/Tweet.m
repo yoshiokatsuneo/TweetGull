@@ -139,7 +139,9 @@
         int index_from = [[indices objectAtIndex:0] intValue];
         int index_to = [[indices objectAtIndex:1] intValue];
         NSString *display_url = [url objectForKey:@"display_url"];
-        [t replaceCharactersInRange:NSMakeRange(index_from, index_to - index_from) withString:display_url];
+        if(display_url){
+            [t replaceCharactersInRange:NSMakeRange(index_from, index_to - index_from) withString:display_url];
+        }
     }
     return t;
 }
@@ -253,6 +255,9 @@
 {
     for(NSDictionary *url in self.entities_urls){
         NSString *expanded_url = [url objectForKey:@"expanded_url"];
+        if(!expanded_url || (NSNull*)expanded_url == [NSNull null]){
+            continue;
+        }
         NSRange range = [expanded_url rangeOfString:@"http://instagr.am/p/"];
         if(range.location == 0){
             NSString *idstr = [expanded_url substringFromIndex:range.length];
@@ -275,6 +280,9 @@
 {
     for(NSDictionary *url in self.entities_urls){
         NSString *expanded_url = [url objectForKey:@"expanded_url"];
+        if(expanded_url == nil || (NSNull*)expanded_url == [NSNull null]){
+            continue;
+        }
         NSRange range = [expanded_url rangeOfString:@"http://twitpic.com/"];
         if(range.location == 0){
             NSString *idstr = [expanded_url substringFromIndex:range.length];
@@ -307,7 +315,11 @@
 {
     if(self.entities_urls && self.entities_urls.count > 0){
         NSDictionary *url = [self.entities_urls objectAtIndex:0];
-        return [url objectForKey:@"expanded_url"];
+        id expanded_url = [url objectForKey:@"expanded_url"];
+        if(expanded_url == [NSNull null]){
+            return nil;
+        }
+        return expanded_url;
     }else{
         return nil;
     }

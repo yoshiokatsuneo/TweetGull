@@ -13,6 +13,8 @@
 #import "MediaImageCache.h"
 #import "MasterViewController.h"
 #import "TwitterAPI.h"
+#import "TweetsRequestUserTimeline.h"
+#import "TweetsRequestRelated.h"
 
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -20,6 +22,7 @@
 @end
 
 @implementation DetailViewController
+@synthesize relatedTweetsButton = _relatedTweetsButton;
 
 @synthesize detailDescriptionLabel = _detailDescriptionLabel;
 @synthesize profileImage = _profileImage;
@@ -145,6 +148,11 @@
         self.created_atLabel.text = self.tweet.created_at_str;
         self.retweetedLabel.hidden = (self.tweet.retweeted == NO);
         self.favoritedLabel.hidden = (self.tweet.favorited == NO);
+#if 0
+        NSArray *user_mentions = [[self.tweet objectForKey:@"entities"] objectForKey:@"user_mentions"];
+        id in_reply_to_status_id = [self.tweet objectForKey:@"in_reply_to_status_id"];
+        self.relatedTweetsButton.hidden = !((in_reply_to_status_id && in_reply_to_status_id != [NSNull null]) || (user_mentions && user_mentions.count>0));
+#endif
         [self.view setNeedsDisplay];
         [self.view setNeedsLayout];
         if(self.tweet.mediaURLString){
@@ -256,6 +264,7 @@
     [self setTweetWebView:nil];
     [self setTweetSuperView:nil];
     [self setRetweetUserNameButton:nil];
+    [self setRelatedTweetsButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
@@ -315,15 +324,25 @@
 {
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
+        TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
         if([sender isKindOfClass:[NSString class]]){
-            masterViewController.user_screen_name = sender;
+            tweetsRequestUserTimeline.user_screen_name = sender;
         }else{
-            masterViewController.user_screen_name = self.tweet.user_screen_name;
+            tweetsRequestUserTimeline.user_screen_name = self.tweet.user_screen_name;
         }
+        masterViewController.tweetsRequest = tweetsRequestUserTimeline;
     }
     if ([[segue identifier] isEqualToString:@"showRetweetTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
-        masterViewController.user_screen_name = self.tweet.retweet_screen_name;
+        TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
+        tweetsRequestUserTimeline.user_screen_name = self.tweet.retweet_screen_name;
+        masterViewController.tweetsRequest =tweetsRequestUserTimeline;
+    }
+    if ([segue.identifier isEqualToString:@"showRelatedTweets"]){
+        MasterViewController *masterViewController = segue.destinationViewController;
+        TweetsRequestRelated * tweetsRequestRelated = [[TweetsRequestRelated alloc] init];
+        tweetsRequestRelated.tweet = self.tweet;
+        masterViewController.tweetsRequest = tweetsRequestRelated;
     }
 }
 @end

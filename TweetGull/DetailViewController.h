@@ -32,5 +32,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *retweetedLabel;
 @property (strong, nonatomic) IBOutlet UILabel *favoritedLabel;
 @property MyWebView *webView;
+@property (strong, nonatomic) IBOutlet UIButton *relatedTweetsButton;
 @property UIImageView *mediaImageView;
 @end

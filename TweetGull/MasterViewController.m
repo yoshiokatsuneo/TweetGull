@@ -24,8 +24,12 @@
 #import "TwitterAPI.h"
 // #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit.h>
-
-
+#import "TweetsRequestSearch.h"
+#import "TweetsRequestFavorites.h"
+#import "TweetsRequestHomeTimeline.h"
+#import "TweetsRequestMentions.h"
+#import "TweetsRequestUserTimeline.h"
+#import "TweetsRequestDirectMessages.h"
 
 // #import <BlocksKit/UIActionSheet+BlocksKit.h>
 
@@ -64,14 +68,18 @@
 
 - (void)loadTitle
 {
+    self.title = self.tweetsRequest.title;
+#if 0
     if(self.user_screen_name){
         self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
     }else if(self.search_query){
         self.title = [NSString stringWithFormat:@"%@", self.search_query];
+    }else if(self.tweet_for_related){
+        self.title = self.tweet_for_related.display_text;
     }else{
         self.title = [NSString stringWithFormat:@"Home(@%@)", [TwitterAPI defaultTwitterAPI].screen_name ];
     }
-
+#endif
 }
 - (void)accountTableViewControllerDidFinish:(AccountTableViewController *)controller
 {
@@ -85,29 +93,54 @@
 {
     UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
 
+
+    [sheet addButtonWithTitle:@"Tweet" handler:^{
+        [self insertNewObject:self];
+    }];
+    
     [sheet addButtonWithTitle:@"Logout" handler:^{
         [[TwitterAPI defaultTwitterAPI] signOut];
     }];
     
-    [sheet addButtonWithTitle:@"Search" handler:^{
+    [sheet addButtonWithTitle:@"\U0001F50D Search" handler:^{
         UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
         alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
         [alertView addButtonWithTitle:@"Search" handler:^{
-            self.user_screen_name = nil;
-            self.next_view_search_query = [alertView textFieldAtIndex:0].text;
+            TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
+            tweetsRequestSearch.query = [alertView textFieldAtIndex:0].text;
+            self.nextTweetsRequest = tweetsRequestSearch;
             [self performSegueWithIdentifier:@"showTweets" sender:self];
         }];
+        [alertView setCancelButtonWithTitle:nil handler:nil];
         [alertView show];
     }];
+
+    [sheet addButtonWithTitle:@"Mensions" handler:^{
+        self.nextTweetsRequest = [[TweetsRequestMentions alloc] init];
+        [self performSegueWithIdentifier:@"showTweets" sender:self];
+    }];
+    [sheet addButtonWithTitle:@"Direct Messages" handler:^{
+        self.nextTweetsRequest = [[TweetsRequestDirectMessages alloc] init];
+        [self performSegueWithIdentifier:@"showTweets" sender:self];
+    }];
+    [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
+        TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
+        if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+            TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
+            tweetsRequestFavorites.user_screen_name = tweetsRequestUserTimeline.user_screen_name;
+            
+        }
+        self.nextTweetsRequest = tweetsRequestFavorites;
+        [self performSegueWithIdentifier:@"showTweets" sender:self];
+    }];
+
     [sheet addButtonWithTitle:@"Switch User" handler:^{
         AccountTableViewController *controller = [[AccountTableViewController alloc] init];
         controller.delegate = self;
         [self presentModalViewController:controller animated:YES];
     }];
 
-    [sheet addButtonWithTitle:@"Cancel" handler:^{
-        ;
-    }];
+    [sheet setCancelButtonWithTitle:nil handler:nil];
 
     [sheet showInView:self.view];
 }
@@ -167,7 +200,8 @@
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(insertNewObject:)];
-    if(self.user_screen_name == nil && self.search_query == nil){
+#if 0
+    if(self.user_screen_name == nil && self.search_query == nil && self.tweet_for_related == nil){
 #if 0
         UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
         self.navigationItem.leftItemsSupplementBackButton = YES;
@@ -177,6 +211,13 @@
         self.navigationItem.leftBarButtonItem = leftButton;
         
     }
+#endif
+    
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
+        UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(leftButtonActionSheet:)];
+        self.navigationItem.leftBarButtonItem = leftButton;
+    }
+    
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
@@ -432,14 +473,19 @@
     }
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
-        masterViewController.search_query = self.next_view_search_query;
+        masterViewController.tweetsRequest = self.nextTweetsRequest;
     }
 }
 
 -(void)fetchTweets
 {
+    if(self.tweetsRequest == nil){
+        TweetsRequestHomeTimeline *tweetsRequestHomeTimeline = [[TweetsRequestHomeTimeline alloc] init];
+        tweetsRequestHomeTimeline.screen_name = [TwitterAPI defaultTwitterAPI].screen_name;
+        self.tweetsRequest = tweetsRequestHomeTimeline;
+    }
     [self loadTitle];
-    [[TwitterAPI defaultTwitterAPI] fetchTweets:self user_screen_name:self.user_screen_name search_query:self.search_query callback:^(Tweets * tweets_){
+    [[TwitterAPI defaultTwitterAPI] fetchTweets:self tweetsRequest:self.tweetsRequest callback:^(Tweets * tweets_){
         tweets = tweets_;
         [self.tableView reloadData];
         [self stopLoading];
