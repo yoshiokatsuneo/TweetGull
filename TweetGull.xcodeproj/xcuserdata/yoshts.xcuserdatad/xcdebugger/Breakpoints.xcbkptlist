@@ -73,13 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/AppDelegate.m"
-         timestampString = "367249774.625955"
+         timestampString = "367627771.497776"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "179"
-         endingLineNumber = "179"
-         landmarkName = "-application:openURL:sourceApplication:annotation:"
-         landmarkType = "5">
+         startingLineNumber = "183"
+         endingLineNumber = "183">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"

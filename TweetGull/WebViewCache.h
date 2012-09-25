@@ -26,6 +26,7 @@
 }
 + (WebViewCache*)defaultWebViewCache;
 - (BOOL)isLoaded:(NSString*)url;
+- (BOOL)isCached:(NSString*)url; 
 - (void)addURL:(NSString*) url;
 - (void)addURLs:(NSArray*)urls;
 - (MyWebView*)getWebView:(NSString*)url;

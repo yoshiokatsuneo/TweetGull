@@ -7,6 +7,7 @@
 //
 
 #import "MyWebView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation MyWebView
 @synthesize startLoadCount;
@@ -65,6 +66,33 @@
 -(int)loadCount
 {
     return self.startLoadCount - self.finishLoadCount;
+}
+
+-(void)captureThumbNail:(id)dummy
+{
+    if(self.layer){
+        if(self.superview){
+            // UIGraphicsBeginImageContext(CGSizeMake(80, 103));
+            UIGraphicsBeginImageContext(CGSizeMake(80, 103));
+            [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+            self.thumbnailImageView = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        }
+    }
+}
+-(void)delayedCaptureThumbNail
+{
+    [self cancelCaptureThumbNail];
+    [self performSelector:@selector(captureThumbNail:) withObject:nil afterDelay:0.5];
+    [self performSelector:@selector(captureThumbNail:) withObject:nil afterDelay:5.0];
+}
+-(void)cancelCaptureThumbNail
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(captureThumbNail:) object:nil];
+}
+-(void)dealloc
+{
+    sleep(0);
 }
 @end
 

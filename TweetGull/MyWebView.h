@@ -14,6 +14,9 @@
 }
 @property int startLoadCount;
 @property int finishLoadCount;
+@property UIImage *thumbnailImageView;
 @property(readonly) int loadCount;
 @property NSString *startURL;
+-(void)delayedCaptureThumbNail;
+-(void)cancelCaptureThumbNail;
 @end

@@ -47,7 +47,7 @@
 #if 0
     }
 #endif
-
+    [NSURLCache sharedURLCache].memoryCapacity = 10000000;
     return YES;
 }
 							

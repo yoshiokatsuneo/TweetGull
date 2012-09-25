@@ -26,5 +26,6 @@
 @property Tweet *tweet;
 @property MyWebView *webView;
 @property UIImageView *mediaImageView;
+@property UIView *mediaWebView;
 -(void)reset;
 @end

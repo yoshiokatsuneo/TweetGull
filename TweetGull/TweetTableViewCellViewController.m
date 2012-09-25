@@ -89,6 +89,11 @@
         [tweetText setFrame:tweetTextFrame];
     }
 }
+-(UIView*)mediaWebView
+{
+    return mediaWebView_;
+}
+
 -(void)setWebView:(MyWebView *)webView
 {
     [self setMediaWebView:webView];

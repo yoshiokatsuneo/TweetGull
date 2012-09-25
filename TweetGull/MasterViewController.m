@@ -288,7 +288,7 @@
     }
 }
 
--(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
+-(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate
 {
     NSMutableDictionary *new_dic = [[NSMutableDictionary alloc] init];
     NSMutableArray *visibleCells = [NSMutableArray arrayWithArray:self.tableView.visibleCells];
@@ -305,11 +305,13 @@
         }else if(tweet.linkURLString){
             NSString *url = tweet.linkURLString;
             if(url){
-                WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
-                [webViewCache addURL:url];
                 if(cellViewController.webView == nil){
-                    MyWebView *webView = [webViewCache getWebView:url];
-                    cellViewController.webView = webView;
+                    WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+                    if(fCreate || [webViewCache isCached:url]){
+                        [webViewCache addURL:url];
+                        MyWebView *webView = [webViewCache getWebView:url];
+                        cellViewController.webView = webView;
+                    }
                 }
             }
         }
@@ -327,6 +329,14 @@
     tweetWebViewDic = new_dic;
 }
 
+-(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
+{
+    [self updateVisibleCellsLinkItr:current_cell create:YES];
+}
+-(void)updateVisibleCellsLinkIfCached:(TweetTableViewCell *)current_cell
+{
+    [self updateVisibleCellsLinkItr:current_cell create:NO];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -405,9 +415,21 @@
         // [webViewCache addURL:linkURL];
         // MyWebView *webView = [webViewCache getWebView:linkURL];
         // cellViewController.webView = webView;
+        WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+        if([webViewCache isCached:linkURL]){
+            MyWebView *webView = [webViewCache getWebView:linkURL];
+            UIImage *image = webView.thumbnailImageView;
+            if(image){
+                cellViewController.mediaWebView = [[UIImageView alloc] initWithImage:image];
+            }
+        }
+        // cellViewController.mediaWebView = [[UIView alloc] init]; /* dummy view */
     }
     
-    [self updateVisibleCellsLink:cell];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
+    [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0];
+    //[self updateVisibleCellsLinkIfCached:cell];
+    // [self updateVisibleCellsLink:cell];
     return cell;
 }
 

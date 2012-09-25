@@ -7,7 +7,7 @@
 //
 
 #import "WebViewCache.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 @interface CacheWebViewItem : NSObject<NSDiscardableContent>
 {
@@ -66,6 +66,7 @@
 - (void)dealloc
 {
     [webView stopLoading];
+    [webView cancelCaptureThumbNail];
     NSLog(@"%s begin: url=%@", __func__, webView.startURL);
 }
 @end
@@ -99,6 +100,11 @@ static WebViewCache *webViewCache = nil;
     MyWebView *webView = item->webView;
     BOOL loading = webView.loading;
     return !loading;
+}
+-(BOOL)isCached:(NSString*)url
+{
+    CacheWebViewItem * item = [cache objectForKey:url];
+    return (item != nil);
 }
 - (void)addURL:(NSString*) url
 {
@@ -144,6 +150,7 @@ static WebViewCache *webViewCache = nil;
     loading_count ++;
     NSLog(@"%s: url=%@, loading_count=%d, counter=%d", __func__, url, loading_count, myWebView.loadCount);
 }
+
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
     MyWebView *myWebView = (MyWebView*)webView;
@@ -161,6 +168,8 @@ static WebViewCache *webViewCache = nil;
         [delegate webViewCacheDidFinishLoad:url];
     }
 
+    [myWebView delayedCaptureThumbNail];
+    
     NSLog(@"%s: webView=%p, loading=%d, url=%@, loading_count=%d, counter=%d", __func__, (__bridge void*)webView, webView.loading, url, loading_count, myWebView.loadCount);
 }
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error

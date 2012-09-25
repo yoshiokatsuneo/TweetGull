@@ -66,6 +66,7 @@
 		07289E1A15CD143200C8D273 /* NSString+Parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0B15CD143200C8D273 /* NSString+Parse.m */; };
 		07289E1B15CD143200C8D273 /* ProfileImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0D15CD143200C8D273 /* ProfileImageCache.m */; };
 		07289E1C15CD143200C8D273 /* MediaImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 07289E0F15CD143200C8D273 /* MediaImageCache.m */; };
+		0733DFCF160B5A8D00FF7F04 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0733DFCE160B5A8D00FF7F04 /* Default-568h@2x.png */; };
 		073F95FC15DCF75600213A53 /* AccountTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 073F95FA15DCF75500213A53 /* AccountTableViewController.m */; };
 		073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073F95FB15DCF75600213A53 /* AccountTableViewController.xib */; };
 		073F960015DD064600213A53 /* Accounts.m in Sources */ = {isa = PBXBuildFile; fileRef = 073F95FF15DD064600213A53 /* Accounts.m */; };
@@ -250,6 +251,7 @@
 		07289E0D15CD143200C8D273 /* ProfileImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileImageCache.m; sourceTree = "<group>"; };
 		07289E0E15CD143200C8D273 /* MediaImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaImageCache.h; sourceTree = "<group>"; };
 		07289E0F15CD143200C8D273 /* MediaImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaImageCache.m; sourceTree = "<group>"; };
+		0733DFCE160B5A8D00FF7F04 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		073F95F915DCF75500213A53 /* AccountTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountTableViewController.h; sourceTree = "<group>"; };
 		073F95FA15DCF75500213A53 /* AccountTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountTableViewController.m; sourceTree = "<group>"; };
 		073F95FB15DCF75600213A53 /* AccountTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountTableViewController.xib; sourceTree = "<group>"; };
@@ -416,6 +418,7 @@
 		07289D2A15CD0B3600C8D273 = {
 			isa = PBXGroup;
 			children = (
+				0733DFCE160B5A8D00FF7F04 /* Default-568h@2x.png */,
 				079FAC2D15D554E600C50316 /* BlocksKit */,
 				079FAC2B15D554BA00C50316 /* libBlocksKit.a */,
 				0714520E15D5295D00F786B9 /* MessageUI.framework */,
@@ -914,6 +917,7 @@
 				079AD54D15CD3222000309A2 /* ticon.png in Resources */,
 				073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */,
 				07DCFE5915E41DC100B40ADB /* confirm.html in Resources */,
+				0733DFCF160B5A8D00FF7F04 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1136,6 +1140,7 @@
 		07289D7515CD0B3600C8D273 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1161,6 +1166,7 @@
 		07289D7615CD0B3600C8D273 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Tsuneo Yoshioka";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
