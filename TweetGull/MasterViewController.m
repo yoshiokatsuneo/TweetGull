@@ -415,7 +415,26 @@
 
 -(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
 {
+    NSLog(@"mode=%@\n",[NSRunLoop currentRunLoop].currentMode);
+    UIPanGestureRecognizer *recognizer = self.tableView.panGestureRecognizer;
+    CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
+    NSLog(@"state=%d, velocity=%lf", recognizer.state, velocity.y);
+    if([[NSRunLoop currentRunLoop].currentMode isEqual:UITrackingRunLoopMode /* NSRunLoopCommonModes */]){
+        sleep(0);
+        /* if dragging(!=0), and velocity is slow, update */
+        if(fabs(velocity.y) >= 50 || !(recognizer.state == UIGestureRecognizerStateChanged || recognizer.state == UIGestureRecognizerStateBegan)){
+            [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.3 inModes:@[NSRunLoopCommonModes]];
+            return;
+        }else{
+            sleep(0);
+        }
+        sleep(0);
+    }else{
+        sleep(0);
+    }
     [self updateVisibleCellsLinkItr:current_cell create:YES];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
+
 }
 -(void)updateVisibleCellsLinkIfCached:(TweetTableViewCell *)current_cell
 {
@@ -512,9 +531,12 @@
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
     [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0 inModes:@[NSDefaultRunLoopMode /* , NSRunLoopCommonModes */]];
+    [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.3 inModes:@[NSRunLoopCommonModes]];
     // [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0];
     //[self updateVisibleCellsLinkIfCached:cell];
     // [self updateVisibleCellsLink:cell];
+    CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
+    NSLog(@"###velocity=%lf\n", velocity.y);
     return cell;
 }
 
