@@ -20,19 +20,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "367621795.730137"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "305"
-         endingLineNumber = "305"
-         landmarkName = "-retweet_or_favorite:viewController:tweet_id_str:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "TweetGull/DETweetComposeViewController/DETweetPoster.m"
          timestampString = "367017865.740951"
          startingColumnNumber = "9223372036854775807"
@@ -84,11 +71,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "367503625.001833"
+         timestampString = "370357815.163678"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
+         startingLineNumber = "106"
+         endingLineNumber = "106"
          landmarkName = "-signIn:callback:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -97,11 +84,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/MasterViewController.m"
-         timestampString = "367506575.701542"
+         timestampString = "370384277.763284"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "169"
-         endingLineNumber = "169"
+         startingLineNumber = "188"
+         endingLineNumber = "188"
          landmarkName = "-initialSignIn:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -123,11 +110,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "367503625.001833"
+         timestampString = "370357815.163678"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "69"
-         endingLineNumber = "69"
+         startingLineNumber = "70"
+         endingLineNumber = "70"
          landmarkName = "-viewController:finishedWithAuth:error:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -136,11 +123,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/MasterViewController.m"
-         timestampString = "367506575.701542"
+         timestampString = "370384277.763284"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "164"
-         endingLineNumber = "164"
+         startingLineNumber = "183"
+         endingLineNumber = "183"
          landmarkName = "-initialSignIn:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -201,11 +188,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/MasterViewController.m"
-         timestampString = "367506794.926588"
+         timestampString = "370384277.763284"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "109"
-         endingLineNumber = "109"
+         startingLineNumber = "122"
+         endingLineNumber = "122"
          landmarkName = "-leftButtonActionSheet:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -213,13 +200,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "TweetGull/MasterViewController.m"
-         timestampString = "367506794.926588"
+         filePath = "TweetGull/TwitterAPI.m"
+         timestampString = "370361971.22724"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "127"
-         endingLineNumber = "127"
-         landmarkName = "-leftButtonActionSheet:"
+         startingLineNumber = "252"
+         endingLineNumber = "252"
+         landmarkName = "-fetchUsers:usersRequest:callback:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

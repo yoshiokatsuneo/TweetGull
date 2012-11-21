@@ -10,6 +10,8 @@
 #import "Tweets.h"
 #import "Tweet.h"
 #import "TweetsRequest.h"
+#import "Users.h"
+#import "UsersRequest.h"
 
 enum {TWEETS_KIND_MENSIONS = 1, TWEETS_KIND_FAVORITES, TWEETS_KIND_SEARCH};
 
@@ -19,7 +21,7 @@ enum {TWEETS_KIND_MENSIONS = 1, TWEETS_KIND_FAVORITES, TWEETS_KIND_SEARCH};
 - (void)signInReal:(UIViewController*)viewController callback:(void (^)(void))callback;
 -(void)composeTweet:(UIViewController*)viewController text:(NSString*)text in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str;
 -(void)fetchTweets:(UIViewController*)viewController tweetsRequest:(TweetsRequest*)tweetsRequest callback:(void (^)(Tweets *tweets))callback;
-
+-(void)fetchUsers:(UIViewController*)viewController usersRequest:(UsersRequest*)usersRequest callback:(void (^)(Users*))callback;
 -(Tweet *)favorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str;
 -(Tweet *)unfavorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str;
 -(Tweet *)retweet:(UIViewController*)viewController tweet_id_str:(NSString *)tweet_id_str;

@@ -9,19 +9,22 @@
 #import "Tweets.h"
 #import "Tweet.h"
 @implementation Tweets
-- (id)initWithJSONString:(NSString*)json_str
+- (id)initWithJSONArray:(NSArray *)json_array
 {
     self = [super init];
-    if(!self){return nil;}
     array = [[NSMutableArray alloc] init];
+    for(NSDictionary *item in json_array){
+        Tweet *tweet = [[Tweet alloc] initWithDictionary:item];
+        [array addObject:tweet];
+    }
+    return self;
+}
+- (id)initWithJSONString:(NSString*)json_str
+{
     NSError *error;
     NSData *json_data = [json_str dataUsingEncoding:NSUTF8StringEncoding];
     NSArray *json_array = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingMutableContainers error:&error];
-    for (NSDictionary *item in json_array) {
-        Tweet *tweet = [[Tweet alloc] initWithDictionary:item];
-        [array addObject:tweet];
-    }    
-    return self;
+    return [self initWithJSONArray:json_array];
 }
 -(NSUInteger)count
 {

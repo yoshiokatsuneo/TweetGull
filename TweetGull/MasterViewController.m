@@ -30,6 +30,10 @@
 #import "TweetsRequestMentions.h"
 #import "TweetsRequestUserTimeline.h"
 #import "TweetsRequestDirectMessages.h"
+#import "UsersTableViewController.h"
+#import "UsersRequestFriends.h"
+#import "UsersRequestFollowers.h"
+
 
 // #import <BlocksKit/UIActionSheet+BlocksKit.h>
 
@@ -65,7 +69,17 @@
     }
     [super awakeFromNib];
 }
-
+-(NSString *)screen_name
+{
+    NSString *name = nil;
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
+        name = tweetsRequestUserTimeline.user_screen_name;
+    }else{
+        name = [TwitterAPI defaultTwitterAPI].screen_name;
+    }
+    return name;
+}
 - (void)loadTitle
 {
     self.title = self.tweetsRequest.title;
@@ -125,11 +139,7 @@
     }];
     [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
         TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
-        if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
-            TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
-            tweetsRequestFavorites.user_screen_name = tweetsRequestUserTimeline.user_screen_name;
-            
-        }
+        tweetsRequestFavorites.user_screen_name = self.screen_name;
         self.nextTweetsRequest = tweetsRequestFavorites;
         [self performSegueWithIdentifier:@"showTweets" sender:self];
     }];
@@ -140,6 +150,19 @@
         [self presentModalViewController:controller animated:YES];
     }];
 
+    [sheet addButtonWithTitle:@"Friends" handler:^{
+        UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
+        usersRequest.screen_name = self.screen_name;
+        [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+    }];
+    [sheet addButtonWithTitle:@"Followers" handler:^{
+        UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
+        usersRequest.screen_name = self.screen_name;
+        [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+        
+    }];
+    
+    
     [sheet setCancelButtonWithTitle:nil handler:nil];
 
     [sheet showInView:self.view];
@@ -213,7 +236,7 @@
     }
 #endif
     
-    if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
+    if(self.tweetsRequest == nil || [self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
         UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(leftButtonActionSheet:)];
         self.navigationItem.leftBarButtonItem = leftButton;
     }
@@ -496,6 +519,10 @@
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
         masterViewController.tweetsRequest = self.nextTweetsRequest;
+    }
+    if ([[segue identifier] isEqualToString:@"showUsers"]){
+        UsersTableViewController *usersTableViewController = [segue destinationViewController];
+        usersTableViewController.usersRequest = (UsersRequest*)sender;
     }
 }
 

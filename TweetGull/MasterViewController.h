@@ -37,6 +37,8 @@
 
 @property (strong, nonatomic) TweetsRequest *tweetsRequest;
 @property (strong, nonatomic) TweetsRequest *nextTweetsRequest;
+@property(readonly) NSString *screen_name;
+
 
 -(void)fetchTweets;
 - (IBAction)logout:(id)sender;

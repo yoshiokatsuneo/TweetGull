@@ -12,5 +12,6 @@
 {
     NSMutableArray *array;
 }
+- (id)initWithJSONArray:(NSArray *)json_array;
 - (id)initWithJSONString:(NSString*)json_str;
 @end
