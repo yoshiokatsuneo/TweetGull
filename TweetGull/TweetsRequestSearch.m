@@ -16,7 +16,7 @@
 }
 -(NSString *)timeline_url
 {
-    return [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=100&include_entities=true&result_type=mixed", [self.query percentEncodeString]];
+    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/search/tweets.json?q=%@&count=100&include_entities=true&result_type=mixed", [self.query percentEncodeString]];
 }
 -(NSArray *)tweetArrayFromResponseJSONObj:(id)json_obj
 {
@@ -24,7 +24,7 @@
         return nil;
     }
     NSDictionary *json_dic = json_obj;
-    NSArray *json_array = [json_dic objectForKey:@"results"];
+    NSArray *json_array = [json_dic objectForKey:@"statuses"];
     return json_array;
 }
 @end

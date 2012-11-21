@@ -11,11 +11,11 @@
 @implementation TweetsRequestUserTimeline
 -(NSString *)title
 {
-    return [NSString stringWithFormat:@"@%@",self.user_screen_name];
+    return [NSString stringWithFormat:@"@%@",self.user.screen_name];
 }
 -(NSString *)timeline_url
 {
-    return [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?screen_name=%@&count=200&include_entities=1", self.user_screen_name];
+    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=%@&count=200&include_entities=1", self.user.screen_name];
 }
 @end
 

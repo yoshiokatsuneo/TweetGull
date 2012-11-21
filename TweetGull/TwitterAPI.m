@@ -38,11 +38,66 @@ static TwitterAPI *m_current = nil;
     }
     return m_current;
 }
+- (User*)user
+{
+    if(auth.userId && auth.screenName){
+        User *user = [[User alloc] initWithDictionary:@{@"id_str": auth.userId, @"screen_name": auth.screenName}];
+        return user;
+    }else{
+        return nil;
+    }
+}
+#if 0
 - (NSString *)screen_name
 {
     return auth.screenName;
 }
+- (NSString *)user_id
+{
+    return auth.userId;
+}
+#endif
 
+
+- (void)alertHttpResponse:(NSString*)response_str response:(NSHTTPURLResponse *)response
+{
+    NSError *error = nil;
+    id json = [NSJSONSerialization JSONObjectWithString:response_str options:0 error:&error];
+    NSDictionary *json_dic = nil;
+    if([json isKindOfClass:[NSDictionary class]]){
+        json_dic = json;
+    }
+    NSArray *json_errors = nil;
+    if(json_dic && [json_dic[@"errors"] isKindOfClass:[NSArray class]]){
+        json_errors = json_dic[@"errors"];
+    }
+    NSDictionary *json_error;
+    if(json_errors && json_errors.count > 0){
+        json_error = json_errors[0];
+    }
+    id rate_limit_limit_obj = response.allHeaderFields[@"X-Rate-Limit-Limit"];
+    int rate_limit_limit = -1;
+    if([rate_limit_limit_obj isKindOfClass:[NSString class]]){
+        rate_limit_limit = [rate_limit_limit_obj intValue];
+    }
+    id rate_limit_reset_obj = response.allHeaderFields[@"X-Rate-Limit-Reset"];
+    int rate_limit_reset = -1;
+    if([rate_limit_reset_obj isKindOfClass:[NSString class]]){
+        rate_limit_reset = [rate_limit_reset_obj intValue];
+    }
+    int wait_for = -1;
+    if(rate_limit_reset > 0 ){
+        wait_for = rate_limit_reset - time(NULL);
+    }
+
+    NSString *error_msg = nil;
+    if(response.statusCode == 429 && json_error){
+        error_msg = [NSString stringWithFormat:@"Twitter: %@ (%d request per 15min). Please wait for %d min %d sec.", json_error[@"message"], rate_limit_limit, wait_for/60, wait_for%60];
+    }else{
+        error_msg = [NSString stringWithFormat:@"Twitter(Status:%@): %@", response.allHeaderFields[@"Status"], response_str];
+    }
+    [UIAlertView alertString:error_msg];
+}
 
 - (GTMOAuthAuthentication*)getNewAuth
 {
@@ -115,7 +170,7 @@ static TwitterAPI *m_current = nil;
 }
 
 
--(void)composeTweet:(UIViewController*)viewController text:(NSString*)text in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str
+-(void)composeTweet:(UIViewController*)viewController text:(NSString*)text in_reply_to_status_id_str:(NSString*)in_reply_to_status_id_str callback:(void(^)(bool result))callback
 {
     NSString *oauth_token = auth.token;
     NSString *oauth_token_secret = auth.tokenSecret;
@@ -139,6 +194,7 @@ static TwitterAPI *m_current = nil;
                 break;
         }
         [viewController dismissModalViewControllerAnimated:YES];
+        callback(result == DETweetComposeViewControllerResultDone);
         return;
     };
     tcvc.alwaysUseDETwitterCredentials = YES;
@@ -193,7 +249,7 @@ static TwitterAPI *m_current = nil;
             }
             NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             if(response.statusCode != 200){
-                [UIAlertView alertString:response_str];
+                [self alertHttpResponse:response_str response:response];
                 callback(nil);
                 return;
             }
@@ -208,6 +264,50 @@ static TwitterAPI *m_current = nil;
         });
     });
 }
+-(void)lookupUser:(UIViewController*)viewController id_str:(NSString*)id_str callback:(void (^)(User*))callback
+{
+    NSString *url_str = [NSString stringWithFormat:@"https://api.twitter.com/1.1/users/lookup.json?user_id=%@", id_str];
+    [self sendHTTPRequestForJSON:url_str callback:^(id json_obj){
+        if(![json_obj isKindOfClass:[NSArray class]]){
+            callback(nil);
+            return;
+        }
+        NSArray *json_array = json_obj;
+        if(json_array.count == 0 || ![json_array[0] isKindOfClass:[NSDictionary class]]){
+            callback(nil);
+            return;
+        }
+        NSDictionary *user_dic = json_array[0];
+        User *user = [[User alloc] initWithDictionary:user_dic];
+        callback(user);
+    }];
+}
+
+-(void)lookupConnections:(UIViewController*)viewController id_str:(NSString*)id_str callback:(void (^)(NSArray*))callback
+{
+    NSString *url_str = [NSString stringWithFormat:@"https://api.twitter.com/1.1/friendships/lookup.json?user_id=%@", id_str];
+    [self sendHTTPRequestForJSON:url_str callback:^(id json_obj){
+        if(![json_obj isKindOfClass:[NSArray class]]){
+            callback(nil);
+            return;
+        }
+        NSArray *json_array = json_obj;
+        if(json_array.count == 0 || ![json_array[0] isKindOfClass:[NSDictionary class]]){
+            callback(nil);
+            return;
+        }
+        NSDictionary *user_dic = json_array[0];
+        if(![user_dic[@"connections"] isKindOfClass:[NSArray class]]){
+            callback(nil);
+            return;
+        }
+        NSArray *connections = user_dic[@"connections"];
+        callback(connections);
+    }];
+}
+
+
+
 
 -(void)fetchUsers:(UIViewController*)viewController usersRequest:(UsersRequest*)usersRequest callback:(void (^)(Users*))callback
 {
@@ -231,7 +331,7 @@ static TwitterAPI *m_current = nil;
             int len = MIN(100, ids.count - index*100);
             NSArray *ids100 = [ids subarrayWithRange:NSMakeRange(index*100, len)];
             NSString *ids_str = [ids100 componentsJoinedByString:@","];
-            NSString *users_lookup_url = [NSString stringWithFormat:@"https://api.twitter.com/1/users/lookup.json?user_id=%@&include_entities=true", ids_str];
+            NSString *users_lookup_url = [NSString stringWithFormat:@"https://api.twitter.com/1.1/users/lookup.json?user_id=%@&include_entities=true", ids_str];
             [self sendHTTPRequestForJSON:users_lookup_url callback:^(id json){
                 if(json == nil || ![json isKindOfClass:[NSArray class]]){
                     ;
@@ -275,6 +375,38 @@ static TwitterAPI *m_current = nil;
 }
 #endif
 
+-(id)postRequest:(NSString*)url postString:(NSString*)postString viewController:(UIViewController*)viewController
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    [auth authorizeRequest:request];
+    NSError *error = nil;
+    NSHTTPURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"===========(%s:response)===============================", __func__);
+    NSLog(@"%@", response_str);
+    NSLog(@"=======================================================");
+    if(response.statusCode != 200){
+        [self alertHttpResponse:response_str response:response];
+        return nil;
+    }
+    id json_obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    if(json_obj == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    return json_obj;
+}
+
+#if 0
 -(Tweet *)retweet_or_favorite:(NSString*)api_url viewController:(UIViewController*)viewController tweet_id_str:(NSString *)tweet_id_str
 {
     NSString *urlstr = [NSString stringWithFormat:@"%@%@.json?include_entities=true",api_url,tweet_id_str];
@@ -308,6 +440,20 @@ static TwitterAPI *m_current = nil;
 {
     return [self retweet_or_favorite:@"http://api.twitter.com/1/statuses/retweet/" viewController:viewController tweet_id_str:tweet_id_str];
 }
+-(void)unretweet:(UIViewController *)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    Tweet *tweet = [self getTweet:tweet_id_str];
+    if(!tweet){
+        return;
+    }
+    
+    NSDictionary *current_user_retweet = [tweet objectForKey:@"current_user_retweet"];
+    NSString *current_user_retweet_id_str = [current_user_retweet objectForKey:@"id_str"];
+    
+    
+    [self destroyTweet:viewController tweet_id_str:current_user_retweet_id_str];
+    
+}
 -(Tweet *)favorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
 {
     return [self retweet_or_favorite:@"https://api.twitter.com/1/favorites/create/" viewController:viewController tweet_id_str:tweet_id_str];
@@ -316,9 +462,6 @@ static TwitterAPI *m_current = nil;
 {
     return [self retweet_or_favorite:@"https://api.twitter.com/1/favorites/destroy/" viewController:viewController tweet_id_str:tweet_id_str];
 }
-
-
-
 -(Tweet*)destroyTweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
 {
     
@@ -346,30 +489,19 @@ static TwitterAPI *m_current = nil;
     return tweet;
     
 }
--(Tweet*)getTweet:(NSString*)tweet_id_str
+
+#endif
+
+-(Tweet*)retweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
 {
-    NSString *urlstr = [NSString stringWithFormat:@"http://api.twitter.com/1/statuses/show/%@.json?include_entities=true&include_my_retweet=true", tweet_id_str];
-    NSURL *url = [NSURL URLWithString:urlstr];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPShouldHandleCookies:NO];
-    [auth authorizeRequest:request];
-    NSError *error = nil;
-    NSHTTPURLResponse *response = nil;
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    if(data == nil){
-        [UIAlertView alertError:error];
+    NSString *url_str = [NSString stringWithFormat: @"https://api.twitter.com/1.1/statuses/retweet/%@.json", tweet_id_str];
+    id json_obj = [self postRequest:url_str postString:nil viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
     }
-    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if(response.statusCode != 200){
-        [UIAlertView alertString:response_str];
-        return nil;
-    }
-    
-    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_dic];
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
     return tweet;
-    
 }
 -(void)unretweet:(UIViewController *)viewController tweet_id_str:(NSString*)tweet_id_str
 {
@@ -385,6 +517,95 @@ static TwitterAPI *m_current = nil;
     [self destroyTweet:viewController tweet_id_str:current_user_retweet_id_str];
     
 }
+-(Tweet *)favorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str;
+{
+    NSString *url_str = @"https://api.twitter.com/1.1/favorites/create.json";
+    NSString *body_str = [NSString stringWithFormat:@"id=%@", tweet_id_str];
+    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
+    return tweet;
+}
+-(Tweet*)unfavorite:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
+{
+    NSString *url_str = @"https://api.twitter.com/1.1/favorites/destroy.json";
+    NSString *body_str = [NSString stringWithFormat:@"id=%@", tweet_id_str];
+    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
+    return tweet;
+}
+-(User*)follow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str
+{
+    NSString *url_str = @"https://api.twitter.com/1/friendships/create.json";
+    // NSString *url_str = @"https://api.twitter.com/1/friendships/create.json";
+    NSString *body_str = [NSString stringWithFormat:@"user_id=%@", user_id_str];
+    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    // id json_obj = [self postRequest:url_str postString:@"screen_name=aiueoyoshtstmp2" viewController:viewController];
+    //id json_obj = [self postRequest:url_str postString:@"user_id=4" viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    User *user = [[User alloc] initWithDictionary:json_obj];
+    return user;
+}
+-(User*)unfollow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str
+{
+    NSString *url_str = @"https://api.twitter.com/1.1/friendships/destroy.json";
+    NSString *body_str = [NSString stringWithFormat:@"user_id=%@", user_id_str];
+    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    User *user = [[User alloc] initWithDictionary:json_obj];
+    return user;
+}
+-(Tweet*)destroyTweet:(UIViewController *)viewController tweet_id_str:(NSString *)tweet_id_str
+{
+    NSString *url_str = [NSString stringWithFormat: @"https://api.twitter.com/1.1/statuses/destroy/%@.json", tweet_id_str];
+    id json_obj = [self postRequest:url_str postString:nil viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
+    return tweet;
+}
+
+-(Tweet*)getTweet:(NSString*)tweet_id_str
+{
+    NSString *urlstr = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/show.json?id=%@&include_entities=true&include_my_retweet=true", tweet_id_str];
+    NSURL *url = [NSURL URLWithString:urlstr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPShouldHandleCookies:NO];
+    [auth authorizeRequest:request];
+    NSError *error = nil;
+    NSHTTPURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data == nil){
+        [UIAlertView alertError:error];
+        return nil;
+    }
+    NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if(response.statusCode != 200){
+        [self alertHttpResponse:response_str response:response];
+        return nil;
+    }
+    
+    NSDictionary *json_dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_dic];
+    return tweet;
+    
+}
+
 -(void)signOut
 {
     [GTMOAuthViewControllerTouch removeParamsFromKeychainForName:kTwitterKeychainItemName];
@@ -399,5 +620,6 @@ static TwitterAPI *m_current = nil;
 {
     auth = [self getNewAuth];
     [auth setKeysForPersistenceResponseString:authPersistenceResponseString];
+    // auth.nonce = @"f52523d67d3ed17d4cee53f2ad96f664";
 }
 @end

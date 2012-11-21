@@ -9,6 +9,7 @@
 #import "Tweet.h"
 #import "NSString+Parse.h"
 #import "google-toolbox-for-mac/GTMNSString+HTML.h"
+#import "NSString+Encoder.h"
 
 @implementation Tweet
 @synthesize retweeted_status;
@@ -151,6 +152,51 @@
     NSString *unescape_str = [t gtm_stringByUnescapingFromHTML];
     return unescape_str;
 }
+
+-(NSString*)display_html
+{
+    
+    NSMutableString *t = [NSMutableString stringWithString:self.text];
+    NSArray *urls = self.entities_urls_and_media;
+    NSArray *user_mentions = self.origTweet[@"entities"][@"user_mentions"];
+    NSMutableArray *entities_contents = [[NSMutableArray alloc] init];
+    [entities_contents addObjectsFromArray:urls];
+    [entities_contents addObjectsFromArray:user_mentions];
+    [entities_contents sortUsingComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2){
+        NSArray *indices1 = obj1[@"indices"];
+        NSArray *indices2 = obj2[@"indices"];
+        id indices1_1 = indices1[0];
+        id indices2_1 = indices2[0];
+        return [indices1_1 compare:indices2_1];
+    }];
+    
+    for(NSDictionary *item in entities_contents.reverseObjectEnumerator){
+        NSArray *indices = [item objectForKey:@"indices"];
+        int index_from = [[indices objectAtIndex:0] intValue];
+        int index_to = [[indices objectAtIndex:1] intValue];
+        NSString *display_url = [item objectForKey:@"display_url"];
+        NSString *id_str = [item objectForKey:@"id_str"];
+        NSString *replaced_str = nil;
+        if(display_url){
+            replaced_str = display_url;
+        }else if(id_str){
+            NSDictionary *user_dic = @{@"id_str":item[@"id_str"], @"screen_name":item[@"screen_name"]};
+            NSError *error = nil;
+            NSData *user_json_data = [NSJSONSerialization dataWithJSONObject:user_dic options:0 error:&error];
+            NSString *user_json_str = [[NSString alloc] initWithData:user_json_data encoding:NSUTF8StringEncoding];
+            
+            NSString *linkString = [NSString stringWithFormat:@"<a href=\"http://tweet_user/%@\"  style=\"text-decoration:none\">@%@</a>", [user_json_str percentEncodeString], item[@"screen_name"]];
+            replaced_str = linkString;
+        }
+        if(replaced_str){
+            [t replaceCharactersInRange:NSMakeRange(index_from, index_to - index_from) withString:replaced_str];
+        }
+    }
+    return t;
+}
+
+
+#if 0
 -(NSString*)display_html
 {
     NSString *t = [self display_text_without_unescape_html];
@@ -191,12 +237,25 @@
     
     return t;
 }
+#endif
 
-
--(NSDictionary*)orig_user
+-(User*)orig_user
 {
-    return [self.origTweet objectForKey:@"user"];
+    NSDictionary *dic2 = [self.origTweet objectForKey:@"user"];
+    User *user = [[User alloc] initWithDictionary:dic2];
+    return user;
 }
+-(User*)retweet_user
+{
+    if(self.retweeted_status){
+        NSDictionary *userdic = self[@"user"];
+        User *user = [[User alloc] initWithDictionary:userdic];
+        return user;
+    }else{
+        return nil;
+    }
+}
+#if 0
 -(NSString *)user_name
 {
     NSString *str = [self objectForKey:@"from_user_name"];
@@ -241,6 +300,8 @@
         return nil;
     }
 }
+#endif
+
 -(NSString *)urlString
 {
     if(self.entities_urls_and_media && self.entities_urls_and_media.count > 0){

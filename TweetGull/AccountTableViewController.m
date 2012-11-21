@@ -159,9 +159,9 @@
 - (IBAction)addAccount:(id)sender {
     TwitterAPI *twitterAPI = [[TwitterAPI alloc] init];
     [twitterAPI signInReal:self callback:^{
-        if(twitterAPI.screen_name){
+        if(twitterAPI.user.screen_name){
             NSString *password = twitterAPI.authPersistenceResponseString;
-            [accounts setPassword:password forAccount:twitterAPI.screen_name];
+            [accounts setPassword:password forAccount:twitterAPI.user.screen_name];
             [tableView reloadData];
         }
     }];

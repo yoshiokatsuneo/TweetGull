@@ -15,8 +15,14 @@
 #import "TwitterAPI.h"
 #import "TweetsRequestUserTimeline.h"
 #import "TweetsRequestRelated.h"
+#import "NSJSONSerialization+string.h"
+#import "UIAlertView+alert.h"
+#import "BlocksKit.h"
 
 @interface DetailViewController ()
+{
+    id observerWebViewDidFinishLoad;
+}
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
 @end
@@ -122,12 +128,29 @@
     }        
 }
 #endif
+
+- (void)configureTitle
+{
+    NSMutableArray *barButtons = [[NSMutableArray alloc] init];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(startActionSheet:)];
+    [barButtons addObject:addButton];
+    self.navigationItem.rightBarButtonItem = addButton;
+    if(self.webView){
+        if([self.webView canGoBack]){
+            UIBarButtonItem *rewindButton = [[UIBarButtonItem alloc] initWithTitle:@"\U000025C0\U0000FE0E" style:UIBarButtonItemStylePlain handler:^(id sender){
+                [[self webView] goBack];
+            }];
+            [barButtons addObject:rewindButton];
+        }
+    }
+    self.navigationItem.rightBarButtonItems = barButtons;
+}
 - (void)configureView
 {
     // Update the user interface for the detail item.
 
     if (self.tweet) {
-        self.nameLabel.text = self.tweet.user_name;
+        self.nameLabel.text = self.tweet.orig_user.name;
         // self.tweetTextView.text = self.tweet.display_text;
 #if 0
         
@@ -143,8 +166,8 @@
         
         
         // [self.tweetTextView setValue:self.tweet.htmlText forKey:@"contentToHTMLString"];
-        self.retweetUserNameLabel.text = self.tweet.retweet_user_name;
-        self.retweetUserNameButton.enabled = (self.tweet.retweet_user_name != nil);
+        self.retweetUserNameLabel.text = self.tweet.retweet_user.name;
+        self.retweetUserNameButton.enabled = (self.tweet.retweet_user.name != nil);
         self.created_atLabel.text = self.tweet.created_at_str;
         self.retweetedLabel.hidden = (self.tweet.retweeted == NO);
         self.favoritedLabel.hidden = (self.tweet.favorited == NO);
@@ -168,10 +191,15 @@
         
             MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url];
             self.webView = aWebView;
+            
+            NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+            observerWebViewDidFinishLoad =[center addObserverForName:@"observerWebViewDidFinishLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
+                [self configureTitle];
+            }];
         }
         
         ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
-        self.profileImage.image = [profileImageCache getImage:self.tweet.user_screen_name];
+        self.profileImage.image = [profileImageCache getImage:self.tweet.orig_user.screen_name];
 #if 0
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *imageUrl = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
@@ -182,6 +210,7 @@
                             
         });
 #endif
+        [self configureTitle];
     }
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -190,8 +219,8 @@
         return;
     }
     if(buttonIndex == 1 /*Reply*/){
-        NSString *text = [NSString stringWithFormat:@"@%@ ",self.tweet.user_screen_name];
-        [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text in_reply_to_status_id_str:self.tweet.id_str];
+        NSString *text = [NSString stringWithFormat:@"@%@ ",self.tweet.orig_user.screen_name];
+        [[TwitterAPI defaultTwitterAPI] composeTweet:self text:text in_reply_to_status_id_str:self.tweet.id_str callback:nil];
     }else if(buttonIndex == 2 /* Retweet */){
         if(self.tweet.retweeted){
             [[TwitterAPI defaultTwitterAPI] unretweet:self tweet_id_str:self.tweet.id_str ];
@@ -213,7 +242,7 @@
             [self configureView];
         }
     }else if (buttonIndex == 4){
-        NSString *urlstr = [NSString stringWithFormat:@"https://mobile.twitter.com/%@/status/%@", self.tweet.user_screen_name, self.tweet.id_str];
+        NSString *urlstr = [NSString stringWithFormat:@"https://mobile.twitter.com/%@/status/%@", self.tweet.orig_user.screen_name, self.tweet.id_str];
         NSURL *url = [NSURL URLWithString:urlstr];
         [[UIApplication sharedApplication] openURL:url];
     }else if (buttonIndex == 5){
@@ -246,9 +275,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     // [self configureView];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(startActionSheet:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-
 }
 
 - (void)viewDidUnload
@@ -273,6 +299,13 @@
 {
     sleep(0);
     [self configureView];
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    if(observerWebViewDidFinishLoad){
+        [center removeObserver:observerWebViewDidFinishLoad];
+    }
 }
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -312,9 +345,17 @@
     if([urlstr isEqual:@"http://dummy.example.com/"]){
         return YES;
     }
-    if([[urlstr substringToIndex:19] isEqual:@"http://screen_name:"]){
-        NSString *screen_name2 = [urlstr substringFromIndex:19];
-        [self performSegueWithIdentifier:@"showTweets" sender:screen_name2];
+    if([[urlstr substringToIndex:18] isEqual:@"http://tweet_user/"]){
+        NSString *tweet_user_str_percent = [urlstr substringFromIndex:18];
+        NSString *tweet_user_str = [tweet_user_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSError *error = nil;
+        if(error){
+            [UIAlertView alertError:error];
+            return NO;
+        }
+        NSDictionary *tweet_user_dic = [NSJSONSerialization JSONObjectWithString:tweet_user_str options:0 error:&error];
+        User *user = [[User alloc] initWithDictionary:tweet_user_dic];
+        [self performSegueWithIdentifier:@"showTweets" sender:user];
     }
     sleep(0);
     return NO;
@@ -325,17 +366,18 @@
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
         TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
-        if([sender isKindOfClass:[NSString class]]){
-            tweetsRequestUserTimeline.user_screen_name = sender;
+        if([sender isKindOfClass:[User class]]){
+            tweetsRequestUserTimeline.user = sender;
+            // tweetsRequestUserTimeline.id_str = sender.id_str;
         }else{
-            tweetsRequestUserTimeline.user_screen_name = self.tweet.user_screen_name;
+            tweetsRequestUserTimeline.user = self.tweet.orig_user;
         }
         masterViewController.tweetsRequest = tweetsRequestUserTimeline;
     }
     if ([[segue identifier] isEqualToString:@"showRetweetTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
         TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
-        tweetsRequestUserTimeline.user_screen_name = self.tweet.retweet_screen_name;
+        tweetsRequestUserTimeline.user = self.tweet.retweet_user;
         masterViewController.tweetsRequest =tweetsRequestUserTimeline;
     }
     if ([segue.identifier isEqualToString:@"showRelatedTweets"]){

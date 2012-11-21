@@ -150,11 +150,11 @@
 {
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         NSInteger index = self.tableView.indexPathForSelectedRow.row;
-        NSDictionary *user = users[index];
+        NSDictionary *user_dic = users[index];
         
         MasterViewController *masterViewController = [segue destinationViewController];
         TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
-        tweetsRequestUserTimeline.user_screen_name = user[@"screen_name"];
+        tweetsRequestUserTimeline.user = [[User alloc] initWithDictionary:user_dic];
         masterViewController.tweetsRequest = tweetsRequestUserTimeline;
     }
 }

@@ -40,6 +40,8 @@
 @interface MasterViewController () {
     Tweets *tweets;
     NSMutableDictionary *tweetWebViewDic;
+    User *user_;
+    NSArray *connections;
 }
 @end
 
@@ -69,6 +71,29 @@
     }
     [super awakeFromNib];
 }
+-(User*)summary_user
+{
+    User *user = nil;
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
+        user = tweetsRequestUserTimeline.user;
+    }else{
+        user = [TwitterAPI defaultTwitterAPI].user;
+    }
+    return user;
+}
+-(User*)user
+{
+    if(user_){
+        return user_;
+    }
+    return [self summary_user];
+}
+-(void)setUser:(User *)user
+{
+    user_ = user;
+}
+#if 0
 -(NSString *)screen_name
 {
     NSString *name = nil;
@@ -80,6 +105,19 @@
     }
     return name;
 }
+-(NSString *)id_str
+{
+    NSString *name = nil;
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
+        ; //name = tweetsRequestUserTimeline.id_str;
+    }else{
+        name = [TwitterAPI defaultTwitterAPI].user_id;
+    }
+    return name;
+}
+#endif
+
 - (void)loadTitle
 {
     self.title = self.tweetsRequest.title;
@@ -101,9 +139,11 @@
     tweets = nil;
     [self loadCurrentAccount];
     [self.tableView reloadData];
+
+    self.tweetsRequest = nil;
     [self fetchTweets];
 }
-- (void)leftButtonActionSheet:(id)sender
+- (void)rightButtonActionSheet:(id)sender
 {
     UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
 
@@ -115,6 +155,18 @@
     [sheet addButtonWithTitle:@"Logout" handler:^{
         [[TwitterAPI defaultTwitterAPI] signOut];
     }];
+    
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        if([connections containsObject:@"following"]){
+            [sheet addButtonWithTitle:[NSString stringWithFormat:@"Unfollow @%@", self.user.screen_name] handler:^{
+                [[TwitterAPI defaultTwitterAPI] unfollow:self user_id_str:self.user.id_str];
+            }];
+        }else{
+            [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@", self.user.screen_name] handler:^{
+                [[TwitterAPI defaultTwitterAPI] follow:self user_id_str:self.user.id_str];
+            }];
+        }
+    }
     
     [sheet addButtonWithTitle:@"\U0001F50D Search" handler:^{
         UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
@@ -139,7 +191,7 @@
     }];
     [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
         TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
-        tweetsRequestFavorites.user_screen_name = self.screen_name;
+        tweetsRequestFavorites.user_screen_name = self.user.screen_name;
         self.nextTweetsRequest = tweetsRequestFavorites;
         [self performSegueWithIdentifier:@"showTweets" sender:self];
     }];
@@ -152,12 +204,12 @@
 
     [sheet addButtonWithTitle:@"Friends" handler:^{
         UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
-        usersRequest.screen_name = self.screen_name;
+        usersRequest.screen_name = self.user.screen_name;
         [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
     }];
     [sheet addButtonWithTitle:@"Followers" handler:^{
         UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
-        usersRequest.screen_name = self.screen_name;
+        usersRequest.screen_name = self.user.screen_name;
         [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
         
     }];
@@ -182,11 +234,11 @@
 {
     TwitterAPI *tmpTwitterAPI = [[TwitterAPI alloc] init ];
     [tmpTwitterAPI signInReal:self callback:^{
-        if(tmpTwitterAPI.screen_name){
+        if(tmpTwitterAPI.user.screen_name){
             NSString *password = tmpTwitterAPI.authPersistenceResponseString;
             Accounts *accounts = [Accounts defaultAccounts];
-            [accounts setPassword:password forAccount:tmpTwitterAPI.screen_name];
-            [Accounts setCurrentAccount:tmpTwitterAPI.screen_name];
+            [accounts setPassword:password forAccount:tmpTwitterAPI.user.screen_name];
+            [Accounts setCurrentAccount:tmpTwitterAPI.user.screen_name];
             callback();
         }else{
             [self initialSignIn:callback];
@@ -200,10 +252,10 @@
     
     
     TwitterAPI *twitterAPI = [TwitterAPI defaultTwitterAPI];
-    if(twitterAPI.screen_name == nil){
+    if(twitterAPI.user.screen_name == nil){
         [self loadCurrentAccount];
     }
-    if(twitterAPI.screen_name == nil){
+    if(twitterAPI.user.screen_name == nil){
         [self initialSignIn:^{
             [self loadCurrentAccount];
             [self fetchTweets];
@@ -222,7 +274,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(insertNewObject:)];
 #if 0
     if(self.user_screen_name == nil && self.search_query == nil && self.tweet_for_related == nil){
 #if 0
@@ -236,12 +287,14 @@
     }
 #endif
     
-    if(self.tweetsRequest == nil || [self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
-        UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(leftButtonActionSheet:)];
-        self.navigationItem.leftBarButtonItem = leftButton;
-    }
+    //if(self.tweetsRequest == nil || [self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightButtonActionSheet:)];
+        self.navigationItem.rightBarButtonItem = rightButton;
+    //}
     
-    self.navigationItem.rightBarButtonItem = addButton;
+    // UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(insertNewObject:)];
+    // self.navigationItem.rightBarButtonItem = addButton;
+    
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
 }
@@ -281,7 +334,12 @@
 
 - (void)insertNewObject:(id)sender
 {
-    [[TwitterAPI defaultTwitterAPI] composeTweet:self text:@"" in_reply_to_status_id_str:nil];
+    [[TwitterAPI defaultTwitterAPI] composeTweet:self text:@"" in_reply_to_status_id_str:nil callback:^(bool result){
+        if(result){
+            [self performSelector:@selector(fetchTweets) withObject:nil afterDelay:0.5];
+            // [self fetchTweets];
+        }
+    }];
 }
 
 #pragma mark - Table View
@@ -350,6 +408,9 @@
     }
     
     tweetWebViewDic = new_dic;
+
+    // Stop scrolling
+    // [self.tableView setContentOffset:self.tableView.contentOffset animated:NO];
 }
 
 -(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
@@ -385,8 +446,8 @@
     // cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@", name];
     // cell.imageView.image = nil;
     cellViewController.tweetText.text = tweet.display_text;
-    cellViewController.userNameLabel.text = tweet.user_name;
-    cellViewController.retweetUserNameLabel.text = tweet.retweet_user_name;
+    cellViewController.userNameLabel.text = tweet.orig_user.name;
+    cellViewController.retweetUserNameLabel.text = tweet.retweet_user.name;
     cellViewController.profileImageView.image = nil;
     cellViewController.progressView.progress = 0.0;
     cellViewController.progressView.hidden = YES;
@@ -397,15 +458,15 @@
     // cell.imageView.image = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
     
     ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
-    cellViewController.profileImageView.image= [profileImageCache getImage:tweet.user_screen_name];
+    cellViewController.profileImageView.image= [profileImageCache getImage:tweet.orig_user.screen_name];
 
     if(cellViewController.profileImageView.image == nil){
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSString *imageUrl = tweet.user_profile_image_url;
+            NSString *imageUrl = tweet.orig_user.profile_image_url;
             NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage *image = [UIImage imageWithData:data];
-                [profileImageCache addImage:image screen_name:tweet.user_screen_name];
+                [profileImageCache addImage:image screen_name:tweet.orig_user.screen_name];
                 if(tweet == cell.viewController.tweet){
                     cellViewController.profileImageView.image = image;
                     // [cell.imageView setNeedsDisplay];
@@ -450,7 +511,8 @@
     }
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
-    [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0];
+    [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0 inModes:@[NSDefaultRunLoopMode /* , NSRunLoopCommonModes */]];
+    // [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0];
     //[self updateVisibleCellsLinkIfCached:cell];
     // [self updateVisibleCellsLink:cell];
     return cell;
@@ -528,9 +590,10 @@
 
 -(void)fetchTweets
 {
+    NSLog(@"=======fetchtweet========");
     if(self.tweetsRequest == nil){
         TweetsRequestHomeTimeline *tweetsRequestHomeTimeline = [[TweetsRequestHomeTimeline alloc] init];
-        tweetsRequestHomeTimeline.screen_name = [TwitterAPI defaultTwitterAPI].screen_name;
+        tweetsRequestHomeTimeline.user = [TwitterAPI defaultTwitterAPI].user;
         self.tweetsRequest = tweetsRequestHomeTimeline;
     }
     [self loadTitle];
@@ -538,7 +601,16 @@
         tweets = tweets_;
         [self.tableView reloadData];
         [self stopLoading];
-        
+        if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+#if 0
+            [[TwitterAPI defaultTwitterAPI] lookupUser:self id_str:self.user.id_str callback:^(User *user2){
+                self.user = user2;
+            }];
+#endif
+            [[TwitterAPI defaultTwitterAPI] lookupConnections:self id_str:self.user.id_str callback:^(NSArray* connections_){
+                connections = connections_;
+            }];
+        }
     } ];
 }
 #if 0
@@ -622,9 +694,16 @@
     
 }
 
+#if 0
 -(void)webViewCacheUpdateCounter:(NSString *)url start_counter:(int)start_counter finish_counter:(int)finish_counter
 {
     [self updateProgress:url progress:(1.0*finish_counter)/(1.0*start_counter)];
+}
+#endif
+
+-(void)webViewCacheUpdateProgress:(NSString *)url progress:(double)progress
+{
+    [self updateProgress:url progress:progress];
 }
 -(void)webViewCacheDidFinishLoad:(NSString *)url
 {

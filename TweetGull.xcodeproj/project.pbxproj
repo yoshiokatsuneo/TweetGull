@@ -146,6 +146,7 @@
 		079AD55215CD3976000309A2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079AD55115CD3975000309A2 /* Twitter.framework */; };
 		079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 079FAC2B15D554BA00C50316 /* libBlocksKit.a */; };
 		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
+		07BA47F71625A62400C91307 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BA47F61625A62400C91307 /* User.m */; };
 		07DCFE5915E41DC100B40ADB /* confirm.html in Resources */ = {isa = PBXBuildFile; fileRef = 07DCFE5815E41DC100B40ADB /* confirm.html */; };
 /* End PBXBuildFile section */
 
@@ -397,6 +398,12 @@
 		079FAC4C15D554E600C50316 /* UIWebView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+BlocksKit.h"; sourceTree = "<group>"; };
 		07ABBBF115D1552A0023890E /* TwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAPI.h; sourceTree = "<group>"; };
 		07ABBBF215D1552A0023890E /* TwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAPI.m; sourceTree = "<group>"; };
+		07BA47F51625A62400C91307 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		07BA47F61625A62400C91307 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		07D7FFB216304354008D3C55 /* UIWebDocumentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIWebDocumentView.h; sourceTree = "<group>"; };
+		07D7FFB316304354008D3C55 /* WAKResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAKResponder.h; sourceTree = "<group>"; };
+		07D7FFB416304354008D3C55 /* WAKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAKView.h; sourceTree = "<group>"; };
+		07D7FFB516304354008D3C55 /* WebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebView.h; sourceTree = "<group>"; };
 		07DCFE5815E41DC100B40ADB /* confirm.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = confirm.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -436,6 +443,7 @@
 		07289D2A15CD0B3600C8D273 = {
 			isa = PBXGroup;
 			children = (
+				07D7FFB116304354008D3C55 /* WebViewHeaders */,
 				0733DFCE160B5A8D00FF7F04 /* Default-568h@2x.png */,
 				079FAC2D15D554E600C50316 /* BlocksKit */,
 				079FAC2B15D554BA00C50316 /* libBlocksKit.a */,
@@ -508,6 +516,8 @@
 				07289E0515CD143200C8D273 /* MyWebView.m */,
 				0709B2E91612549F00D59597 /* Users.h */,
 				0709B2EA1612549F00D59597 /* Users.m */,
+				07BA47F51625A62400C91307 /* User.h */,
+				07BA47F61625A62400C91307 /* User.m */,
 				07289E0615CD143200C8D273 /* Tweets.h */,
 				07289E0715CD143200C8D273 /* Tweets.m */,
 				07289E0815CD143200C8D273 /* Tweet.h */,
@@ -845,6 +855,17 @@
 			path = BlocksKit;
 			sourceTree = "<group>";
 		};
+		07D7FFB116304354008D3C55 /* WebViewHeaders */ = {
+			isa = PBXGroup;
+			children = (
+				07D7FFB216304354008D3C55 /* UIWebDocumentView.h */,
+				07D7FFB316304354008D3C55 /* WAKResponder.h */,
+				07D7FFB416304354008D3C55 /* WAKView.h */,
+				07D7FFB516304354008D3C55 /* WebView.h */,
+			);
+			path = WebViewHeaders;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1060,6 +1081,7 @@
 				077F75921613484200283971 /* UsersRequest.m in Sources */,
 				077F75951613488D00283971 /* UsersRequestFollowers.m in Sources */,
 				077F759816134E3B00283971 /* UsersRequestFriends.m in Sources */,
+				07BA47F71625A62400C91307 /* User.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

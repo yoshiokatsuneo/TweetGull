@@ -71,13 +71,20 @@
     self.webView = nil;
 }
 
+//-(void)delayedSetNeedsLayout:(id)dummy
+//{
+//    [mediaWebView_ setNeedsLayout];
+//}
 -(void)setMediaWebView:(UIView *)mediaWebView
 {
     [mediaWebView_ removeFromSuperview];
     
     CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
     [mediaWebView setFrame:frame];
+    
+    // [self performSelector:@selector(delayedSetNeedsLayout:) withObject:nil afterDelay:0.0 inModes:@[NSDefaultRunLoopMode]];
     [mediaWebView setNeedsLayout];
+    
     mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.webViewSuperView addSubview:mediaWebView];
     mediaWebView_ = mediaWebView;

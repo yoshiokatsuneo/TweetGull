@@ -7,7 +7,8 @@
 //
 
 #import "TweetsRequest.h"
+#import "User.h"
 
 @interface TweetsRequestUserTimeline : TweetsRequest
-@property NSString * user_screen_name;
+@property User *user;
 @end

@@ -14,12 +14,12 @@
 
 @protocol WebViewCacheDelegate <NSObject>
 
--(void)webViewCacheUpdateCounter:(NSString*)url start_counter:(int)start_counter finish_counter:(int)finish_counter;
+-(void)webViewCacheUpdateProgress:(NSString*)url progress:(double)progress;
 -(void)webViewCacheDidFinishLoad:(NSString*)url;
 -(void)webViewLost:(NSString*)url;
 @end
 
-@interface WebViewCache : NSObject<UIWebViewDelegate>
+@interface WebViewCache : NSObject<UIWebViewDelegate,WebViewProgressEstimateChanged>
 {
     LRUCache *cache;
     int loading_count;

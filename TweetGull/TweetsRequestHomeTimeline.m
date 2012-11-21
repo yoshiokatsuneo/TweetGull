@@ -13,10 +13,10 @@
 {
     // U+1F3E0 = emoji for Home
     // return [NSString stringWithFormat:@"\ue415\n(@%@)", self.screen_name];
-    return [NSString stringWithFormat:@"\U0001F3E0@%@", self.screen_name];
+    return [NSString stringWithFormat:@"\U0001F3E0@%@", self.user.screen_name];
 }
 -(NSString *)timeline_url
 {
-    return @"http://api.twitter.com/1/statuses/home_timeline.json?count=200&include_entities=1";
+    return @"https://api.twitter.com/1.1/statuses/home_timeline.json?count=200&include_entities=1";
 }
 @end

@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class MyWebView;
+
+@protocol WebViewProgressEstimateChanged <NSObject>
+-(void)webView:(MyWebView*) webView progressEstimatedChanged:(double)progress;
+@end
+
 @interface MyWebView : UIWebView<UIWebViewDelegate>
 {
-    id<UIWebViewDelegate> next_delegate;
+    id<UIWebViewDelegate,WebViewProgressEstimateChanged> next_delegate;
 }
 @property int startLoadCount;
 @property int finishLoadCount;

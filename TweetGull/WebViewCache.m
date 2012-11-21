@@ -142,7 +142,8 @@ static WebViewCache *webViewCache = nil;
 {
     MyWebView *myWebView = (MyWebView*) webView;
     NSString * url = myWebView.startURL;
-    [delegate webViewCacheUpdateCounter:url start_counter:myWebView.startLoadCount finish_counter:myWebView.finishLoadCount];
+    
+    // [delegate webViewCacheUpdateProgress:url progress:(1.0*myWebView.finishLoadCount)/(1.0*myWebView.startLoadCount)];
     
     if(loading_count == 0){
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -162,7 +163,7 @@ static WebViewCache *webViewCache = nil;
     // if(webView.loading){return;}
     NSString *url = myWebView.startURL;
 
-    [delegate webViewCacheUpdateCounter:url start_counter:myWebView.startLoadCount finish_counter:myWebView.finishLoadCount];    
+    // [delegate webViewCacheUpdateProgress:url progress:(1.0*myWebView.finishLoadCount)/(1.0*myWebView.startLoadCount)];
     
     if(myWebView.loadCount == 0){
         [delegate webViewCacheDidFinishLoad:url];
@@ -175,6 +176,13 @@ static WebViewCache *webViewCache = nil;
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     NSLog(@"%s: url=%@, error=%@", __func__, ((MyWebView*)webView).startURL, error);
+}
+-(void)webView:(MyWebView *)webView progressEstimatedChanged:(double)progress
+{
+    MyWebView *myWebView = (MyWebView*)webView;
+    NSString *url = myWebView.startURL;
+    [delegate webViewCacheUpdateProgress:url progress:progress];
+    NSLog(@"%s: url=%@, progress=%lf", __func__, url, progress);
 }
 @end
 

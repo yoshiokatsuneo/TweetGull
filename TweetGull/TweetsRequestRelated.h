@@ -10,6 +10,5 @@
 #import "Tweet.h"
 
 @interface TweetsRequestRelated : TweetsRequest
-
 @property Tweet *tweet;
 @end
