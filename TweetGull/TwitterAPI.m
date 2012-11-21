@@ -68,13 +68,20 @@ static TwitterAPI *m_current = nil;
         json_dic = json;
     }
     NSArray *json_errors = nil;
-    if(json_dic && [json_dic[@"errors"] isKindOfClass:[NSArray class]]){
-        json_errors = json_dic[@"errors"];
+    if(json_dic){
+        if([json_dic[@"errors"] isKindOfClass:[NSArray class]]){
+            json_errors = json_dic[@"errors"];
+        }else if([json_dic[@"error"] isKindOfClass:[NSString class]]){
+            json_errors = @[json_dic[@"error"]];
+        }
     }
     NSDictionary *json_error;
     if(json_errors && json_errors.count > 0){
         json_error = json_errors[0];
     }
+    
+    
+    
     id rate_limit_limit_obj = response.allHeaderFields[@"X-Rate-Limit-Limit"];
     int rate_limit_limit = -1;
     if([rate_limit_limit_obj isKindOfClass:[NSString class]]){
@@ -93,6 +100,8 @@ static TwitterAPI *m_current = nil;
     NSString *error_msg = nil;
     if(response.statusCode == 429 && json_error){
         error_msg = [NSString stringWithFormat:@"Twitter: %@ (%d request per 15min). Please wait for %d min %d sec.", json_error[@"message"], rate_limit_limit, wait_for/60, wait_for%60];
+    }else if(json_error && [json_error isKindOfClass:[NSString class]]){
+        error_msg = [NSString stringWithFormat:@"Error from Twitter: %@", json_error];
     }else{
         error_msg = [NSString stringWithFormat:@"Twitter(Status:%@): %@", response.allHeaderFields[@"Status"], response_str];
     }
@@ -242,12 +251,24 @@ static TwitterAPI *m_current = nil;
         NSHTTPURLResponse *response = nil;
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *response_str = nil;
+            if(data){
+                response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            }
             if(error){
-                [UIAlertView alertError:error];
+                NSError *error2 = nil;
+                id json = nil;
+                if(response_str){
+                    json = [NSJSONSerialization JSONObjectWithString:response_str options:0 error:&error2];
+                }
+                if(response_str && json && [json isKindOfClass:[NSDictionary class]] && json[@"error"]){
+                    [self alertHttpResponse:response_str response:response];
+                }else{
+                    [UIAlertView alertError:error];
+                }
                 callback(nil);
                 return;
             }
-            NSString *response_str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             if(response.statusCode != 200){
                 [self alertHttpResponse:response_str response:response];
                 callback(nil);
@@ -375,13 +396,15 @@ static TwitterAPI *m_current = nil;
 }
 #endif
 
--(id)postRequest:(NSString*)url postString:(NSString*)postString viewController:(UIViewController*)viewController
+-(id)postRequest:(NSString*)url method:(NSString*)method postString:(NSString*)postString viewController:(UIViewController*)viewController
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     [request setHTTPShouldHandleCookies:NO];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPMethod:method];
+    if(postString){
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    }
     [auth authorizeRequest:request];
     NSError *error = nil;
     NSHTTPURLResponse *response = nil;
@@ -495,7 +518,7 @@ static TwitterAPI *m_current = nil;
 -(Tweet*)retweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
 {
     NSString *url_str = [NSString stringWithFormat: @"https://api.twitter.com/1.1/statuses/retweet/%@.json", tweet_id_str];
-    id json_obj = [self postRequest:url_str postString:nil viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:nil viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
         [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
@@ -521,7 +544,7 @@ static TwitterAPI *m_current = nil;
 {
     NSString *url_str = @"https://api.twitter.com/1.1/favorites/create.json";
     NSString *body_str = [NSString stringWithFormat:@"id=%@", tweet_id_str];
-    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:body_str viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
         [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
@@ -533,7 +556,7 @@ static TwitterAPI *m_current = nil;
 {
     NSString *url_str = @"https://api.twitter.com/1.1/favorites/destroy.json";
     NSString *body_str = [NSString stringWithFormat:@"id=%@", tweet_id_str];
-    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:body_str viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
         [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
@@ -546,7 +569,7 @@ static TwitterAPI *m_current = nil;
     NSString *url_str = @"https://api.twitter.com/1/friendships/create.json";
     // NSString *url_str = @"https://api.twitter.com/1/friendships/create.json";
     NSString *body_str = [NSString stringWithFormat:@"user_id=%@", user_id_str];
-    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:body_str viewController:viewController];
     // id json_obj = [self postRequest:url_str postString:@"screen_name=aiueoyoshtstmp2" viewController:viewController];
     //id json_obj = [self postRequest:url_str postString:@"user_id=4" viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
@@ -560,7 +583,7 @@ static TwitterAPI *m_current = nil;
 {
     NSString *url_str = @"https://api.twitter.com/1.1/friendships/destroy.json";
     NSString *body_str = [NSString stringWithFormat:@"user_id=%@", user_id_str];
-    id json_obj = [self postRequest:url_str postString:body_str viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:body_str viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
         [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
@@ -571,7 +594,7 @@ static TwitterAPI *m_current = nil;
 -(Tweet*)destroyTweet:(UIViewController *)viewController tweet_id_str:(NSString *)tweet_id_str
 {
     NSString *url_str = [NSString stringWithFormat: @"https://api.twitter.com/1.1/statuses/destroy/%@.json", tweet_id_str];
-    id json_obj = [self postRequest:url_str postString:nil viewController:viewController];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:nil viewController:viewController];
     if(![json_obj isKindOfClass:[NSDictionary class]]){
         [UIAlertView alertString:@"response is not NSDictinoary"];
         return nil;
@@ -579,7 +602,17 @@ static TwitterAPI *m_current = nil;
     Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
     return tweet;
 }
-
+-(User*)userShow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str
+{
+    NSString *url_str = [NSString stringWithFormat:@"https://api.twitter.com/1.1/users/show.json?user_id=%@&include_entities=true", user_id_str];
+    id json_obj = [self postRequest:url_str method:@"GET" postString:nil viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictionary"];
+        return nil;
+    }
+    User *user = [[User alloc] initWithDictionary:json_obj];
+    return user;
+}
 -(Tweet*)getTweet:(NSString*)tweet_id_str
 {
     NSString *urlstr = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/show.json?id=%@&include_entities=true&include_my_retweet=true", tweet_id_str];

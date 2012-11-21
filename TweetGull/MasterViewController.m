@@ -148,13 +148,10 @@
     UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
 
 
-    [sheet addButtonWithTitle:@"Tweet" handler:^{
+    [sheet addButtonWithTitle:@"\U0001F4DD Tweet" handler:^{
         [self insertNewObject:self];
     }];
     
-    [sheet addButtonWithTitle:@"Logout" handler:^{
-        [[TwitterAPI defaultTwitterAPI] signOut];
-    }];
     
     if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
         if([connections containsObject:@"following"]){
@@ -213,6 +210,21 @@
         [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
         
     }];
+
+    [sheet addButtonWithTitle:@"Logout" handler:^{
+        [[TwitterAPI defaultTwitterAPI] signOut];
+    }];
+
+    
+    [sheet addButtonWithTitle:@"About" handler:^{
+        NSString *mainBundlePath = [[NSBundle mainBundle] resourcePath];
+        NSError *error;
+        NSString *message = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
+                                                                                                                                                                                              
+                                                                                                                                                                                              
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"About" message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alertView show];
+    }];
     
     
     [sheet setCancelButtonWithTitle:nil handler:nil];
@@ -232,13 +244,25 @@
 }
 - (void)initialSignIn:(void (^)(void))callback
 {
-    TwitterAPI *tmpTwitterAPI = [[TwitterAPI alloc] init ];
-    [tmpTwitterAPI signInReal:self callback:^{
-        if(tmpTwitterAPI.user.screen_name){
-            NSString *password = tmpTwitterAPI.authPersistenceResponseString;
+    TwitterAPI *twitterAPI = [[TwitterAPI alloc] init ];
+    [twitterAPI signInReal:self callback:^{
+        if(twitterAPI.user.screen_name){
+            NSString *password = twitterAPI.authPersistenceResponseString;
             Accounts *accounts = [Accounts defaultAccounts];
-            [accounts setPassword:password forAccount:tmpTwitterAPI.user.screen_name];
-            [Accounts setCurrentAccount:tmpTwitterAPI.user.screen_name];
+            [accounts setPassword:password forAccount:twitterAPI.user.screen_name];
+            [Accounts setCurrentAccount:twitterAPI.user.screen_name];
+            
+            User * user = [twitterAPI userShow:self user_id_str:@"760178030" /* "tweetgull" */];
+            NSNumber * following_status = user[@"following"];
+            BOOL following_status_bool = [following_status isKindOfClass:[NSNumber class]] && following_status.boolValue;
+            if(following_status_bool == NO){
+                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
+                    if(result == 1){
+                        [twitterAPI follow:self user_id_str:@"760178030" /* "tweetgull" */];
+                    }
+                }];
+            }
+            
             callback();
         }else{
             [self initialSignIn:callback];

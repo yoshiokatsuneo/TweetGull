@@ -54,6 +54,11 @@ static Accounts *m_accounts;
     [dic setObject:password forKey:account];
     [self save];
 }
+-(void)removeObjectForName:(NSString*)name
+{
+    [dic removeObjectForKey:name];
+    [self save];
+}
 -(NSArray*)allKeys
 {
     return [dic allKeys];

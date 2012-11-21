@@ -45,11 +45,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "371998208.719199"
+         timestampString = "375113981.376371"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "119"
-         endingLineNumber = "119"
+         startingLineNumber = "128"
+         endingLineNumber = "128"
          landmarkName = "-viewController:finishedWithAuth:error:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -58,11 +58,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/AccountTableViewController.m"
-         timestampString = "366901336.46389"
+         timestampString = "375197388.228207"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "163"
-         endingLineNumber = "163"
+         startingLineNumber = "165"
+         endingLineNumber = "165"
          landmarkName = "-addAccount:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -96,32 +96,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "371998208.719199"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "310"
-         endingLineNumber = "310"
-         landmarkName = "@implementation TwitterAPI"
-         landmarkType = "3">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "TweetGull/TweetsRequestRelated.m"
-         timestampString = "371565070.939782"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "22"
-         endingLineNumber = "22"
-         landmarkName = "-tweetArrayFromResponseJSONObj:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "TweetGull/TweetsRequestRelated.m"
          timestampString = "371565112.070892"
          startingColumnNumber = "9223372036854775807"
@@ -136,11 +110,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/DetailViewController.m"
-         timestampString = "372259719.603389"
+         timestampString = "375112421.991519"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "348"
-         endingLineNumber = "348"
+         startingLineNumber = "360"
+         endingLineNumber = "360"
          landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -149,11 +123,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/DetailViewController.m"
-         timestampString = "372259719.603389"
+         timestampString = "375112421.991519"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "349"
-         endingLineNumber = "349"
+         startingLineNumber = "361"
+         endingLineNumber = "361"
          landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -175,11 +149,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "372165045.150701"
+         timestampString = "375198189.600453"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "540"
-         endingLineNumber = "540"
+         startingLineNumber = "563"
+         endingLineNumber = "563"
          landmarkName = "-unfavorite:tweet_id_str:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -188,11 +162,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "372165045.150701"
+         timestampString = "375198189.600453"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "549"
-         endingLineNumber = "549"
+         startingLineNumber = "572"
+         endingLineNumber = "572"
          landmarkName = "-follow:user_id_str:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -201,11 +175,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "372165045.150701"
+         timestampString = "375198189.600453"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "563"
-         endingLineNumber = "563"
+         startingLineNumber = "586"
+         endingLineNumber = "586"
          landmarkName = "-unfollow:user_id_str:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -214,12 +188,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "372165045.150701"
+         timestampString = "375198189.600453"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "388"
-         endingLineNumber = "388"
-         landmarkName = "-postRequest:postString:viewController:"
+         startingLineNumber = "411"
+         endingLineNumber = "411"
+         landmarkName = "-postRequest:method:postString:viewController:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -292,12 +266,129 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/TwitterAPI.m"
-         timestampString = "372165363.107614"
+         timestampString = "375198189.600453"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "546"
-         endingLineNumber = "546"
+         startingLineNumber = "569"
+         endingLineNumber = "569"
          landmarkName = "-follow:user_id_str:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/MasterViewController.m"
+         timestampString = "375196286.346054"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "222"
+         endingLineNumber = "222"
+         landmarkName = "-rightButtonActionSheet:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/TweetsRequestUserTimeline.m"
+         timestampString = "375112684.121149"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "18"
+         endingLineNumber = "18"
+         landmarkName = "-timeline_url"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/TwitterAPI.m"
+         timestampString = "375113975.770839"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "100"
+         endingLineNumber = "100"
+         landmarkName = "-alertHttpResponse:response:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/UIAlertView+alert.m"
+         timestampString = "375183682.366206"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "14"
+         endingLineNumber = "14"
+         landmarkName = "+alertError:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/AccountTableViewController.m"
+         timestampString = "375201064.611002"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "174"
+         endingLineNumber = "174"
+         landmarkName = "-addAccount:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/AccountTableViewController.m"
+         timestampString = "375201064.611002"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "169"
+         endingLineNumber = "169"
+         landmarkName = "-addAccount:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/TwitterAPI.m"
+         timestampString = "375198189.600453"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "608"
+         endingLineNumber = "608"
+         landmarkName = "-userShow:user_id_str:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/AccountTableViewController.m"
+         timestampString = "375201064.611002"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "173"
+         endingLineNumber = "173"
+         landmarkName = "-addAccount:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "TweetGull/Accounts.m"
+         timestampString = "375201150.557162"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "46"
+         endingLineNumber = "46"
+         landmarkName = "-save"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

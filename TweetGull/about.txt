@@ -1,0 +1,30 @@
+Copyright:
+  Yoshioka Tsuneo (yoshiokatsuneo@gmail.com)
+
+License:
+  You can choose license for this source code from below
+  - GPL(GNU Public Licnese) version 2 or lator.
+    (Some source may have looser license in case written in the beginning of source code.)
+  - Other than GPL based on seperate agreement.
+    If you want to use for other than GPL license, contact me with details for negotiation.
+
+This software may contains modules below:
+  - gtm-oauth (Google Toolbox for Mac - OAuth Controllers)
+    Web site: http://code.google.com/p/gtm-oauth/
+    License: Apache License, Version 2 (http://www.apache.org/licenses/LICENSE-2.0)
+  - PullToRefresh
+    Web site: https://github.com/leah/PullToRefresh
+    License: MIT License (https://github.com/leah/PullToRefresh/blob/master/LICENSE)
+  - DETweetComposeViewController
+    Web site: https://github.com/doubleencore/DETweetComposeViewController
+    License: New BSD License(https://github.com/doubleencore/DETweetComposeViewController/blob/master/LICENSE)
+  - unofficial-twitter-sdk
+    Web site: https://github.com/lloydsparkes/unoffical-twitter-sdk/blob/master/License.txt
+    License: Apache License, Version 2.0 (https://github.com/lloydsparkes/unoffical-twitter-sdk/blob/master/License.txt)
+  - google-toolbox-for-mac (Google Toolbox for Mac)
+    Web site: http://code.google.com/p/google-toolbox-for-mac/
+    License: Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+  - BlocksKit
+    Web site: https://github.com/zwaldowski/BlocksKit
+    License: MIT license: https://github.com/zwaldowski/BlocksKit/blob/master/LICENSE
+    

@@ -20,6 +20,7 @@
 -(NSString*)passwordForAccount:(NSString*)account;
 -(void)setPassword:(NSString*)password forAccount:(NSString*)account;
 -(NSString*)nameAtIndex:(NSInteger)index;
+-(void)removeObjectForName:(NSString*)name;
 
 @property(readonly) NSArray *allKeys;
 @property(readonly) NSInteger count;

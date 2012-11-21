@@ -80,6 +80,10 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
 {
     self.startLoadCount ++;
     [next_delegate webViewDidStartLoad:webView];
+    
+    NSNotification *notification = [NSNotification notificationWithName:@"observerWebViewDidStartLoad" object:self];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center postNotification:notification];
 }
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {

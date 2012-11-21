@@ -22,6 +22,7 @@
 @interface DetailViewController ()
 {
     id observerWebViewDidFinishLoad;
+    id observerWebViewDidStartLoad;
 }
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
@@ -79,7 +80,7 @@
         CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
         mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [mediaWebView setFrame:frame];
-        [self.webViewSuperView addSubview:mediaWebView];
+        [self.webViewSuperView insertSubview:mediaWebView atIndex:0];
 
     }
 }
@@ -136,13 +137,18 @@
     [barButtons addObject:addButton];
     self.navigationItem.rightBarButtonItem = addButton;
     if(self.webView){
+#if 0
         if([self.webView canGoBack]){
             UIBarButtonItem *rewindButton = [[UIBarButtonItem alloc] initWithTitle:@"\U000025C0\U0000FE0E" style:UIBarButtonItemStylePlain handler:^(id sender){
                 [[self webView] goBack];
             }];
             [barButtons addObject:rewindButton];
         }
+#endif
     }
+    self.goBackButton.hidden = !(self.webView && self.webView.canGoBack);
+    self.goForwardButton.hidden = !(self.webView && self.webView.canGoForward);
+    
     self.navigationItem.rightBarButtonItems = barButtons;
 }
 - (void)configureView
@@ -196,6 +202,10 @@
             observerWebViewDidFinishLoad =[center addObserverForName:@"observerWebViewDidFinishLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
                 [self configureTitle];
             }];
+            observerWebViewDidStartLoad = [center addObserverForName:@"observerWebViewDidStartLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
+                [self configureTitle];
+            }];
+
         }
         
         ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];
@@ -291,6 +301,8 @@
     [self setTweetSuperView:nil];
     [self setRetweetUserNameButton:nil];
     [self setRelatedTweetsButton:nil];
+    [self setGoForwardButton:nil];
+    [self setGoBackButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.detailDescriptionLabel = nil;
@@ -386,5 +398,12 @@
         tweetsRequestRelated.tweet = self.tweet;
         masterViewController.tweetsRequest = tweetsRequestRelated;
     }
+}
+- (IBAction)goForward:(id)sender {
+    [self.webView goForward];
+}
+
+- (IBAction)goBack:(id)sender {
+    [self.webView goBack];
 }
 @end

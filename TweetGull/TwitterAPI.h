@@ -30,6 +30,8 @@ enum {TWEETS_KIND_MENSIONS = 1, TWEETS_KIND_FAVORITES, TWEETS_KIND_SEARCH};
 -(void)unretweet:(UIViewController*)viewController tweet_id_str:(NSString *)tweet_id_str;
 -(User*)follow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str;
 -(User*)unfollow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str;
+-(User*)userShow:(UIViewController*)viewController user_id_str:(NSString*)user_id_str;
+
 -(Tweet*)destroyTweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str;
 -(Tweet*)getTweet:(NSString*)tweet_id_str;
 -(void)signOut;

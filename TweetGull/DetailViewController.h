@@ -16,6 +16,10 @@
     // CGRect orig_webViewFrame;
     // UIView *orig_superView;
 }
+- (IBAction)goForward:(id)sender;
+- (IBAction)goBack:(id)sender;
+@property (strong, nonatomic) IBOutlet UIButton *goForwardButton;
+@property (strong, nonatomic) IBOutlet UIButton *goBackButton;
 
 @property (strong, nonatomic) Tweet *tweet;
 

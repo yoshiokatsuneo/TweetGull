@@ -9,6 +9,7 @@
 #import "AccountTableViewController.h"
 #import "TwitterAPI.h"
 #import "Accounts.h"
+#import "BlocksKit.h"
 
 @interface AccountTableViewController ()
 {
@@ -109,19 +110,20 @@
 }
 */
 
-/*
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        int index = indexPath.row;
+        NSString *name = [accounts nameAtIndex:index];
+        [accounts removeObjectForName:name];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
 
 /*
 // Override to support rearranging the table view.
@@ -163,6 +165,18 @@
             NSString *password = twitterAPI.authPersistenceResponseString;
             [accounts setPassword:password forAccount:twitterAPI.user.screen_name];
             [tableView reloadData];
+            
+            User * user = [twitterAPI userShow:self user_id_str:@"760178030" /* "tweetgull" */];
+            NSNumber * following_status = user[@"following"];
+            BOOL following_status_bool = [following_status isKindOfClass:[NSNumber class]] && following_status.boolValue;
+            if(following_status_bool == NO){
+                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
+                    if(result == 1){
+                        [twitterAPI follow:self user_id_str:@"760178030" /* "tweetgull" */];
+                    }
+                }];
+            }
+            
         }
     }];
 }

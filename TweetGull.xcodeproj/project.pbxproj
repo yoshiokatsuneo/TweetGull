@@ -147,6 +147,7 @@
 		079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 079FAC2B15D554BA00C50316 /* libBlocksKit.a */; };
 		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
 		07BA47F71625A62400C91307 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BA47F61625A62400C91307 /* User.m */; };
+		07DB0E8E165A7A9000A7AAAA /* about.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0E8D165A7A9000A7AAAA /* about.txt */; };
 		07DCFE5915E41DC100B40ADB /* confirm.html in Resources */ = {isa = PBXBuildFile; fileRef = 07DCFE5815E41DC100B40ADB /* confirm.html */; };
 /* End PBXBuildFile section */
 
@@ -404,6 +405,7 @@
 		07D7FFB316304354008D3C55 /* WAKResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAKResponder.h; sourceTree = "<group>"; };
 		07D7FFB416304354008D3C55 /* WAKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAKView.h; sourceTree = "<group>"; };
 		07D7FFB516304354008D3C55 /* WebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebView.h; sourceTree = "<group>"; };
+		07DB0E8D165A7A9000A7AAAA /* about.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = about.txt; sourceTree = "<group>"; };
 		07DCFE5815E41DC100B40ADB /* confirm.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = confirm.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -576,6 +578,7 @@
 				07289D4715CD0B3600C8D273 /* main.m */,
 				07289D4915CD0B3600C8D273 /* TweetGull-Prefix.pch */,
 				07DCFE5815E41DC100B40ADB /* confirm.html */,
+				07DB0E8D165A7A9000A7AAAA /* about.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -969,6 +972,7 @@
 				073F95FD15DCF75600213A53 /* AccountTableViewController.xib in Resources */,
 				07DCFE5915E41DC100B40ADB /* confirm.html in Resources */,
 				0733DFCF160B5A8D00FF7F04 /* Default-568h@2x.png in Resources */,
+				07DB0E8E165A7A9000A7AAAA /* about.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
