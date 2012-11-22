@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIAlertView (alert)
++ (void)alertError:(NSError*)error handler:(void (^)(UIAlertView *)) block;
 + (void)alertError:(NSError*)error;
 + (void)alertString:(NSString*)str;
 @end

@@ -7,13 +7,22 @@
 //
 
 #import "UIAlertView+alert.h"
+#import "BlocksKit.h"
 
 @implementation UIAlertView (alert)
-+ (void)alertError:(NSError*)error
+
++ (void)alertError:(NSError*)error handler:(void (^)(UIAlertView *)) block
 {
     NSLog(@"%s: error=%@", __func__, error);
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error localizedDescription] message:nil delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-    [alertView show];
+    // UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error localizedDescription] message:[error localizedRecoverySuggestion] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+    // [alertView show];
+    [UIAlertView showAlertViewWithTitle:[error localizedDescription] message:[error localizedRecoverySuggestion] cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger result){
+        block(alertView);
+    }];
+}
++ (void)alertError:(NSError*)error
+{
+    [self alertError:error handler:nil];
 }
 + (void)alertString:(NSString*)str
 {

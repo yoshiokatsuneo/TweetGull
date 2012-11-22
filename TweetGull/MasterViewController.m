@@ -265,7 +265,14 @@
             
             callback();
         }else{
-            [self initialSignIn:callback];
+            sleep(0);
+            NSLog(@"test.......");
+            [UIAlertView showAlertViewWithTitle:@"Twitter login failed" message:@"Please retry to login Twitter" cancelButtonTitle:@"Login" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger result){
+                [self performSelector:@selector(initialSignIn:) withObject:callback afterDelay:0];
+            }];
+            // [self performSelector:@selector(initialSignIn:) withObject:callback afterDelay:10];
+            //[self performSelector:@selector(initialSignIn:) withObject:callback];
+            // [self initialSignIn:callback];
         }
     }];
 }
@@ -280,10 +287,18 @@
         [self loadCurrentAccount];
     }
     if(twitterAPI.user.screen_name == nil){
+        [self performSelector:@selector(initialSignIn:) withObject:^{
+            [self loadCurrentAccount];
+            [self fetchTweets];
+            
+        } afterDelay:0];
+#if 0
+        
         [self initialSignIn:^{
             [self loadCurrentAccount];
             [self fetchTweets];
         }];
+#endif
     }else{
         [self fetchTweets];
     }

@@ -26,6 +26,7 @@ static TwitterAPI *m_current = nil;
 {
     GTMOAuthAuthentication *auth;
     void (^signInCallback)(void);
+    BOOL signInResult;
     UIViewController *signInViewController;
 }
 @end
@@ -119,23 +120,40 @@ static TwitterAPI *m_current = nil;
     
 }
 
+-(void)delayedDismissViewController:(GTMOAuthViewControllerTouch*)viewController
+{
+    [viewController dismissViewControllerAnimated:YES completion:nil];
+    
+}
 -(void)viewController:(GTMOAuthViewControllerTouch*)viewController finishedWithAuth:(GTMOAuthAuthentication*)auth2 error:(NSError*)error
 {
     if(error == nil){
         NSLog(@"login success");
     }else{
         NSLog(@"login failed");
-        [UIAlertView alertError:error];
-        // [self dismissModalViewControllerAnimated:YES];
-        [viewController dismissViewControllerAnimated:YES completion:nil];
-        // [signInViewController.navigationController popViewControllerAnimated:YES];
+        [UIAlertView alertError:error handler:^(UIAlertView *alertView){
+            // [self dismissModalViewControllerAnimated:YES];
+            
+            [viewController.navigationController popViewControllerAnimated:YES];
+            // [self performSelector:@selector(delayedDismissViewController) withObject:viewController afterDelay:0];
+            [viewController dismissViewControllerAnimated:YES completion:^{
+                NSLog(@"dismissViewControllerAnimated(1)");
+            }];
+            // [signInViewController.navigationController popViewControllerAnimated:YES];
+            signInResult = NO;
+            signInCallback();
+            
+        }];
         return;
     }
     NSLog(@"auth=%@", auth);
     NSLog(@"auth2=%@", auth2);
     auth = auth2;
     //[self dismissModalViewControllerAnimated:YES];
-    [viewController dismissViewControllerAnimated:YES completion:nil];
+    [viewController dismissViewControllerAnimated:YES completion:^{
+        NSLog(@"dismissViewControllerAnimated(2)");
+        sleep(0);
+    }];
 #if 0
     [signInViewController.navigationController popViewControllerAnimated:YES];
 #endif
@@ -145,7 +163,8 @@ static TwitterAPI *m_current = nil;
 {
     signInCallback = callback;
     signInViewController = viewController;
-
+    signInResult = TRUE;
+    
     NSURL *requestURL = [NSURL URLWithString:@"http://twitter.com/oauth/request_token"];
     NSURL *accessURL = [NSURL URLWithString:@"http://twitter.com/oauth/access_token"];
     NSURL *authrizeURL = [NSURL URLWithString:@"http://twitter.com/oauth/authorize"];
@@ -156,7 +175,14 @@ static TwitterAPI *m_current = nil;
     
     GTMOAuthViewControllerTouch *authViewController = [[GTMOAuthViewControllerTouch alloc] initWithScope:scope language:nil requestTokenURL:requestURL authorizeTokenURL:authrizeURL accessTokenURL:accessURL authentication:auth2 appServiceName:kTwitterKeychainItemName delegate:self finishedSelector:@selector(viewController:finishedWithAuth:error:)];
     authViewController.browserCookiesURL = [NSURL URLWithString:@"http://api.twitter.com/"];
-    [viewController presentViewController:authViewController animated:YES completion:nil];
+    [viewController presentViewController:authViewController animated:YES completion:^{
+        NSLog(@"presentViewController");
+        if(signInResult == NO){
+            [authViewController dismissViewControllerAnimated:YES completion:^{
+                NSLog(@"completion..");
+            }];
+        }
+    }];
 #if 0
     UINavigationController *navigationController = viewController.navigationController;
     [navigationController pushViewController:authViewController animated:YES];
