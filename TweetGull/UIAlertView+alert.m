@@ -17,7 +17,9 @@
     // UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error localizedDescription] message:[error localizedRecoverySuggestion] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
     // [alertView show];
     [UIAlertView showAlertViewWithTitle:[error localizedDescription] message:[error localizedRecoverySuggestion] cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger result){
-        block(alertView);
+        if(block){
+            block(alertView);
+        }
     }];
 }
 + (void)alertError:(NSError*)error

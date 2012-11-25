@@ -19,9 +19,9 @@
 }
 -(NSString *)timeline_url
 {
-    NSString *urlstr = @"http://api.twitter.com/1/favorites.json?count=200&include_entities=1";
+    NSString *urlstr = @"https://api.twitter.com/1.1/favorites/list.json?count=200&include_entities=1";
     if(self.user_screen_name){
-        urlstr = [urlstr stringByAppendingFormat:@"screen_name=%@", self.user_screen_name];
+        urlstr = [urlstr stringByAppendingFormat:@"&screen_name=%@", self.user_screen_name];
     }
     return urlstr;
 }

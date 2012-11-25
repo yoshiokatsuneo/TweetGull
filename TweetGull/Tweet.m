@@ -322,7 +322,7 @@
         NSRange range = [expanded_url rangeOfString:@"http://instagr.am/p/"];
         if(range.location == 0){
             NSString *idstr = [expanded_url substringFromIndex:range.length];
-            NSCharacterSet *cSetURL = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"];
+            NSCharacterSet *cSetURL = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-"];
             int pos;
             for(pos = 0; pos < idstr.length; pos++){
                 unichar uc = [idstr characterAtIndex:pos];
