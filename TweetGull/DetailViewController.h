@@ -10,7 +10,7 @@
 #import "MyWebView.h"
 #import "Tweet.h"
 
-@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate>
+@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate, UIScrollViewDelegate>
 {
     UIView *mediaWebView_;
     // CGRect orig_webViewFrame;
@@ -38,4 +38,5 @@
 @property MyWebView *webView;
 @property (strong, nonatomic) IBOutlet UIButton *relatedTweetsButton;
 @property UIImageView *mediaImageView;
+@property UIScrollView *mediaScrollImageView;
 @end

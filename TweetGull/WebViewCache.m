@@ -8,6 +8,7 @@
 
 #import "WebViewCache.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NetworkActivityIndicator.h"
 
 @interface CacheWebViewItem : NSObject<NSDiscardableContent>
 {
@@ -36,8 +37,7 @@
         // NSString *confirm_func = [NSString stringWithFormat:@"window.confirm=function(msg){window.showModalDialog('%@', this, \"dialogWidth=800px; dialogHeight=480px;\"); return false;}", confirm_urlstr];
         NSString *confirm_func = [NSString stringWithFormat:@"window.confirm=function(msg){alert('zzzzzzz');}"];
 #endif
-        NSString *confirm_func = [NSString stringWithFormat:@"window.tweetgull_orig_confirm = window.confirm; window.confirm=function(msg){return false;}; window.tweetgull_orig_alert = window.alert; window.alert=nil"];
-        [webView stringByEvaluatingJavaScriptFromString:confirm_func];
+        webView.thumbnailMode = YES;
         [webView loadRequest:aURLRequest];
     }
     return self;
@@ -134,8 +134,14 @@ static WebViewCache *webViewCache = nil;
 }
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    
+    MyWebView *myWebView = (MyWebView*)webView;
+    // NSLog(@"%s: myWebView=%p:%@", __func__, myWebView, myWebView);
     NSLog(@"%s: request URL=%@, orig_url=%@", __func__, [request URL], ((MyWebView*)webView).startURL);
+    NSArray *stopSchemes = [NSArray arrayWithObjects:@"itmss", @"itms-appss", nil];
+    if(myWebView.thumbnailMode && [stopSchemes indexOfObject:request.URL.scheme]!=NSNotFound){
+        myWebView.pendingRequest = request;
+        return FALSE;
+    }
     return TRUE;
 }
 -(void)webViewDidStartLoad:(UIWebView *)webView
@@ -145,9 +151,10 @@ static WebViewCache *webViewCache = nil;
     
     // [delegate webViewCacheUpdateProgress:url progress:(1.0*myWebView.finishLoadCount)/(1.0*myWebView.startLoadCount)];
     
-    if(loading_count == 0){
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
+    // if(loading_count == 0){
+    //    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    //}
     loading_count ++;
     NSLog(@"%s: url=%@, loading_count=%d, counter=%d", __func__, url, loading_count, myWebView.loadCount);
 }
@@ -156,9 +163,10 @@ static WebViewCache *webViewCache = nil;
 {
     MyWebView *myWebView = (MyWebView*)webView;
     loading_count --;
-    if(loading_count == 0){
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    }
+    //if(loading_count == 0){
+    //    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    //}
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
     
     // if(webView.loading){return;}
     NSString *url = myWebView.startURL;

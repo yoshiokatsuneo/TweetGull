@@ -10,6 +10,9 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "UIAlertView+alert.h"
+#import "NetworkActivityIndicator.h"
+#import "NSString+Encoder.h"
 
 @implementation AppDelegate
 
@@ -19,6 +22,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#if 0
+    /* notification registration */
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound)];
+#endif
+    
 #if 0
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -178,5 +186,61 @@
 {
     NSLog(@"openURL:%@", url);
     return NO;
+}
+
+- (void)sendProvicerDeviceToken:(NSString*)token oauth_token:(NSString*)oauth_token oauth_token_secret:(NSString*)oauth_token_secret serviceProvider:(NSString*)serviceProvider user_id:(NSString*)user_id screen_name:(NSString*)screen_name
+{
+    NSString *datastr = [NSString stringWithFormat:@"token[device_token]=%@&token[oauth_token]=%@&token[oauth_token_secret]=%@&token[service_provider]=%@&token[user_id]=%@&token[screen_name]=%@", token.percentEncodeString, oauth_token.percentEncodeString, oauth_token_secret.percentEncodeString, serviceProvider.percentEncodeString, user_id.percentEncodeString, screen_name.percentEncodeString];
+    NSLog(@"datastr=%@", datastr);
+    NSData *data = [datastr dataUsingEncoding:NSUTF8StringEncoding];
+    // [data appendData:token]; // should be hex string ???
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://tweetgullprovider.herokuapp.com/tokens"]];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:data];
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
+    // NSData *body = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response_, NSData *data, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse*)response_;
+        [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
+        NSLog(@"error=%@", error);
+        if(error){
+            [UIAlertView alertError:error];
+            return;
+        }
+        NSLog(@"body=%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        if(response.statusCode != 200){
+            [UIAlertView alertString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+            return;
+        }
+
+    }];
+
+    
+}
+
+- (void)sendProvicerOauth_token:(NSString*)oauth_token oauth_token_secret:(NSString*)oauth_token_secret serviceProvider:(NSString*)serviceProvider user_id:(NSString*)user_id screen_name:(NSString*)screen_name
+{
+    [self sendProvicerDeviceToken:self.deviceToken oauth_token:oauth_token oauth_token_secret:oauth_token_secret serviceProvider:serviceProvider user_id:user_id screen_name:screen_name];
+}
+
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    const unsigned *tokenBytes = [deviceToken bytes];
+    NSString *hexToken = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x",
+                          ntohl(tokenBytes[0]), ntohl(tokenBytes[1]), ntohl(tokenBytes[2]),
+                          ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
+                          ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
+
+    NSLog(@"deviceToken: %@", hexToken);
+    self.deviceToken = hexToken;
+    // [self sendProvicerDeviceToken:hexToken];
+}
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"didFailToRegisterForRemoteNotificationsWithError:error=[%@]", error);
+    [UIAlertView alertError:error];
 }
 @end

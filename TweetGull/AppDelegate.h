@@ -15,8 +15,10 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
+@property NSString *deviceToken;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
+
+- (void)sendProvicerOauth_token:(NSString*)oauth_token oauth_token_secret:(NSString*)oauth_token_secret serviceProvider:(NSString*)serviceProvider user_id:(NSString*)user_id screen_name:(NSString*)screen_name;
 
 @end

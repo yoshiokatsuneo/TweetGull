@@ -7,6 +7,7 @@
 //
 
 #import "MediaImageCache.h"
+#import "NetworkActivityIndicator.h"
 
 static MediaImageCache *m_mediaImageCache = nil;
 @implementation MediaImageCache
@@ -49,7 +50,9 @@ static MediaImageCache *m_mediaImageCache = nil;
                 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url2]];
                 NSError *error;
                 NSHTTPURLResponse *response = nil;
+                [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
                 NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+                [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
                 NSLog(@"Error: %@\n", error);
                 NSLog(@"statusCode: %d\n", response.statusCode);
                 if(error || response.statusCode != 200){
@@ -66,7 +69,9 @@ static MediaImageCache *m_mediaImageCache = nil;
             NSError *error;
             NSHTTPURLResponse *response = nil;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageurl]];
+            [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
             NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
             NSLog(@"Error: %@\n", error);
             NSLog(@"statusCode: %d\n", response.statusCode);
             if(error || response.statusCode != 200){

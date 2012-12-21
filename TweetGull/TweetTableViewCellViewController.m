@@ -107,6 +107,8 @@
     webView.scalesPageToFit = YES;
     webView.userInteractionEnabled = NO;
     webView.scrollView.scrollsToTop = NO;
+    [webView stringByEvaluatingJavaScriptFromString:@"javascript:if(history.length>1){history.go(-history.length+1)} scroll(0,0)"];
+    // [webView.scrollView setContentOffset:CGPointMake(0, 0)];
 }
 -(void)setMediaImageView:(UIImageView*)imageView
 {

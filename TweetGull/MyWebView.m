@@ -14,6 +14,12 @@ NSString *WebViewProgressStartedNotification =          @"WebProgressStartedNoti
 NSString *WebViewProgressEstimateChangedNotification =  @"WebProgressEstimateChangedNotification";
 NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNotification";
 
+@interface MyWebView ()
+{
+    BOOL thumbnailMode_;
+}
+@end
+
 @implementation MyWebView
 @synthesize startLoadCount;
 @synthesize finishLoadCount;
@@ -44,6 +50,21 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
         [center addObserver:self selector:@selector(progressEstimateChanged:) name:WebViewProgressFinishedNotification object:coreWebView];
     }
     return self;
+}
+-(void)setThumbnailMode:(BOOL)thumbnailMode
+{
+    thumbnailMode_ = thumbnailMode;
+    if(thumbnailMode){
+        NSString *confirm_func = [NSString stringWithFormat:@"window.tweetgull_orig_confirm = window.confirm; window.confirm=function(msg){return false;}; window.tweetgull_orig_alert = window.alert; window.alert=nil"];
+        [self stringByEvaluatingJavaScriptFromString:confirm_func];
+    }else{
+        NSString *confirm_func = [NSString stringWithFormat:@"if(window.tweetgull_orig_confirm){window.confirm = window.tweetgull_orig_confirm}; if(window.tweetgull_orig_alert){window.alert = window.tweetgull_orig_alert}"];
+        [self stringByEvaluatingJavaScriptFromString:confirm_func];
+    }
+}
+-(BOOL)thumbnailMode
+{
+    return thumbnailMode_;
 }
 -(void)loadRequest:(NSURLRequest *)request
 {
@@ -113,7 +134,7 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
             // UIGraphicsBeginImageContext(CGSizeMake(80, 103));
             UIGraphicsBeginImageContext(CGSizeMake(80, 103));
             [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-            self.thumbnailImageView = UIGraphicsGetImageFromCurrentImageContext();
+            self.thumbnailImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
         }
     }

@@ -143,6 +143,17 @@
     self.tweetsRequest = nil;
     [self fetchTweets];
 }
+
+- (NSString *)appNameAndVersionNumberDisplayString {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+    NSString *majorVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+    
+    return [NSString stringWithFormat:@"%@, Version %@ (%@)",
+            appDisplayName, majorVersion, minorVersion];
+}
+
 - (void)rightButtonActionSheet:(id)sender
 {
     UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
@@ -219,8 +230,11 @@
     [sheet addButtonWithTitle:@"About" handler:^{
         NSString *mainBundlePath = [[NSBundle mainBundle] resourcePath];
         NSError *error;
-        NSString *message = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
-                                                                                                                                                                                              
+        NSString *about = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
+
+        NSString *verstr = [self appNameAndVersionNumberDisplayString];
+        NSString *message = [NSString stringWithFormat:@"%@\n%@", verstr, about];
+        
                                                                                                                                                                                               
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"About" message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [alertView show];
@@ -256,7 +270,7 @@
             NSNumber * following_status = user[@"following"];
             BOOL following_status_bool = [following_status isKindOfClass:[NSNumber class]] && following_status.boolValue;
             if(following_status_bool == NO){
-                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
+                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
                     if(result == 1){
                         [twitterAPI follow:self user_id_str:@"760178030" /* "tweetgull" */];
                     }
@@ -340,7 +354,12 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self updateVisibleCellsLink:nil];
+    [self updateVisibleCellsLink:nil useThumbnail:YES];
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self updateVisibleCellsLink:nil useThumbnail:NO];
 }
 - (void)viewDidUnload
 {
@@ -408,7 +427,7 @@
     }
 }
 
--(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate
+-(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate useThumbnail:(BOOL)useThumbnail
 {
     NSMutableDictionary *new_dic = [[NSMutableDictionary alloc] init];
     NSMutableArray *visibleCells = [NSMutableArray arrayWithArray:self.tableView.visibleCells];
@@ -430,7 +449,14 @@
                     if(fCreate || [webViewCache isCached:url]){
                         [webViewCache addURL:url];
                         MyWebView *webView = [webViewCache getWebView:url];
-                        cellViewController.webView = webView;
+                        if(useThumbnail){
+                            UIImage *image = webView.thumbnailImage;
+                            if(image){
+                                cellViewController.mediaImageView = [[UIImageView alloc] initWithImage:image];
+                            }
+                        }else{
+                            cellViewController.webView = webView;
+                        }
                     }
                 }
             }
@@ -452,12 +478,12 @@
     // [self.tableView setContentOffset:self.tableView.contentOffset animated:NO];
 }
 
--(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
+-(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell useThumbnail:(BOOL)useThumbnail
 {
-    NSLog(@"mode=%@\n",[NSRunLoop currentRunLoop].currentMode);
+    // NSLog(@"mode=%@\n",[NSRunLoop currentRunLoop].currentMode);
     UIPanGestureRecognizer *recognizer = self.tableView.panGestureRecognizer;
     CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
-    NSLog(@"state=%d, velocity=%lf", recognizer.state, velocity.y);
+    // NSLog(@"state=%d, velocity=%lf", recognizer.state, velocity.y);
     if([[NSRunLoop currentRunLoop].currentMode isEqual:UITrackingRunLoopMode /* NSRunLoopCommonModes */]){
         sleep(0);
         /* if dragging(!=0), and velocity is slow, update */
@@ -471,13 +497,17 @@
     }else{
         sleep(0);
     }
-    [self updateVisibleCellsLinkItr:current_cell create:YES];
+    [self updateVisibleCellsLinkItr:current_cell create:YES useThumbnail:useThumbnail];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
 
 }
--(void)updateVisibleCellsLinkIfCached:(TweetTableViewCell *)current_cell
+-(void)updateVisibleCellsLink:(TweetTableViewCell *)current_cell
 {
-    [self updateVisibleCellsLinkItr:current_cell create:NO];
+    [self updateVisibleCellsLink:current_cell useThumbnail:NO];
+}
+-(void)updateVisibleCellsLinkIfCached:(TweetTableViewCell *)current_cell useThumbnail:(BOOL)useThumbnail
+{
+    [self updateVisibleCellsLinkItr:current_cell create:NO useThumbnail:useThumbnail];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -504,7 +534,9 @@
     // cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@", name];
     // cell.imageView.image = nil;
     cellViewController.tweetText.text = tweet.display_text;
+    //[cellViewController.tweetText sizeToFit];
     cellViewController.userNameLabel.text = tweet.orig_user.name;
+    //[cellViewController.userNameLabel sizeToFit];
     cellViewController.retweetUserNameLabel.text = tweet.retweet_user.name;
     cellViewController.profileImageView.image = nil;
     cellViewController.progressView.progress = 0.0;
@@ -560,7 +592,7 @@
         WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
         if([webViewCache isCached:linkURL]){
             MyWebView *webView = [webViewCache getWebView:linkURL];
-            UIImage *image = webView.thumbnailImageView;
+            UIImage *image = webView.thumbnailImage;
             if(image){
                 cellViewController.mediaWebView = [[UIImageView alloc] initWithImage:image];
             }
@@ -574,8 +606,9 @@
     // [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0];
     //[self updateVisibleCellsLinkIfCached:cell];
     // [self updateVisibleCellsLink:cell];
-    CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
-    NSLog(@"###velocity=%lf\n", velocity.y);
+
+    // CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
+    // NSLog(@"###velocity=%lf\n", velocity.y);
     return cell;
 }
 
@@ -583,6 +616,11 @@
 {
     // Return NO if you do not want the specified item to be editable.
     return YES;
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleNone;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

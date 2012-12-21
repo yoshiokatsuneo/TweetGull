@@ -15,6 +15,8 @@
 #import "TweetsRequest.h"
 #import "Users.h"
 #import "NSJSONSerialization+string.h"
+#import "NetworkActivityIndicator.h"
+#import "twitter_oauth_keys.h"
 
 // static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 static NSString *const kTwitterKeychainItemName = @""; /* Not to save Keychain from GTMOAuth */
@@ -47,6 +49,10 @@ static TwitterAPI *m_current = nil;
     }else{
         return nil;
     }
+}
+- (GTMOAuthAuthentication*)auth
+{
+    return auth;
 }
 #if 0
 - (NSString *)screen_name
@@ -111,8 +117,15 @@ static TwitterAPI *m_current = nil;
 
 - (GTMOAuthAuthentication*)getNewAuth
 {
-    NSString *myConsumerKey = @"1Tfg491UZho03mDZdhpkuA";
-    NSString *myConsumerSecret = @"XTUnvinSXim4NXTVNY8sqwQbGXhkLDV5qtIev4Drt0";
+    NSString *myConsumerKey = TWITTER_CONSUMER_KEY;
+    NSString *myConsumerSecret = TWITTER_CONSUMER_SECRET;
+    
+    if(myConsumerKey == nil || [myConsumerKey isEqual:@""]){
+        NSString *errorstr = @"No twitter consumer key found. Please set consumer key and secret key on twitter_oauth_keys.h, and re-build.";
+        NSLog(@"%@", errorstr);
+        [UIAlertView alertString:errorstr];
+        return nil;
+    }
     
     GTMOAuthAuthentication *newauth = [[GTMOAuthAuthentication alloc] initWithSignatureMethod:kGTMOAuthSignatureMethodHMAC_SHA1 consumerKey:myConsumerKey privateKey:myConsumerSecret];
     [newauth setServiceProvider:@"Twitter"];
@@ -275,7 +288,9 @@ static TwitterAPI *m_current = nil;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSError *error = nil;
         NSHTTPURLResponse *response = nil;
+        [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString *response_str = nil;
             if(data){
@@ -434,7 +449,9 @@ static TwitterAPI *m_current = nil;
     [auth authorizeRequest:request];
     NSError *error = nil;
     NSHTTPURLResponse *response = nil;
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
     if(data == nil){
         [UIAlertView alertError:error];
         return nil;
@@ -648,7 +665,9 @@ static TwitterAPI *m_current = nil;
     [auth authorizeRequest:request];
     NSError *error = nil;
     NSHTTPURLResponse *response = nil;
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] increment];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [[NetworkActivityIndicator sharedNetworkActivityIndicator] decrement];
     if(data == nil){
         [UIAlertView alertError:error];
         return nil;

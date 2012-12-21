@@ -10,6 +10,7 @@
 #import "TwitterAPI.h"
 #import "Accounts.h"
 #import "BlocksKit.h"
+#import "AppDelegate.h"
 
 @interface AccountTableViewController ()
 {
@@ -165,12 +166,15 @@
             NSString *password = twitterAPI.authPersistenceResponseString;
             [accounts setPassword:password forAccount:twitterAPI.user.screen_name];
             [tableView reloadData];
+            GTMOAuthAuthentication *auth = twitterAPI.auth;
+            
+            [((AppDelegate*)([UIApplication sharedApplication].delegate)) sendProvicerOauth_token:auth.token  oauth_token_secret:auth.tokenSecret serviceProvider:auth.serviceProvider user_id:auth.userId screen_name:auth.screenName];            
             
             User * user = [twitterAPI userShow:self user_id_str:@"760178030" /* "tweetgull" */];
             NSNumber * following_status = user[@"following"];
             BOOL following_status_bool = [following_status isKindOfClass:[NSNumber class]] && following_status.boolValue;
             if(following_status_bool == NO){
-                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
+                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
                     if(result == 1){
                         [twitterAPI follow:self user_id_str:@"760178030" /* "tweetgull" */];
                     }

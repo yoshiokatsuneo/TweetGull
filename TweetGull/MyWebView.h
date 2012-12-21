@@ -20,9 +20,11 @@
 }
 @property int startLoadCount;
 @property int finishLoadCount;
-@property UIImage *thumbnailImageView;
+@property UIImage *thumbnailImage;
 @property(readonly) int loadCount;
 @property NSString *startURL;
+@property(nonatomic) BOOL thumbnailMode;
+@property NSURLRequest *pendingRequest;
 -(void)delayedCaptureThumbNail;
 -(void)cancelCaptureThumbNail;
 @end

@@ -12,6 +12,7 @@
 #import "TweetsRequest.h"
 #import "Users.h"
 #import "UsersRequest.h"
+#import "GTMOAuthAuthentication.h"
 
 enum {TWEETS_KIND_MENSIONS = 1, TWEETS_KIND_FAVORITES, TWEETS_KIND_SEARCH};
 
@@ -37,6 +38,7 @@ enum {TWEETS_KIND_MENSIONS = 1, TWEETS_KIND_FAVORITES, TWEETS_KIND_SEARCH};
 -(void)signOut;
 
 @property(readonly) User *user;
+@property(readonly) GTMOAuthAuthentication *auth;
 // @property(readonly) NSString *screen_name;
 // @property(readonly) NSString *user_id;
 @property(readwrite) NSString *authPersistenceResponseString;

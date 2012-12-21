@@ -23,9 +23,10 @@
 {
     id observerWebViewDidFinishLoad;
     id observerWebViewDidStartLoad;
+    BOOL isFirstDidAppear;
 }
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
-- (void)configureView;
+- (void)configureView:(BOOL)bFast;
 @end
 
 @implementation DetailViewController
@@ -51,7 +52,7 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-        ;
+        isFirstDidAppear = YES;
     }
     return self;
 }
@@ -72,6 +73,7 @@
         //}
 //        [mediaWebView_ setFrame:orig_webViewFrame];
 //        [orig_superView addSubview:mediaWebView_];
+        [mediaWebView_ removeFromSuperview];
     }
     mediaWebView_ = mediaWebView;
     if(mediaWebView){
@@ -88,14 +90,19 @@
 {
     webView.userInteractionEnabled = YES;
     webView.scrollView.scrollsToTop = YES;
-    NSString *confirm_func = [NSString stringWithFormat:@"if(window.tweetgull_orig_confirm){window.confirm = window.tweetgull_orig_confirm}; if(window.tweetgull_orig_alert){window.alert = window.tweetgull_orig_alert}"];
-    [webView stringByEvaluatingJavaScriptFromString:confirm_func];
+    
+    webView.thumbnailMode = NO;
 
     [self setMediaWebView:webView];
 }
 -(void)setMediaImageView:(UIImageView *)imageView
 {
     [self setMediaWebView:imageView];
+}
+-(void)setMediaScrollImageView:(UIScrollView *)scrollView
+{
+    [self setMediaWebView:scrollView];
+    scrollView.contentSize = scrollView.bounds.size;
 }
 -(MyWebView *)webView
 {
@@ -107,11 +114,27 @@
 }
 -(UIImageView *)mediaImageView
 {
+    UIScrollView *scrollView = self.mediaScrollImageView;
+    if(scrollView){
+        UIView *aSubView = scrollView.subviews[0];
+        if([aSubView isKindOfClass:[UIImageView class]]){
+            return (UIImageView*)aSubView;
+        }
+    }
+    
     if([mediaWebView_ isKindOfClass:[UIImageView class]]){
         return (UIImageView*)mediaWebView_;
     }else{
         return nil;
     }    
+}
+-(UIScrollView *)mediaScrollImageView
+{
+    if([mediaWebView_ isKindOfClass:[UIScrollView class]]){
+        return (UIScrollView*)mediaWebView_;
+    }else{
+        return nil;
+    }
 }
 #if 0
 - (void)setDetailItem:(id)newDetailItem
@@ -151,7 +174,7 @@
     
     self.navigationItem.rightBarButtonItems = barButtons;
 }
-- (void)configureView
+- (void)configureView:(BOOL)bFast
 {
     // Update the user interface for the detail item.
 
@@ -186,25 +209,61 @@
         [self.view setNeedsLayout];
         if(self.tweet.mediaURLString){
             NSString *url = self.tweet.mediaURLString;
-            UIImageView *imageView = [[UIImageView alloc] init];
+            
+            
+            
+
+            UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:scrollView.bounds];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
-            self.mediaImageView = imageView;
+
+            
+            [scrollView addSubview:imageView];
+            scrollView.contentSize = imageView.frame.size;
+            scrollView.delegate = self;
+            scrollView.minimumZoomScale = 1.0;
+            scrollView.maximumZoomScale = 5.0;
+            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+            
+            UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                if(scrollView.zoomScale != 1.0){
+                    [scrollView setZoomScale:1.0 animated:YES];
+                }else{
+                    [scrollView setZoomScale:2.0 animated:YES];
+                }
+            }];
+            [doubleTap setNumberOfTapsRequired:2];
+            [scrollView addGestureRecognizer:doubleTap];
+            
+            
+            // self.mediaImageView = imageView;
+            self.mediaScrollImageView = scrollView;
+            
             MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
             [mediaImageCache loadToImageView:imageView fromURLString:url];
         
         }else if(self.tweet.linkURLString){
-            NSString *url = self.tweet.linkURLString;
-        
-            MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url];
-            self.webView = aWebView;
+            {
+                NSString *url = self.tweet.linkURLString;
             
-            NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-            observerWebViewDidFinishLoad =[center addObserverForName:@"observerWebViewDidFinishLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
-                [self configureTitle];
-            }];
-            observerWebViewDidStartLoad = [center addObserverForName:@"observerWebViewDidStartLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
-                [self configureTitle];
-            }];
+                MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url];
+                
+                if(bFast){
+                    self.mediaImageView = [[UIImageView alloc] initWithImage:aWebView.thumbnailImage];
+                }else{
+                    self.webView = aWebView;
+                    
+                    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+                    observerWebViewDidFinishLoad =[center addObserverForName:@"observerWebViewDidFinishLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
+                        [self configureTitle];
+                    }];
+                    observerWebViewDidStartLoad = [center addObserverForName:@"observerWebViewDidStartLoad" object:aWebView queue:nil usingBlock:^(NSNotification *notification){
+                        [self configureTitle];
+                    }];
+                }
+            }
 
         }
         
@@ -223,6 +282,10 @@
         [self configureTitle];
     }
 }
+-(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.mediaImageView;
+}
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == actionSheet.cancelButtonIndex){
@@ -235,21 +298,21 @@
         if(self.tweet.retweeted){
             [[TwitterAPI defaultTwitterAPI] unretweet:self tweet_id_str:self.tweet.id_str ];
             self.tweet.retweeted = NO;
-            [self configureView];
+            [self configureView:NO];
         }else{
             [[TwitterAPI defaultTwitterAPI] retweet:self tweet_id_str:self.tweet.id_str];
             self.tweet.retweeted = YES;
-            [self configureView];
+            [self configureView:NO];
         }
     }else if(buttonIndex == 3){
         if(self.tweet.favorited){
             [[TwitterAPI defaultTwitterAPI] unfavorite:self tweet_id_str:self.tweet.id_str ];
             self.tweet.favorited = NO;
-            [self configureView];
+            [self configureView:NO];
         }else{
             [[TwitterAPI defaultTwitterAPI] favorite:self tweet_id_str:self.tweet.id_str];
             self.tweet.favorited = YES;
-            [self configureView];
+            [self configureView:NO];
         }
     }else if (buttonIndex == 4){
         NSString *urlstr = [NSString stringWithFormat:@"https://mobile.twitter.com/%@/status/%@", self.tweet.orig_user.screen_name, self.tweet.id_str];
@@ -310,7 +373,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     sleep(0);
-    [self configureView];
+    [self configureView:YES];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
@@ -322,6 +385,17 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     sleep(0);
+    [self configureView:NO];
+
+    if(isFirstDidAppear){
+        if(self.webView){
+            if(self.webView.pendingRequest){
+                [self.webView loadRequest:self.webView.pendingRequest];
+            }
+        }
+        isFirstDidAppear = NO;
+    }
+
 }
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -400,10 +474,12 @@
     }
 }
 - (IBAction)goForward:(id)sender {
+    // [self.webView stringByEvaluatingJavaScriptFromString:@"history.forward()"];
     [self.webView goForward];
 }
 
 - (IBAction)goBack:(id)sender {
+    // [self.webView stringByEvaluatingJavaScriptFromString:@"history.back()"];
     [self.webView goBack];
 }
 @end
