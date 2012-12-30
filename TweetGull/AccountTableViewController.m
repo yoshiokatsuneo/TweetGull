@@ -97,7 +97,7 @@
     // Configure the cell...
     int index = indexPath.row;
 
-    cell.textLabel.text = [accounts nameAtIndex:index];
+    cell.textLabel.text = [NSString stringWithFormat:@"@%@", [accounts nameAtIndex:index]];
     
     return cell;
 }

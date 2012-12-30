@@ -8,8 +8,6 @@
 
 #import "MyWebView.h"
 #import <QuartzCore/QuartzCore.h>
-#import "WebViewHeaders/WebView.h"
-#import "WebViewHeaders/UIWebDocumentView.h"
 NSString *WebViewProgressStartedNotification =          @"WebProgressStartedNotification";
 NSString *WebViewProgressEstimateChangedNotification =  @"WebProgressEstimateChangedNotification";
 NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNotification";
@@ -18,6 +16,7 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
 {
     BOOL thumbnailMode_;
 }
+@property(readonly) WebView *coreWebView;
 @end
 
 @implementation MyWebView
@@ -42,14 +41,25 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
            Mac OS X Cocoa(not iOS Cocoa-Touch) WebView Class Reference
              http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/WebKit/Classes/WebView_Class/Reference/Reference.html
          */
-        UIWebDocumentView *documentView = [self _documentView];
-        WebView *coreWebView = [documentView webView];
+        WebView *coreWebView = self.coreWebView;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         [center addObserver:self selector:@selector(progressEstimateChanged:) name:WebViewProgressStartedNotification object:coreWebView];
         [center addObserver:self selector:@selector(progressEstimateChanged:) name:WebViewProgressEstimateChangedNotification object:coreWebView];
         [center addObserver:self selector:@selector(progressEstimateChanged:) name:WebViewProgressFinishedNotification object:coreWebView];
     }
     return self;
+}
+-(WebView *)coreWebView
+{
+    UIWebDocumentView *documentView = [self _documentView];
+    WebView *coreWebView_ = [documentView webView];
+    return coreWebView_;
+}
+-(double)estimatedProgress
+{
+    double progress = self.coreWebView.estimatedProgress;
+    if(progress==0 && self.finishLoadCount>0){progress = 1.0;}
+    return progress;
 }
 -(void)setThumbnailMode:(BOOL)thumbnailMode
 {
@@ -118,7 +128,7 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
 -(void)progressEstimateChanged:(NSNotification*)notification
 {
     WebView *coreWebView = [notification object];
-    double progress = [coreWebView estimatedProgress];
+    double progress = coreWebView.estimatedProgress;
     if(progress==0){progress = 1.0;}
     [next_delegate webView:self progressEstimatedChanged:progress];
 }

@@ -156,8 +156,7 @@
 
 - (void)rightButtonActionSheet:(id)sender
 {
-    UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:@"Search"];
-
+    UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:nil];
 
     [sheet addButtonWithTitle:@"\U0001F4DD Tweet" handler:^{
         [self insertNewObject:self];
@@ -176,69 +175,74 @@
         }
     }
     
-    [sheet addButtonWithTitle:@"\U0001F50D Search" handler:^{
-        UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
-        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-        [alertView addButtonWithTitle:@"Search" handler:^{
-            TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
-            tweetsRequestSearch.query = [alertView textFieldAtIndex:0].text;
-            self.nextTweetsRequest = tweetsRequestSearch;
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
+        [sheet addButtonWithTitle:@"\U0001F50D Search" handler:^{
+            UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
+            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+            [alertView addButtonWithTitle:@"Search" handler:^{
+                TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
+                tweetsRequestSearch.query = [alertView textFieldAtIndex:0].text;
+                self.nextTweetsRequest = tweetsRequestSearch;
+                [self performSegueWithIdentifier:@"showTweets" sender:self];
+            }];
+            [alertView setCancelButtonWithTitle:nil handler:nil];
+            [alertView show];
+        }];
+
+        [sheet addButtonWithTitle:@"\U0000FF20 Mensions" handler:^{
+            self.nextTweetsRequest = [[TweetsRequestMentions alloc] init];
             [self performSegueWithIdentifier:@"showTweets" sender:self];
         }];
-        [alertView setCancelButtonWithTitle:nil handler:nil];
-        [alertView show];
-    }];
-
-    [sheet addButtonWithTitle:@"Mensions" handler:^{
-        self.nextTweetsRequest = [[TweetsRequestMentions alloc] init];
-        [self performSegueWithIdentifier:@"showTweets" sender:self];
-    }];
-    [sheet addButtonWithTitle:@"Direct Messages" handler:^{
-        self.nextTweetsRequest = [[TweetsRequestDirectMessages alloc] init];
-        [self performSegueWithIdentifier:@"showTweets" sender:self];
-    }];
+        [sheet addButtonWithTitle:@"\U0001F4AC Direct Messages" handler:^{
+            self.nextTweetsRequest = [[TweetsRequestDirectMessages alloc] init];
+            [self performSegueWithIdentifier:@"showTweets" sender:self];
+        }];
+    }
+    
     [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
         TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
         tweetsRequestFavorites.user_screen_name = self.user.screen_name;
         self.nextTweetsRequest = tweetsRequestFavorites;
         [self performSegueWithIdentifier:@"showTweets" sender:self];
     }];
-
-    [sheet addButtonWithTitle:@"Switch User" handler:^{
-        AccountTableViewController *controller = [[AccountTableViewController alloc] init];
-        controller.delegate = self;
-        [self presentModalViewController:controller animated:YES];
-    }];
-
-    [sheet addButtonWithTitle:@"Friends" handler:^{
+    [sheet addButtonWithTitle:@"\U0001F604 Friends" handler:^{
         UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
         usersRequest.screen_name = self.user.screen_name;
         [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
     }];
-    [sheet addButtonWithTitle:@"Followers" handler:^{
+    [sheet addButtonWithTitle:@"\U0001F3C3 Followers" handler:^{
         UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
         usersRequest.screen_name = self.user.screen_name;
         [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
         
     }];
 
+    /*
     [sheet addButtonWithTitle:@"Logout" handler:^{
         [[TwitterAPI defaultTwitterAPI] signOut];
     }];
+     */
 
-    
-    [sheet addButtonWithTitle:@"About" handler:^{
-        NSString *mainBundlePath = [[NSBundle mainBundle] resourcePath];
-        NSError *error;
-        NSString *about = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
+        [sheet addButtonWithTitle:@"\U00002194 Switch User" handler:^{
+            AccountTableViewController *controller = [[AccountTableViewController alloc] init];
+            controller.delegate = self;
+            [self presentModalViewController:controller animated:YES];
+        }];
 
-        NSString *verstr = [self appNameAndVersionNumberDisplayString];
-        NSString *message = [NSString stringWithFormat:@"%@\n%@", verstr, about];
-        
-                                                                                                                                                                                              
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"About" message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-        [alertView show];
-    }];
+        [sheet addButtonWithTitle:@"\U0001F4AD About" handler:^{
+            NSString *mainBundlePath = [[NSBundle mainBundle] resourcePath];
+            NSError *error;
+            NSString *about = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
+
+            NSString *verstr = [self appNameAndVersionNumberDisplayString];
+            NSString *message = [NSString stringWithFormat:@"%@\n%@", verstr, about];
+            
+                                                                                                                                                                                                  
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"About" message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+            [alertView show];
+        }];
+    }
     
     
     [sheet setCancelButtonWithTitle:nil handler:nil];
@@ -411,6 +415,7 @@
 {
     return tweets.count;
 }
+#if 0
 - (void)setTweetLinkInfo:(Tweet*)tweet cellViewController:(TweetTableViewCellViewController*)cellViewController
 {
     NSString *url = tweet.linkURLString;
@@ -426,6 +431,7 @@
         // cellViewController.tableViewCell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
 }
+#endif
 
 -(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate useThumbnail:(BOOL)useThumbnail
 {
@@ -456,6 +462,8 @@
                             }
                         }else{
                             cellViewController.webView = webView;
+                            cellViewController.progressView.hidden = NO;
+                            cellViewController.progressView.progress = webView.estimatedProgress;
                         }
                     }
                 }
@@ -466,7 +474,7 @@
             webView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,274,77)];
             /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
             webView.scalesPageToFit = YES;
-            NSString *html = [NSString stringWithFormat:@"<html><head><meta name='viewport' content='initial-scale=1.0'/><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", tweet.display_html]; /* line-height:1.5; (only for Japanese ??) */
+            NSString *html = [NSString stringWithFormat:@"<html><head><meta name='viewport' content='initial-scale=1.0'/><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none; line-height: 1.3em;}</style></head><body>%@</body></html>​", tweet.display_html]; /* line-height:1.5; (only for Japanese ??) */
             [webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
         }
         [new_dic setObject:webView forKey:tweet.id_str];
@@ -538,13 +546,10 @@
     cellViewController.userNameLabel.text = tweet.orig_user.name;
     //[cellViewController.userNameLabel sizeToFit];
     cellViewController.retweetUserNameLabel.text = tweet.retweet_user.name;
-    cellViewController.profileImageView.image = nil;
-    cellViewController.progressView.progress = 0.0;
-    cellViewController.progressView.hidden = YES;
     cellViewController.created_atLabel.text = tweet.created_at_str;
     cellViewController.tweet = tweet;
     
-    [self setTweetLinkInfo:tweet cellViewController:cellViewController];
+    // [self setTweetLinkInfo:tweet cellViewController:cellViewController];
     // cell.imageView.image = [[tweet objectForKey:@"user"] objectForKey:@"profile_image_url"];
     
     ProfileImageCache *profileImageCache = [ProfileImageCache defaultProfileImageCache];

@@ -175,10 +175,15 @@
         int index_from = [[indices objectAtIndex:0] intValue];
         int index_to = [[indices objectAtIndex:1] intValue];
         NSString *display_url = [item objectForKey:@"display_url"];
+        NSString *media_url = [item objectForKey:@"media_url"];
+        NSString *expanded_url = [item objectForKey:@"expanded_url"];
         NSString *id_str = [item objectForKey:@"id_str"];
         NSString *replaced_str = nil;
-        if(display_url){
-            replaced_str = display_url;
+        if(media_url){
+            replaced_str = [NSString stringWithFormat:@"<a href=\"http://media_url/%@\" style=\"text-decoration:none\">%@</a>", [media_url percentEncodeString], display_url];
+        }else if(display_url){
+            // replaced_str = display_url;
+            replaced_str = [NSString stringWithFormat:@"<a href=\"http://url/%@\" style=\"text-decoration:none\">%@</a>", [expanded_url percentEncodeString], display_url];
         }else if(id_str){
             NSDictionary *user_dic = @{@"id_str":item[@"id_str"], @"screen_name":item[@"screen_name"]};
             NSError *error = nil;

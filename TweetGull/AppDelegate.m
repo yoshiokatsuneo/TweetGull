@@ -55,7 +55,9 @@
 #if 0
     }
 #endif
+    NSLog(@"memoryCapacity=%u, diskCapacity=%u", [NSURLCache sharedURLCache].memoryCapacity, [NSURLCache sharedURLCache].diskCapacity);
     [NSURLCache sharedURLCache].memoryCapacity = 10000000;
+    NSLog(@"memoryCapacity=%u, diskCapacity=%u", [NSURLCache sharedURLCache].memoryCapacity, [NSURLCache sharedURLCache].diskCapacity);
     return YES;
 }
 							

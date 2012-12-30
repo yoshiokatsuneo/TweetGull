@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WebViewHeaders/WebView.h"
+#import "WebViewHeaders/UIWebDocumentView.h"
 
 @class MyWebView;
 
@@ -25,6 +27,7 @@
 @property NSString *startURL;
 @property(nonatomic) BOOL thumbnailMode;
 @property NSURLRequest *pendingRequest;
+@property(readonly) double estimatedProgress;
 -(void)delayedCaptureThumbNail;
 -(void)cancelCaptureThumbNail;
 @end

@@ -93,6 +93,9 @@
     
     webView.thumbnailMode = NO;
 
+    NSString *script = @"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust = 'none';";
+    [webView stringByEvaluatingJavaScriptFromString:script];
+    
     [self setMediaWebView:webView];
 }
 -(void)setMediaImageView:(UIImageView *)imageView
@@ -103,6 +106,39 @@
 {
     [self setMediaWebView:scrollView];
     scrollView.contentSize = scrollView.bounds.size;
+}
+-(void)setMediaScrollImageViewFromURL:(NSString*)url
+{
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:scrollView.bounds];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    
+    [scrollView addSubview:imageView];
+    scrollView.contentSize = imageView.frame.size;
+    scrollView.delegate = self;
+    scrollView.minimumZoomScale = 1.0;
+    scrollView.maximumZoomScale = 5.0;
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+        if(scrollView.zoomScale != 1.0){
+            [scrollView setZoomScale:1.0 animated:YES];
+        }else{
+            [scrollView setZoomScale:2.0 animated:YES];
+        }
+    }];
+    [doubleTap setNumberOfTapsRequired:2];
+    [scrollView addGestureRecognizer:doubleTap];
+    
+    
+    // self.mediaImageView = imageView;
+    self.mediaScrollImageView = scrollView;
+    
+    MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
+    [mediaImageCache loadToImageView:imageView fromURLString:url];
 }
 -(MyWebView *)webView
 {
@@ -209,41 +245,7 @@
         [self.view setNeedsLayout];
         if(self.tweet.mediaURLString){
             NSString *url = self.tweet.mediaURLString;
-            
-            
-            
-
-            UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:scrollView.bounds];
-            imageView.contentMode = UIViewContentModeScaleAspectFit;
-
-            
-            [scrollView addSubview:imageView];
-            scrollView.contentSize = imageView.frame.size;
-            scrollView.delegate = self;
-            scrollView.minimumZoomScale = 1.0;
-            scrollView.maximumZoomScale = 5.0;
-            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-            
-            UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-                if(scrollView.zoomScale != 1.0){
-                    [scrollView setZoomScale:1.0 animated:YES];
-                }else{
-                    [scrollView setZoomScale:2.0 animated:YES];
-                }
-            }];
-            [doubleTap setNumberOfTapsRequired:2];
-            [scrollView addGestureRecognizer:doubleTap];
-            
-            
-            // self.mediaImageView = imageView;
-            self.mediaScrollImageView = scrollView;
-            
-            MediaImageCache *mediaImageCache = [MediaImageCache defaultMediaImageCache];
-            [mediaImageCache loadToImageView:imageView fromURLString:url];
-        
+            [self setMediaScrollImageViewFromURL:url];
         }else if(self.tweet.linkURLString){
             {
                 NSString *url = self.tweet.linkURLString;
@@ -435,14 +437,24 @@
         NSString *tweet_user_str_percent = [urlstr substringFromIndex:18];
         NSString *tweet_user_str = [tweet_user_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         NSError *error = nil;
+        NSDictionary *tweet_user_dic = [NSJSONSerialization JSONObjectWithString:tweet_user_str options:0 error:&error];
         if(error){
             [UIAlertView alertError:error];
             return NO;
         }
-        NSDictionary *tweet_user_dic = [NSJSONSerialization JSONObjectWithString:tweet_user_str options:0 error:&error];
         User *user = [[User alloc] initWithDictionary:tweet_user_dic];
         [self performSegueWithIdentifier:@"showTweets" sender:user];
+    }else if([urlstr hasPrefix:@"http://media_url/"]){
+        NSString *media_url_str_percent = [urlstr substringFromIndex:17];
+        NSString *media_url_str = [media_url_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [self setMediaScrollImageViewFromURL:media_url_str];
+    }else if([urlstr hasPrefix:@"http://url/"]){
+        NSString *url_str_percent = [urlstr substringFromIndex:11];
+        NSString *url_str = [url_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url_str];
+        self.webView = aWebView;
     }
+        
     sleep(0);
     return NO;
 }
