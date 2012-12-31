@@ -301,47 +301,12 @@
             <point key="canvasLocation" x="338" y="44"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="DetailViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="goBack:"/>
-                <relationship kind="action" name="goForward:"/>
-                <relationship kind="outlet" name="created_atLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="detailDescriptionLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="favoritedLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="goBackButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="goForwardButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="nameLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="profileImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="relatedTweetsButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="retweetUserNameButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="retweetUserNameLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="retweetedLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="tweetSuperView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="tweetWebView" candidateClass="UIWebView"/>
-                <relationship kind="outlet" name="webViewSuperView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="MasterViewController" superclassName="PullRefreshTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MasterViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="logout:"/>
-            </relationships>
-        </class>
-        <class className="PullRefreshTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PullRefreshTableViewController.h"/>
-        </class>
-        <class className="UsersTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UsersTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="FtM-o6-p9i"/>
+        <segue reference="Mv3-mz-fFC"/>
     </inferredMetricsTieBreakers>
 </document>

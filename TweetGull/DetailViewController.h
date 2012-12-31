@@ -13,8 +13,6 @@
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate, UIScrollViewDelegate>
 {
     UIView *mediaWebView_;
-    // CGRect orig_webViewFrame;
-    // UIView *orig_superView;
 }
 - (IBAction)goForward:(id)sender;
 - (IBAction)goBack:(id)sender;
@@ -26,7 +24,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *profileImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-// @property (strong, nonatomic) IBOutlet UITextView *tweetTextView;
 @property (strong, nonatomic) IBOutlet UIView *tweetSuperView;
 @property (strong, nonatomic) IBOutlet UIWebView *tweetWebView;
 @property (strong, nonatomic) IBOutlet UIView *webViewSuperView;

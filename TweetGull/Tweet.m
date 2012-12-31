@@ -182,7 +182,6 @@
         if(media_url){
             replaced_str = [NSString stringWithFormat:@"<a href=\"http://media_url/%@\" style=\"text-decoration:none\">%@</a>", [media_url percentEncodeString], display_url];
         }else if(display_url){
-            // replaced_str = display_url;
             replaced_str = [NSString stringWithFormat:@"<a href=\"http://url/%@\" style=\"text-decoration:none\">%@</a>", [expanded_url percentEncodeString], display_url];
         }else if(id_str){
             NSDictionary *user_dic = @{@"id_str":item[@"id_str"], @"screen_name":item[@"screen_name"]};
@@ -201,48 +200,6 @@
 }
 
 
-#if 0
--(NSString*)display_html
-{
-    NSString *t = [self display_text_without_unescape_html];
-    NSRange search_range = NSMakeRange(0, t.length);
-    while (search_range.length > 0){
-        NSRange range = [t rangeOfString:@"@" options:0 range:search_range];
-        if(range.location == NSNotFound){
-            break;
-        }
-        if(!(range.location == 0 || [t characterAtIndex:(range.location - 1)] == ' ')){
-            search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
-            continue;
-        }
-        NSCharacterSet *screenNameCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"];
-        if(![screenNameCharacterSet characterIsMember:[t characterAtIndex:range.location+1]]){
-            search_range = NSMakeRange(range.location+1, t.length - (range.location+1));
-            continue;
-        }
-        int pos = range.location + 1;
-        while(pos<t.length){
-            unichar c = [t characterAtIndex:pos];
-            if(![screenNameCharacterSet characterIsMember:c]){
-                break;
-            }
-            pos++;
-        }
-        NSRange range2 = NSMakeRange(range.location+1, pos - (range.location+1));
-        
-        // NSRange range2 = [t rangeOfCharacterFromSet:screenNameCharacterSet options:0 range:NSMakeRange(range.location+1, t.length - (range.location+1))];
-        NSString *screen_name2 = [t substringWithRange:range2];
-        NSString *linkString = [NSString stringWithFormat:@"<a href=\"http://screen_name:%@\"  style=\"text-decoration:none\">@%@</a>", screen_name2, screen_name2];
-        
-        NSString *t2 = [NSString stringWithFormat:@"%@%@%@", [t substringToIndex:range.location], linkString, [t substringFromIndex:range2.location + range2.length]];
-        
-        t = t2;
-        search_range = NSMakeRange(range.location + linkString.length, t2.length - (range.location + linkString.length));
-    }
-    
-    return t;
-}
-#endif
 
 -(User*)orig_user
 {
@@ -260,52 +217,6 @@
         return nil;
     }
 }
-#if 0
--(NSString *)user_name
-{
-    NSString *str = [self objectForKey:@"from_user_name"];
-    if(str){
-        /* search API */
-        return str;
-    }
-    return [self.orig_user objectForKey:@"name"];
-}
--(NSString *)user_screen_name
-{
-    NSString *str = [self objectForKey:@"from_user"];
-    if(str){
-        /* search API */
-        return str;
-    }
-    return [self.orig_user objectForKey:@"screen_name"];
-}
--(NSString *)user_profile_image_url
-{
-    NSString *str = [self objectForKey:@"profile_image_url"];
-    if(str){
-        /* search API */
-        return str;
-    }
-    return [self.orig_user objectForKey:@"profile_image_url"];
-}
-
--(NSString *)retweet_user_name
-{
-    if(self.retweeted_status){
-        return [[self objectForKey:@"user"] objectForKey:@"name"];
-    }else{
-        return nil;
-    }
-}
--(NSString *)retweet_screen_name
-{
-    if(self.retweeted_status){
-        return [[self objectForKey:@"user"] objectForKey:@"screen_name"];
-    }else{
-        return nil;
-    }
-}
-#endif
 
 -(NSString *)urlString
 {
@@ -315,7 +226,6 @@
     }else{
         return nil;
     }
-    // return self.text.getURLString;
 }
 -(NSString*)instagramURLString
 {

@@ -24,6 +24,7 @@
     id observerWebViewDidFinishLoad;
     id observerWebViewDidStartLoad;
     BOOL isFirstDidAppear;
+    __weak UIActionSheet *sheet;
 }
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView:(BOOL)bFast;
@@ -35,7 +36,6 @@
 @synthesize detailDescriptionLabel = _detailDescriptionLabel;
 @synthesize profileImage = _profileImage;
 @synthesize nameLabel = _nameLabel;
-// @synthesize tweetTextView = _tweetTextView;
 @synthesize tweetSuperView = _tweetSuperView;
 @synthesize tweetWebView = _tweetWebView;
 @synthesize webViewSuperView = _webViewSuperView;
@@ -65,20 +65,10 @@
 -(void)setMediaWebView:(UIView *)mediaWebView
 {
     if(mediaWebView_){
-        ;
-        //[mediaWebView_ removeFromSuperview];
-        //if([mediaWebView_ isKindOfClass:[MyWebView class]]){
-        //    MyWebView *webView = (MyWebView*)mediaWebView_;
-        //    webView.userInteractionEnabled = NO;
-        //}
-//        [mediaWebView_ setFrame:orig_webViewFrame];
-//        [orig_superView addSubview:mediaWebView_];
         [mediaWebView_ removeFromSuperview];
     }
     mediaWebView_ = mediaWebView;
     if(mediaWebView){
-//        orig_webViewFrame = mediaWebView.frame;
-//        orig_superView =  mediaWebView.superview;
         CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
         mediaWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [mediaWebView setFrame:frame];
@@ -195,16 +185,6 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(startActionSheet:)];
     [barButtons addObject:addButton];
     self.navigationItem.rightBarButtonItem = addButton;
-    if(self.webView){
-#if 0
-        if([self.webView canGoBack]){
-            UIBarButtonItem *rewindButton = [[UIBarButtonItem alloc] initWithTitle:@"\U000025C0\U0000FE0E" style:UIBarButtonItemStylePlain handler:^(id sender){
-                [[self webView] goBack];
-            }];
-            [barButtons addObject:rewindButton];
-        }
-#endif
-    }
     self.goBackButton.hidden = !(self.webView && self.webView.canGoBack);
     self.goForwardButton.hidden = !(self.webView && self.webView.canGoForward);
     
@@ -216,21 +196,11 @@
 
     if (self.tweet) {
         self.nameLabel.text = self.tweet.orig_user.name;
-        // self.tweetTextView.text = self.tweet.display_text;
-#if 0
-        
-        /* Ref: Vertically and horizontally center HTML in UIWebView ( http://stackoverflow.com/questions/10882180/vertically-and-horizontally-center-html-in-uiwebview ) */
-        NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html,body {margin: 0;padding: 0;width: 100%%;height: 100%%;font-size:small; font-familly:System;}html {display: table;}body {display: table-cell;vertical-align: middle;padding: 0;text-align: left;-webkit-text-size-adjust: none;}</style></head><body>%@</body></html>​", self.tweet.display_html];
-        [self.tweetWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://dummy.example.com/"]];
-#endif
         self.tweetWebView.delegate = self;
         [self.tweetWebView setFrame:self.tweetSuperView.bounds];
         self.tweetWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.tweetWebView.scrollView.scrollsToTop = NO;
         [self.tweetSuperView addSubview:self.tweetWebView];
-        
-        
-        // [self.tweetTextView setValue:self.tweet.htmlText forKey:@"contentToHTMLString"];
         self.retweetUserNameLabel.text = self.tweet.retweet_user.name;
         self.retweetUserNameButton.enabled = (self.tweet.retweet_user.name != nil);
         self.created_atLabel.text = self.tweet.created_at_str;
@@ -328,21 +298,70 @@
 }
 - (void)startActionSheet:(id)sender
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:nil otherButtonTitles:nil];
-    [sheet addButtonWithTitle:@"Reply"];
+    if(sheet){
+        [sheet dismissWithClickedButtonIndex:-1 animated:YES];
+        sheet = nil;
+        return;
+    }
+    UIActionSheet *sheet_ = [UIActionSheet actionSheetWithTitle:nil];
+    sheet = sheet_;
+    
+    __weak typeof(self) weakself = self;
+    // UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"") destructiveButtonTitle:nil otherButtonTitles:nil];
+    [sheet addButtonWithTitle:@"Reply" handler:^{
+        NSString *text = [NSString stringWithFormat:@"@%@ ",self.tweet.orig_user.screen_name];
+        [[TwitterAPI defaultTwitterAPI] composeTweet:weakself text:text in_reply_to_status_id_str:self.tweet.id_str callback:nil];
+    }];
+    // [sheet addButtonWithTitle:@"Reply"];
     if(self.tweet.retweeted){
-        [sheet addButtonWithTitle:@"Unretweet"];
+        [sheet addButtonWithTitle:@"Unretweet" handler:^{
+            [[TwitterAPI defaultTwitterAPI] unretweet:weakself tweet_id_str:self.tweet.id_str ];
+            self.tweet.retweeted = NO;
+            [weakself configureView:NO];
+        }];
+        // [sheet addButtonWithTitle:@"Unretweet"];
     }else{
-        [sheet addButtonWithTitle:@"Retweet"];
+        [sheet addButtonWithTitle:@"Retweet" handler:^{
+            [[TwitterAPI defaultTwitterAPI] retweet:weakself tweet_id_str:self.tweet.id_str];
+            self.tweet.retweeted = YES;
+            [weakself configureView:NO];
+        }];
+        // [sheet addButtonWithTitle:@"Retweet"];
     }
     if(self.tweet.favorited){
-        [sheet addButtonWithTitle:@"Unfavorite"];
+        [sheet addButtonWithTitle:@"Unfavorite" handler:^{
+            [[TwitterAPI defaultTwitterAPI] unfavorite:weakself tweet_id_str:self.tweet.id_str ];
+            self.tweet.favorited = NO;
+            [weakself configureView:NO];
+        }];
+        
+        // [sheet addButtonWithTitle:@"Unfavorite"];
     }else{
-        [sheet addButtonWithTitle:@"Favorite"];
+        [sheet addButtonWithTitle:@"Favorite" handler:^{
+            [[TwitterAPI defaultTwitterAPI] favorite:weakself tweet_id_str:self.tweet.id_str];
+            self.tweet.favorited = YES;
+            [weakself configureView:NO];
+        }];
+        // [sheet addButtonWithTitle:@"Favorite"];
     }
-    [sheet addButtonWithTitle:@"Open Tweet in Safari"];
-    [sheet addButtonWithTitle:@"Open Link in Safari"];
-    [sheet showInView:self.view];
+    [sheet addButtonWithTitle:@"Open Tweet in Safari" handler:^{
+        NSString *urlstr = [NSString stringWithFormat:@"https://mobile.twitter.com/%@/status/%@", self.tweet.orig_user.screen_name, self.tweet.id_str];
+        NSURL *url = [NSURL URLWithString:urlstr];
+        [[UIApplication sharedApplication] openURL:url];
+
+    }];
+    // [sheet addButtonWithTitle:@"Open Tweet in Safari"];
+    
+    
+    [sheet addButtonWithTitle:@"Open Link in Safari" handler:^{
+        NSString *urlstr = self.tweet.urlString;
+        NSURL *url = [NSURL URLWithString:urlstr];
+        [[UIApplication sharedApplication] openURL:url];
+    }];
+    // [sheet addButtonWithTitle:@"Open Link in Safari"];
+    
+    // [sheet showInView:self.view];
+    [sheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 
 }
 - (void)viewDidLoad
@@ -433,7 +452,7 @@
     if([urlstr isEqual:@"http://dummy.example.com/"]){
         return YES;
     }
-    if([[urlstr substringToIndex:18] isEqual:@"http://tweet_user/"]){
+    if([urlstr hasPrefix:@"http://tweet_user/"]){
         NSString *tweet_user_str_percent = [urlstr substringFromIndex:18];
         NSString *tweet_user_str = [tweet_user_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         NSError *error = nil;

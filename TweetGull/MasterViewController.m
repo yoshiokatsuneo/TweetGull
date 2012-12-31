@@ -22,7 +22,6 @@
 
 #import "UIAlertView+alert.h"
 #import "TwitterAPI.h"
-// #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit.h>
 #import "TweetsRequestSearch.h"
 #import "TweetsRequestFavorites.h"
@@ -35,13 +34,12 @@
 #import "UsersRequestFollowers.h"
 
 
-// #import <BlocksKit/UIActionSheet+BlocksKit.h>
-
 @interface MasterViewController () {
     Tweets *tweets;
     NSMutableDictionary *tweetWebViewDic;
     User *user_;
     NSArray *connections;
+    __weak UIActionSheet *sheet;
 }
 @end
 
@@ -93,49 +91,14 @@
 {
     user_ = user;
 }
-#if 0
--(NSString *)screen_name
-{
-    NSString *name = nil;
-    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
-        TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
-        name = tweetsRequestUserTimeline.user_screen_name;
-    }else{
-        name = [TwitterAPI defaultTwitterAPI].screen_name;
-    }
-    return name;
-}
--(NSString *)id_str
-{
-    NSString *name = nil;
-    if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
-        TweetsRequestUserTimeline *tweetsRequestUserTimeline = (TweetsRequestUserTimeline*)self.tweetsRequest;
-        ; //name = tweetsRequestUserTimeline.id_str;
-    }else{
-        name = [TwitterAPI defaultTwitterAPI].user_id;
-    }
-    return name;
-}
-#endif
 
 - (void)loadTitle
 {
     self.title = self.tweetsRequest.title;
-#if 0
-    if(self.user_screen_name){
-        self.title = [NSString stringWithFormat:@"@%@", self.user_screen_name];
-    }else if(self.search_query){
-        self.title = [NSString stringWithFormat:@"%@", self.search_query];
-    }else if(self.tweet_for_related){
-        self.title = self.tweet_for_related.display_text;
-    }else{
-        self.title = [NSString stringWithFormat:@"Home(@%@)", [TwitterAPI defaultTwitterAPI].screen_name ];
-    }
-#endif
 }
 - (void)accountTableViewControllerDidFinish:(AccountTableViewController *)controller
 {
-    [controller dismissModalViewControllerAnimated:YES];
+    [controller dismissViewControllerAnimated:YES completion:nil];
     tweets = nil;
     [self loadCurrentAccount];
     [self.tableView reloadData];
@@ -156,21 +119,27 @@
 
 - (void)rightButtonActionSheet:(id)sender
 {
-    UIActionSheet *sheet = [UIActionSheet actionSheetWithTitle:nil];
-
+    if(sheet){
+        [sheet dismissWithClickedButtonIndex:-1 animated:YES];
+        sheet = nil;
+        return;
+    }
+    UIActionSheet *sheet_ = [UIActionSheet actionSheetWithTitle:nil];
+    sheet = sheet_;
+    __weak typeof(self) weakself = self;
     [sheet addButtonWithTitle:@"\U0001F4DD Tweet" handler:^{
-        [self insertNewObject:self];
+        [weakself insertNewObject:weakself];
     }];
     
     
     if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
         if([connections containsObject:@"following"]){
             [sheet addButtonWithTitle:[NSString stringWithFormat:@"Unfollow @%@", self.user.screen_name] handler:^{
-                [[TwitterAPI defaultTwitterAPI] unfollow:self user_id_str:self.user.id_str];
+                [[TwitterAPI defaultTwitterAPI] unfollow:weakself user_id_str:self.user.id_str];
             }];
         }else{
             [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@", self.user.screen_name] handler:^{
-                [[TwitterAPI defaultTwitterAPI] follow:self user_id_str:self.user.id_str];
+                [[TwitterAPI defaultTwitterAPI] follow:weakself user_id_str:self.user.id_str];
             }];
         }
     }
@@ -183,7 +152,7 @@
                 TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
                 tweetsRequestSearch.query = [alertView textFieldAtIndex:0].text;
                 self.nextTweetsRequest = tweetsRequestSearch;
-                [self performSegueWithIdentifier:@"showTweets" sender:self];
+                [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
             }];
             [alertView setCancelButtonWithTitle:nil handler:nil];
             [alertView show];
@@ -191,11 +160,11 @@
 
         [sheet addButtonWithTitle:@"\U0000FF20 Mensions" handler:^{
             self.nextTweetsRequest = [[TweetsRequestMentions alloc] init];
-            [self performSegueWithIdentifier:@"showTweets" sender:self];
+            [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
         }];
         [sheet addButtonWithTitle:@"\U0001F4AC Direct Messages" handler:^{
             self.nextTweetsRequest = [[TweetsRequestDirectMessages alloc] init];
-            [self performSegueWithIdentifier:@"showTweets" sender:self];
+            [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
         }];
     }
     
@@ -203,17 +172,17 @@
         TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
         tweetsRequestFavorites.user_screen_name = self.user.screen_name;
         self.nextTweetsRequest = tweetsRequestFavorites;
-        [self performSegueWithIdentifier:@"showTweets" sender:self];
+        [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
     }];
     [sheet addButtonWithTitle:@"\U0001F604 Friends" handler:^{
         UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
         usersRequest.screen_name = self.user.screen_name;
-        [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+        [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
     }];
     [sheet addButtonWithTitle:@"\U0001F3C3 Followers" handler:^{
         UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
         usersRequest.screen_name = self.user.screen_name;
-        [self performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+        [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
         
     }];
 
@@ -227,7 +196,7 @@
         [sheet addButtonWithTitle:@"\U00002194 Switch User" handler:^{
             AccountTableViewController *controller = [[AccountTableViewController alloc] init];
             controller.delegate = self;
-            [self presentModalViewController:controller animated:YES];
+            [weakself presentViewController:controller animated:YES completion:nil];
         }];
 
         [sheet addButtonWithTitle:@"\U0001F4AD About" handler:^{
@@ -235,7 +204,7 @@
             NSError *error;
             NSString *about = [NSString stringWithContentsOfFile:[ mainBundlePath stringByAppendingPathComponent:@"about.txt"] encoding:NSUTF8StringEncoding error:&error];
 
-            NSString *verstr = [self appNameAndVersionNumberDisplayString];
+            NSString *verstr = [weakself appNameAndVersionNumberDisplayString];
             NSString *message = [NSString stringWithFormat:@"%@\n%@", verstr, about];
             
                                                                                                                                                                                                   
@@ -247,7 +216,9 @@
     
     [sheet setCancelButtonWithTitle:nil handler:nil];
 
-    [sheet showInView:self.view];
+    [sheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+    
+    // [sheet showInView:self.view];
 }
 - (void)loadCurrentAccount
 {
@@ -283,14 +254,9 @@
             
             callback();
         }else{
-            sleep(0);
-            NSLog(@"test.......");
             [UIAlertView showAlertViewWithTitle:@"Twitter login failed" message:@"Please retry to login Twitter" cancelButtonTitle:@"Login" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger result){
                 [self performSelector:@selector(initialSignIn:) withObject:callback afterDelay:0];
             }];
-            // [self performSelector:@selector(initialSignIn:) withObject:callback afterDelay:10];
-            //[self performSelector:@selector(initialSignIn:) withObject:callback];
-            // [self initialSignIn:callback];
         }
     }];
 }
@@ -310,39 +276,13 @@
             [self fetchTweets];
             
         } afterDelay:0];
-#if 0
-        
-        [self initialSignIn:^{
-            [self loadCurrentAccount];
-            [self fetchTweets];
-        }];
-#endif
     }else{
         [self fetchTweets];
     }
 
-#if 0
-    if(!tweets){
-        [[TwitterAPI defaultTwitterAPI] signIn:self callback:^{
-            [self fetchTweets];
-        }];
-    }
-#endif
 	// Do any additional setup after loading the view, typically from a nib.
     // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-#if 0
-    if(self.user_screen_name == nil && self.search_query == nil && self.tweet_for_related == nil){
-#if 0
-        UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc ] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout:)];
-        self.navigationItem.leftItemsSupplementBackButton = YES;
-        self.navigationItem.leftBarButtonItems  = [NSArray arrayWithObject:logoutButton];
-#endif
-        UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(leftButtonActionSheet:)];
-        self.navigationItem.leftBarButtonItem = leftButton;
-        
-    }
-#endif
     
     //if(self.tweetsRequest == nil || [self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightButtonActionSheet:)];
@@ -364,6 +304,7 @@
 {
     [super viewDidAppear:animated];
     [self updateVisibleCellsLink:nil useThumbnail:NO];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 - (void)viewDidUnload
 {
@@ -380,19 +321,6 @@
     }
 }
 
-#if 0
--(void)tweetEditViewControllerSend:(TweetEditViewController *)tweetEditViewController text:(NSString *)text
-{
-    NSLog(@"%s: text=%@", __func__, text);
-    [tweetEditViewController dismissViewControllerAnimated:YES completion:nil];
-    [self postTweet:text];
-}
--(void)tweetEditViewControllerCancel:(TweetEditViewController *)tweetEditViewController
-{
-    NSLog(@"%s", __func__);
-    [tweetEditViewController dismissViewControllerAnimated:YES completion:nil];
-}
-#endif
 
 - (void)insertNewObject:(id)sender
 {
@@ -415,23 +343,6 @@
 {
     return tweets.count;
 }
-#if 0
-- (void)setTweetLinkInfo:(Tweet*)tweet cellViewController:(TweetTableViewCellViewController*)cellViewController
-{
-    NSString *url = tweet.linkURLString;
-    
-    WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
-    if(! [webViewCache isLoaded:url]){
-        return;
-    }
-    MyWebView *myWebView = [webViewCache getWebView:url];
-    if(myWebView.startLoadCount > 0){
-        cellViewController.progressView.hidden = NO;
-        cellViewController.progressView.progress = 1.0*myWebView.startLoadCount / (1.0*myWebView.finishLoadCount);
-        // cellViewController.tableViewCell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-    }
-}
-#endif
 
 -(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate useThumbnail:(BOOL)useThumbnail
 {
@@ -528,7 +439,6 @@
         [cellViewController loadView];
         cell = cellViewController.tableViewCell;
         cell.viewController = cellViewController;
-        // cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TweetCell"];
     }
     cellViewController = cell.viewController;
     int index = indexPath.row;
@@ -537,14 +447,8 @@
     [cellViewController reset];
     
     cell.tag = index;
-    // cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    // cell.textLabel.text = text;
-    // cell.detailTextLabel.text = [NSString stringWithFormat:@"by %@", name];
-    // cell.imageView.image = nil;
     cellViewController.tweetText.text = tweet.display_text;
-    //[cellViewController.tweetText sizeToFit];
     cellViewController.userNameLabel.text = tweet.orig_user.name;
-    //[cellViewController.userNameLabel sizeToFit];
     cellViewController.retweetUserNameLabel.text = tweet.retweet_user.name;
     cellViewController.created_atLabel.text = tweet.created_at_str;
     cellViewController.tweet = tweet;
@@ -575,8 +479,6 @@
     }
 
     
-//    [self setTweetLinkProgress:tweet progressView:cellViewController.progressView];
-    
     NSLog(@"%s: indexPath.row=%d\n", __func__, indexPath.row);
     
     NSString *linkURL = tweet.linkURLString;
@@ -589,11 +491,6 @@
         cellViewController.mediaImageView = imageView;
         [mediaImageCache loadToImageView:imageView fromURLString:mediaURL];
     }else if(linkURL){
-        ;
-        // WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
-        // [webViewCache addURL:linkURL];
-        // MyWebView *webView = [webViewCache getWebView:linkURL];
-        // cellViewController.webView = webView;
         WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
         if([webViewCache isCached:linkURL]){
             MyWebView *webView = [webViewCache getWebView:linkURL];
@@ -602,7 +499,6 @@
                 cellViewController.mediaWebView = [[UIImageView alloc] initWithImage:image];
             }
         }
-        // cellViewController.mediaWebView = [[UIView alloc] init]; /* dummy view */
     }
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
@@ -717,32 +613,6 @@
         }
     } ];
 }
-#if 0
--(void)postTweetFetcher:(GTMHTTPFetcher*)fetcher finishedWithData:(NSData*)data error:(NSError*)error
-{
-    if(error != nil){
-        NSLog(@"Fetch error: %@", error);
-        return;
-    }
-    [self fetchTweets];
-}
--(void)postTweet:(NSString*)text
-{
-    NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/update.json"];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    NSString *encodedText = [GTMOAuthAuthentication encodedOAuthParameterForString:text];
-    NSString *body = [NSString stringWithFormat:@"status=%@", encodedText];
-    [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
-    [self signIn:^{
-        [auth authorizeRequest:request];
-        
-        GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-        [fetcher beginFetchWithDelegate:self didFinishSelector:@selector(postTweetFetcher:finishedWithData:error:)];
-    }];
-}
-#endif
 - (IBAction)logout:(id)sender {
     [[TwitterAPI defaultTwitterAPI] signOut];
 }
@@ -751,36 +621,6 @@
     [self fetchTweets];
     // [self.tableView reloadData];
 }
-#if 0
--(int)getTableViewCellIndexFromURL:(NSString*)url
-{
-    int index = -1;
-    for(int i=0;i<tweets.count;i++){
-        Tweet *tweet = [tweets objectAtIndex:i];
-        NSString *url_  = tweet.urlString;
-        if([url isEqual:url_]){
-            index = i;
-        }
-    }
-    return index;
-}
-#endif
-#if 0
--(void)setTweetStatus:(NSString*)url accessoryType:(UITableViewCellAccessoryType)accessoryType
-{
-    for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
-        int index = tableViewCell.tag;
-        Tweet *tweet = [tweets objectAtIndex:index];
-        NSString *url_ = tweet.urlString;
-        if([url isEqual:url_]){
-            UITableViewCell *tableViewCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-            tableViewCell.accessoryType = accessoryType; 
-        }
-        
-    }
-    
-}
-#endif
 -(void)updateProgress:(NSString*)url progress:(double)progress
 {
     for(UITableViewCell *tableViewCell in self.tableView.visibleCells){

@@ -241,8 +241,10 @@ static TwitterAPI *m_current = nil;
                 NSLog(@"Twitter result: Sent");
                 break;
         }
-        [viewController dismissModalViewControllerAnimated:YES];
-        callback(result == DETweetComposeViewControllerResultDone);
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+        if(callback){
+            callback(result == DETweetComposeViewControllerResultDone);
+        }
         return;
     };
     tcvc.alwaysUseDETwitterCredentials = YES;
