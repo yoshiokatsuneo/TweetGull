@@ -258,6 +258,7 @@
 {
     return self.mediaImageView;
 }
+#if 0
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == actionSheet.cancelButtonIndex){
@@ -296,6 +297,8 @@
         [[UIApplication sharedApplication] openURL:url];
     }
 }
+#endif
+
 - (void)startActionSheet:(id)sender
 {
     if(sheet){
@@ -352,12 +355,18 @@
     }];
     // [sheet addButtonWithTitle:@"Open Tweet in Safari"];
     
+
+    if(self.webView){
+        [sheet addButtonWithTitle:@"Open web page in Safari" handler:^{
+            // NSString *urlstr = self.tweet.urlString;
+            // NSURL *url = [NSURL URLWithString:urlstr];
+            NSURL *url = self.webView.request.URL;
+            [[UIApplication sharedApplication] openURL:url];
+        }];
+    }
     
-    [sheet addButtonWithTitle:@"Open Link in Safari" handler:^{
-        NSString *urlstr = self.tweet.urlString;
-        NSURL *url = [NSURL URLWithString:urlstr];
-        [[UIApplication sharedApplication] openURL:url];
-    }];
+    [sheet setCancelButtonWithTitle:nil handler:nil];
+
     // [sheet addButtonWithTitle:@"Open Link in Safari"];
     
     // [sheet showInView:self.view];

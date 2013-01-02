@@ -137,7 +137,7 @@ static WebViewCache *webViewCache = nil;
     MyWebView *myWebView = (MyWebView*)webView;
     // NSLog(@"%s: myWebView=%p:%@", __func__, myWebView, myWebView);
     NSLog(@"%s: request URL=%@, orig_url=%@", __func__, [request URL], ((MyWebView*)webView).startURL);
-    NSArray *stopSchemes = [NSArray arrayWithObjects:@"itmss", @"itms-appss", nil];
+    NSArray *stopSchemes = [NSArray arrayWithObjects:@"itms", @"itmss", @"itms-appss", nil];
     if(myWebView.thumbnailMode && [stopSchemes indexOfObject:request.URL.scheme]!=NSNotFound){
         myWebView.pendingRequest = request;
         return FALSE;

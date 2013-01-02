@@ -77,7 +77,7 @@
 //}
 -(void)setMediaWebView:(UIView *)mediaWebView
 {
-    [mediaWebView_ removeFromSuperview];
+    [self.mediaWebView removeFromSuperview];
     
     CGRect frame = CGRectMake(0, 0, self.webViewSuperView.bounds.size.width, self.webViewSuperView.bounds.size.height);
     [mediaWebView setFrame:frame];
@@ -98,7 +98,11 @@
 }
 -(UIView*)mediaWebView
 {
-    return mediaWebView_;
+    if([self.webViewSuperView.subviews containsObject:mediaWebView_]){
+        return mediaWebView_;
+    }else{
+        return nil;
+    }
 }
 
 -(void)setWebView:(MyWebView *)webView

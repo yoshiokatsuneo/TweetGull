@@ -242,11 +242,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "TweetGull/DetailViewController.m"
-         timestampString = "378601162.472404"
+         timestampString = "378737544.645719"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "376"
-         endingLineNumber = "376"
+         startingLineNumber = "385"
+         endingLineNumber = "385"
          landmarkName = "-viewDidUnload"
          landmarkType = "5">
       </FileBreakpoint>
@@ -254,39 +254,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "TweetGull/WebViewCache.m"
-         timestampString = "377708288.648961"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "143"
-         endingLineNumber = "143"
-         landmarkName = "-webView:shouldStartLoadWithRequest:navigationType:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "TweetGull/AppDelegate.m"
-         timestampString = "378385492.310793"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "200"
-         endingLineNumber = "200"
-         landmarkName = "-sendProvicerDeviceToken:oauth_token:oauth_token_secret:serviceProvider:user_id:screen_name:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "TweetGull/DetailViewController.m"
-         timestampString = "378598329.588189"
+         timestampString = "378735328.180619"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "263"
-         endingLineNumber = "263"
-         landmarkName = "-actionSheet:clickedButtonAtIndex:"
+         startingLineNumber = "352"
+         endingLineNumber = "352"
+         landmarkName = "-startActionSheet:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

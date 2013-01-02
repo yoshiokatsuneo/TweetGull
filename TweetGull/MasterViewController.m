@@ -352,6 +352,7 @@
         [visibleCells addObject:current_cell];
     }
     
+    NSMutableSet *usedURLs = [[NSMutableSet alloc] init];
     for(TweetTableViewCell *cell in visibleCells){
         int index = cell.tag;
         TweetTableViewCellViewController *cellViewController = cell.viewController;
@@ -360,25 +361,28 @@
             ;
         }else if(tweet.linkURLString){
             NSString *url = tweet.linkURLString;
-            if(url){
-                if(cellViewController.webView == nil){
-                    WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
-                    if(fCreate || [webViewCache isCached:url]){
-                        [webViewCache addURL:url];
-                        MyWebView *webView = [webViewCache getWebView:url];
-                        if(useThumbnail){
-                            UIImage *image = webView.thumbnailImage;
-                            if(image){
-                                cellViewController.mediaImageView = [[UIImageView alloc] initWithImage:image];
-                            }
-                        }else{
-                            cellViewController.webView = webView;
-                            cellViewController.progressView.hidden = NO;
-                            cellViewController.progressView.progress = webView.estimatedProgress;
+            if(cellViewController.webView == nil){
+                WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+                if(fCreate || [webViewCache isCached:url]){
+                    [webViewCache addURL:url];
+                    MyWebView *webView = [webViewCache getWebView:url];
+                    if(useThumbnail || [usedURLs member:url]){
+                        UIImage *image = webView.thumbnailImage;
+                        if(image){
+                            cellViewController.mediaImageView = [[UIImageView alloc] initWithImage:image];
                         }
+                        cellViewController.progressView.hidden = YES;
+                    }else{
+                        cellViewController.webView = webView;
+                        cellViewController.progressView.hidden = NO;
+                        cellViewController.progressView.progress = webView.estimatedProgress;
                     }
                 }
             }
+            if(cellViewController.webView && ![usedURLs member:url]){
+                [usedURLs addObject:url];
+            }
+
         }
         UIWebView *webView = [tweetWebViewDic objectForKey:tweet.id_str];
         if(webView == nil){
