@@ -351,6 +351,19 @@
     if(current_cell){
         [visibleCells addObject:current_cell];
     }
+
+    for(TweetTableViewCell *cell in visibleCells){
+        int index = cell.tag;
+        TweetTableViewCellViewController *cellViewController = cell.viewController;
+        Tweet *tweet = [tweets objectAtIndex:index];
+        if(cellViewController.webView){
+            NSString *url = tweet.linkURLString;
+            WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
+            [webViewCache addURL:url]; // to mark recently used
+        }
+    }
+
+    
     
     NSMutableSet *usedURLs = [[NSMutableSet alloc] init];
     for(TweetTableViewCell *cell in visibleCells){
@@ -361,8 +374,8 @@
             ;
         }else if(tweet.linkURLString){
             NSString *url = tweet.linkURLString;
+            WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
             if(cellViewController.webView == nil){
-                WebViewCache *webViewCache = [WebViewCache defaultWebViewCache];
                 if(fCreate || [webViewCache isCached:url]){
                     [webViewCache addURL:url];
                     MyWebView *webView = [webViewCache getWebView:url];

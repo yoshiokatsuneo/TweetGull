@@ -67,6 +67,9 @@
 {
     [webView stopLoading];
     [webView cancelCaptureThumbNail];
+    if(webView.superview){
+        [webView removeFromSuperview];
+    }
     NSLog(@"%s begin: url=%@", __func__, webView.startURL);
 }
 @end
@@ -126,7 +129,10 @@ static WebViewCache *webViewCache = nil;
 {
     NSLog(@"%s: url=%@", __func__, url);
     CacheWebViewItem *item = [cache objectForKey:url];
-    if(item){return;}    
+    if(item){
+        [cache setObject:item forKey:url]; /* to mark the item is recently used */
+        return;
+    }
     
     
     item = [[CacheWebViewItem alloc] init:url];
