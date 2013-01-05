@@ -86,7 +86,23 @@ static WebViewCache *webViewCache = nil;
 {
     self = [super init];
     if (self) {
-        cache = [[LRUCache  alloc] init:10];
+        int cachesize = 0;
+        CGFloat height = [UIScreen mainScreen].bounds.size.height;
+        if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad){
+            /* iPad */
+            cachesize = 10;
+        }else{
+            /* iPhone */
+            if(height > 500){
+                /* iPhone5: 568 */
+                cachesize = 6;
+            }else{
+                /* iPhone4: 480 */
+                cachesize = 5;
+            }
+        }
+        
+        cache = [[LRUCache  alloc] init:cachesize];
         // cache.countLimit = 10;
         // cache.evictsObjectsWithDiscardedContent = TRUE;
         loading_count = 0;
