@@ -22,6 +22,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *prev_version = [defaults objectForKey:@"installedVersion"];
+    NSString *prev_shortVersion = [defaults objectForKey:@"installedShortVersion"];
+    
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [defaults setObject:version forKey:@"installedVersion"];
+    [defaults setObject:shortVersion forKey:@"installedShortVersion"];
+    sleep(0);
 #if 0
     /* notification registration */
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound)];

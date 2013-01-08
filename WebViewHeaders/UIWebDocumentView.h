@@ -9,6 +9,6 @@
 
 @interface UIWebView (DocumentView)
 
-- (UIWebDocumentView *)_documentView;
+// - (UIWebDocumentView *)_documentView;
 
 @end

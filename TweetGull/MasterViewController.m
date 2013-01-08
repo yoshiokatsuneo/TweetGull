@@ -40,6 +40,8 @@
     User *user_;
     NSArray *connections;
     __weak UIActionSheet *sheet;
+    
+    NSMutableArray *observerWebViewDidCaptureThumbNails;
 }
 @end
 
@@ -58,6 +60,8 @@
     TweetTableViewCell *cell = cellViewController.tableViewCell;
     cellHeight = cell.frame.size.height;
     tweetWebViewDic = [[NSMutableDictionary alloc] init];
+    
+    observerWebViewDidCaptureThumbNails = [[NSMutableArray alloc] init];
     
     return self;
 }
@@ -300,6 +304,13 @@
     [super viewWillAppear:animated];
     [self updateVisibleCellsLink:nil useThumbnail:YES];
 }
+-(void)viewWillDisappear:(BOOL)animated
+{
+    for(id observer in observerWebViewDidCaptureThumbNails){
+        [[NSNotificationCenter defaultCenter] removeObserver:observer];
+    }
+    [observerWebViewDidCaptureThumbNails removeAllObjects];
+}
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -346,6 +357,13 @@
 
 -(void)updateVisibleCellsLinkItr:(TweetTableViewCell *)current_cell create:(BOOL)fCreate useThumbnail:(BOOL)useThumbnail
 {
+    
+    for(id observer in observerWebViewDidCaptureThumbNails){
+        [[NSNotificationCenter defaultCenter] removeObserver:observer];
+    }
+    [observerWebViewDidCaptureThumbNails removeAllObjects];
+
+    
     NSMutableDictionary *new_dic = [[NSMutableDictionary alloc] init];
     NSMutableArray *visibleCells = [NSMutableArray arrayWithArray:self.tableView.visibleCells];
     if(current_cell){
@@ -382,16 +400,31 @@
                     if(useThumbnail || [usedURLs member:url]){
                         UIImage *image = webView.thumbnailImage;
                         if(image){
-                            cellViewController.mediaImageView = [[UIImageView alloc] initWithImage:image];
+                            if(cellViewController.mediaImageView){
+                                cellViewController.mediaImageView.image = image;
+                            }else{
+                                cellViewController.mediaImageView = [[UIImageView alloc] initWithImage:image];
+                            }
                         }
-                        cellViewController.progressView.hidden = YES;
                     }else{
                         cellViewController.webView = webView;
-                        cellViewController.progressView.hidden = NO;
-                        cellViewController.progressView.progress = webView.estimatedProgress;
                     }
                 }
             }
+            if(cellViewController.webView){
+                cellViewController.progressView.hidden = NO;
+                cellViewController.progressView.progress = cellViewController.webView.estimatedProgress;
+                
+                id observerWebViewDidCaptureThumbNail =[[NSNotificationCenter defaultCenter] addObserverForName:@"observerWebViewDidCaptureThumbNail" object:cellViewController.webView queue:nil usingBlock:^(NSNotification *notification){
+                    if(self.isViewLoaded && self.view.window){
+                        [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0 inModes:@[NSDefaultRunLoopMode]];
+                    }
+                }];
+                [observerWebViewDidCaptureThumbNails addObject:observerWebViewDidCaptureThumbNail];
+            }else{
+                cellViewController.progressView.hidden = YES;
+            }
+            
             if(cellViewController.webView && ![usedURLs member:url]){
                 [usedURLs addObject:url];
             }
@@ -421,17 +454,11 @@
     CGPoint velocity = [self.tableView.panGestureRecognizer velocityInView:self.tableView];
     // NSLog(@"state=%d, velocity=%lf", recognizer.state, velocity.y);
     if([[NSRunLoop currentRunLoop].currentMode isEqual:UITrackingRunLoopMode /* NSRunLoopCommonModes */]){
-        sleep(0);
         /* if dragging(!=0), and velocity is slow, update */
         if(fabs(velocity.y) >= 50 || !(recognizer.state == UIGestureRecognizerStateChanged || recognizer.state == UIGestureRecognizerStateBegan)){
             [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.3 inModes:@[NSRunLoopCommonModes]];
             return;
-        }else{
-            sleep(0);
         }
-        sleep(0);
-    }else{
-        sleep(0);
     }
     [self updateVisibleCellsLinkItr:current_cell create:YES useThumbnail:useThumbnail];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleCellsLink:) object:nil];
@@ -640,6 +667,11 @@
 }
 -(void)updateProgress:(NSString*)url progress:(double)progress
 {
+    if(self.isViewLoaded && self.view.window){
+        [self performSelector:@selector(updateVisibleCellsLink:) withObject:nil afterDelay:0.0 inModes:@[NSDefaultRunLoopMode]];
+    }
+
+#if 0
     for(UITableViewCell *tableViewCell in self.tableView.visibleCells){
         int index = tableViewCell.tag;
         Tweet *tweet = [tweets objectAtIndex:index];
@@ -652,7 +684,7 @@
         }
         
     }
-    
+#endif
 }
 
 #if 0

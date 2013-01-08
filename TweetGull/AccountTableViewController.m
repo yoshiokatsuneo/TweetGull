@@ -15,8 +15,9 @@
 @interface AccountTableViewController ()
 {
     Accounts *accounts;
-    UIBarButtonItem *doneButtonItem;
-    UIBarButtonItem *editButtonItem;
+    
+    UIBarButtonItem *aDoneButtonItem;
+    UIBarButtonItem *aEditButtonItem;
 }
 @end
 
@@ -45,11 +46,14 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
     accounts = [Accounts defaultAccounts];
-    
-    editButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editAccounts:)];
-    doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(editAccounts:)];
-    
-    self.navigationItem.leftBarButtonItem = editButtonItem;
+    aEditButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editAccounts:)];
+    aDoneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(editAccounts:)];
+
+    // self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    //self.navigationItem.leftBarButtonItem = editButtonItem = editButton;
+    // self.aNavigationItem.leftBarButtonItem = doneButtonItem;
+    //self.editButtonItem.title = @"aaaaaa";
+    // self.editButton.title = @"aaaaaa";
 }
 
 - (void)viewDidUnload
@@ -168,7 +172,7 @@
             [tableView reloadData];
             GTMOAuthAuthentication *auth = twitterAPI.auth;
             
-            [((AppDelegate*)([UIApplication sharedApplication].delegate)) sendProvicerOauth_token:auth.token  oauth_token_secret:auth.tokenSecret serviceProvider:auth.serviceProvider user_id:auth.userId screen_name:auth.screenName];            
+//            [((AppDelegate*)([UIApplication sharedApplication].delegate)) sendProvicerOauth_token:auth.token  oauth_token_secret:auth.tokenSecret serviceProvider:auth.serviceProvider user_id:auth.userId screen_name:auth.screenName];
             
             User * user = [twitterAPI userShow:self user_id_str:@"760178030" /* "tweetgull" */];
             NSNumber * following_status = user[@"following"];
@@ -188,9 +192,19 @@
 - (IBAction)editAccounts:(id)sender {
     tableView.editing = ! tableView.editing;
     if(tableView.editing){
-        self.navigationItem.leftBarButtonItem = doneButtonItem;
+        // self.editButton.title = NSLocalizedString(@"Done", nil);
+        // self.editButton.style = UIBarButtonItemStyleDone;
+        // self.editButton.style = UIBarButtonItemStyleDone;
+        self.aNavigationItem.leftBarButtonItem = aDoneButtonItem;
     }else{
-        self.navigationItem.leftBarButtonItem = editButtonItem;
+        // self.editButton.title = NSLocalizedString(@"Edit", nil);
+        // self.editButton.style = UIBarButtonItemStylePlain;
+        self.aNavigationItem.leftBarButtonItem = aEditButtonItem;
     }
+}
+-(void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    sleep(0);
 }
 @end

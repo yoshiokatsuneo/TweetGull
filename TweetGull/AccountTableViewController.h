@@ -19,5 +19,7 @@
 - (IBAction)editAccounts:(id)sender;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UINavigationBar *aNavigationBar;
+@property (weak, nonatomic) IBOutlet UINavigationItem *aNavigationItem;
 @property id<AccountTableViewControllerDelegate> delegate;
 @end

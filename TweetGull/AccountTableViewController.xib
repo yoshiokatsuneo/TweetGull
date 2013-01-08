@@ -136,6 +136,22 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">aNavigationBar</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="465606300"/>
+					</object>
+					<int key="connectionID">32</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">aNavigationItem</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="467915054"/>
+					</object>
+					<int key="connectionID">33</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="873029372"/>
 						<reference key="destination" ref="372490531"/>
@@ -164,7 +180,7 @@
 						<reference key="source" ref="287199416"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
-					<int key="connectionID">28</int>
+					<int key="connectionID">34</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -218,13 +234,13 @@
 						<reference key="parent" ref="465606300"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">22</int>
-						<reference key="object" ref="995172895"/>
+						<int key="objectID">23</int>
+						<reference key="object" ref="287199416"/>
 						<reference key="parent" ref="467915054"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">23</int>
-						<reference key="object" ref="287199416"/>
+						<int key="objectID">22</int>
+						<reference key="object" ref="995172895"/>
 						<reference key="parent" ref="467915054"/>
 					</object>
 				</array>
@@ -245,7 +261,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">31</int>
+			<int key="maxID">34</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -267,10 +283,20 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="aNavigationBar">UINavigationBar</string>
+						<string key="aNavigationItem">UINavigationItem</string>
 						<string key="editButton">UIBarButtonItem</string>
 						<string key="tableView">UITableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="aNavigationBar">
+							<string key="name">aNavigationBar</string>
+							<string key="candidateClassName">UINavigationBar</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="aNavigationItem">
+							<string key="name">aNavigationItem</string>
+							<string key="candidateClassName">UINavigationItem</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="editButton">
 							<string key="name">editButton</string>
 							<string key="candidateClassName">UIBarButtonItem</string>

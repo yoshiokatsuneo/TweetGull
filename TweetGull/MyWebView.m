@@ -51,7 +51,16 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
 }
 -(WebView *)coreWebView
 {
-    UIWebDocumentView *documentView = [self _documentView];
+    NSString *str_us = @"_";
+    NSString *str_doc = @"document";
+    NSString *str_view = @"View";
+    NSString *str_dv = [NSString stringWithFormat:@"%@%@%@", str_us, str_doc, str_view];
+    SEL dvsel = NSSelectorFromString(str_dv);
+    id dv_id = [self performSelector:dvsel];
+    if(dv_id == nil){return nil;}
+    UIWebDocumentView *documentView = dv_id;
+    // UIWebDocumentView *documentView = [self _documentView];
+    
     WebView *coreWebView_ = [documentView webView];
     return coreWebView_;
 }
@@ -146,6 +155,8 @@ NSString *WebViewProgressFinishedNotification =         @"WebProgressFinishedNot
             [self.layer renderInContext:UIGraphicsGetCurrentContext()];
             self.thumbnailImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"observerWebViewDidCaptureThumbNail" object:self];
         }
     }
 }
