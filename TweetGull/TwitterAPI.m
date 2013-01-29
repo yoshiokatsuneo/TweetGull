@@ -17,6 +17,7 @@
 #import "NSJSONSerialization+string.h"
 #import "NetworkActivityIndicator.h"
 #import "twitter_oauth_keys.h"
+#import "NSString+Encoder.h"
 
 // static NSString *const kTwitterKeychainItemName = @"TwitterTest1";
 static NSString *const kTwitterKeychainItemName = @""; /* Not to save Keychain from GTMOAuth */
@@ -559,7 +560,18 @@ static TwitterAPI *m_current = nil;
 }
 
 #endif
-
+-(Tweet*)postTweet:(UIViewController*)viewController text:(NSString*)text
+{
+    NSString *url_str = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+    NSString *post_str = [NSString stringWithFormat:@"status=%@", text.percentEncodeString];
+    id json_obj = [self postRequest:url_str method:@"POST" postString:post_str viewController:viewController];
+    if(![json_obj isKindOfClass:[NSDictionary class]]){
+        [UIAlertView alertString:@"response is not NSDictinoary"];
+        return nil;
+    }
+    Tweet *tweet = [[Tweet alloc] initWithDictionary:json_obj];
+    return tweet;
+}
 -(Tweet*)retweet:(UIViewController*)viewController tweet_id_str:(NSString*)tweet_id_str
 {
     NSString *url_str = [NSString stringWithFormat: @"https://api.twitter.com/1.1/statuses/retweet/%@.json", tweet_id_str];

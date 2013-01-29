@@ -15,9 +15,12 @@
 #import "TwitterAPI.h"
 #import "TweetsRequestUserTimeline.h"
 #import "TweetsRequestRelated.h"
+#import "TweetsRequestSearch.h"
 #import "NSJSONSerialization+string.h"
 #import "UIAlertView+alert.h"
 #import "BlocksKit.h"
+
+
 
 @interface DetailViewController ()
 {
@@ -481,6 +484,14 @@
         NSString *url_str = [url_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         MyWebView *aWebView = [[WebViewCache defaultWebViewCache] getWebView:url_str];
         self.webView = aWebView;
+    }else if([urlstr hasPrefix:@"http://hashtag/"]){
+        NSString *hashtag_str_percent = [urlstr substringFromIndex:15];
+        NSString *hashtag_str = [hashtag_str_percent stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+        TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
+        tweetsRequestSearch.query = [NSString stringWithFormat:@"#%@",hashtag_str];
+        
+        [self performSegueWithIdentifier:@"showTweets" sender:tweetsRequestSearch];
     }
         
     sleep(0);
@@ -491,14 +502,18 @@
 {
     if ([[segue identifier] isEqualToString:@"showTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];
-        TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
-        if([sender isKindOfClass:[User class]]){
-            tweetsRequestUserTimeline.user = sender;
-            // tweetsRequestUserTimeline.id_str = sender.id_str;
+        if([sender isKindOfClass:[TweetsRequest class]]){
+            masterViewController.tweetsRequest = sender;
         }else{
-            tweetsRequestUserTimeline.user = self.tweet.orig_user;
+            TweetsRequestUserTimeline * tweetsRequestUserTimeline = [[TweetsRequestUserTimeline alloc] init];
+            if([sender isKindOfClass:[User class]]){
+                tweetsRequestUserTimeline.user = sender;
+                // tweetsRequestUserTimeline.id_str = sender.id_str;
+            }else{
+                tweetsRequestUserTimeline.user = self.tweet.orig_user;
+            }
+            masterViewController.tweetsRequest = tweetsRequestUserTimeline;
         }
-        masterViewController.tweetsRequest = tweetsRequestUserTimeline;
     }
     if ([[segue identifier] isEqualToString:@"showRetweetTweets"]){
         MasterViewController *masterViewController = [segue destinationViewController];

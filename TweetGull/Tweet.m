@@ -159,9 +159,11 @@
     NSMutableString *t = [NSMutableString stringWithString:self.text];
     NSArray *urls = self.entities_urls_and_media;
     NSArray *user_mentions = self.origTweet[@"entities"][@"user_mentions"];
+    NSArray *hashtags = self.origTweet[@"entities"][@"hashtags"];
     NSMutableArray *entities_contents = [[NSMutableArray alloc] init];
     [entities_contents addObjectsFromArray:urls];
     [entities_contents addObjectsFromArray:user_mentions];
+    [entities_contents addObjectsFromArray:hashtags];
     [entities_contents sortUsingComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2){
         NSArray *indices1 = obj1[@"indices"];
         NSArray *indices2 = obj2[@"indices"];
@@ -178,6 +180,7 @@
         NSString *media_url = [item objectForKey:@"media_url"];
         NSString *expanded_url = [item objectForKey:@"expanded_url"];
         NSString *id_str = [item objectForKey:@"id_str"];
+        NSString *hashtag_text = [item objectForKey:@"text"];
         NSString *replaced_str = nil;
         if(media_url){
             replaced_str = [NSString stringWithFormat:@"<a href=\"http://media_url/%@\" style=\"text-decoration:none\">%@</a>", [media_url percentEncodeString], display_url];
@@ -191,6 +194,8 @@
             
             NSString *linkString = [NSString stringWithFormat:@"<a href=\"http://tweet_user/%@\"  style=\"text-decoration:none\">@%@</a>", [user_json_str percentEncodeString], item[@"screen_name"]];
             replaced_str = linkString;
+        }else if(hashtag_text){
+            replaced_str = [NSString stringWithFormat:@"<a href=\"http://hashtag/%@\" style=\"text-decoration:none\">#%@</a>", [hashtag_text percentEncodeString], hashtag_text];
         }
         if(replaced_str){
             [t replaceCharactersInRange:NSMakeRange(index_from, index_to - index_from) withString:replaced_str];

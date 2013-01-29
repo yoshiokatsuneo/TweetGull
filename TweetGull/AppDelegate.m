@@ -28,8 +28,13 @@
     
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    if (! ([prev_version isEqual:version] && [prev_shortVersion isEqual:shortVersion])){
+        [defaults removeObjectForKey:@"askedToTweetAboutInstallation"];
+    }
     [defaults setObject:version forKey:@"installedVersion"];
     [defaults setObject:shortVersion forKey:@"installedShortVersion"];
+    // [defaults synchronize];
+    
     sleep(0);
 #if 0
     /* notification registration */

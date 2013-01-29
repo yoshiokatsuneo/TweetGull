@@ -32,7 +32,8 @@
 #import "UsersTableViewController.h"
 #import "UsersRequestFriends.h"
 #import "UsersRequestFollowers.h"
-
+#import "SearchViewController.h"
+#import "Misc.h"
 
 @interface MasterViewController () {
     Tweets *tweets;
@@ -150,6 +151,15 @@
     
     if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]]){
         [sheet addButtonWithTitle:@"\U0001F50D Search" handler:^{
+            SearchViewController *vc = [[SearchViewController alloc] init];
+            [vc presentFromViewController:self callback:^(NSString *search_text) {
+                TweetsRequestSearch *tweetsRequestSearch = [[TweetsRequestSearch alloc] init];
+                tweetsRequestSearch.query = search_text;
+                self.nextTweetsRequest = tweetsRequestSearch;
+                [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
+            }];
+            
+#if 0
             UIAlertView *alertView = [UIAlertView alertViewWithTitle:@"Search" message:@"Search Message"];
             alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
             [alertView addButtonWithTitle:@"Search" handler:^{
@@ -160,6 +170,7 @@
             }];
             [alertView setCancelButtonWithTitle:nil handler:nil];
             [alertView show];
+#endif
         }];
 
         [sheet addButtonWithTitle:@"\U0000FF20 Mensions" handler:^{
@@ -172,23 +183,26 @@
         }];
     }
     
-    [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
-        TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
-        tweetsRequestFavorites.user_screen_name = self.user.screen_name;
-        self.nextTweetsRequest = tweetsRequestFavorites;
-        [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
-    }];
-    [sheet addButtonWithTitle:@"\U0001F604 Friends" handler:^{
-        UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
-        usersRequest.screen_name = self.user.screen_name;
-        [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
-    }];
-    [sheet addButtonWithTitle:@"\U0001F3C3 Followers" handler:^{
-        UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
-        usersRequest.screen_name = self.user.screen_name;
-        [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
-        
-    }];
+
+    if([self.tweetsRequest isKindOfClass:[TweetsRequestHomeTimeline class]] || [self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        [sheet addButtonWithTitle:@"\U00002B50 Favorites" handler:^{
+            TweetsRequestFavorites *tweetsRequestFavorites = [[TweetsRequestFavorites alloc] init];
+            tweetsRequestFavorites.user_screen_name = self.user.screen_name;
+            self.nextTweetsRequest = tweetsRequestFavorites;
+            [weakself performSegueWithIdentifier:@"showTweets" sender:weakself];
+        }];
+        [sheet addButtonWithTitle:@"\U0001F604 Friends" handler:^{
+            UsersRequestFriends *usersRequest = [[UsersRequestFriends alloc] init];
+            usersRequest.screen_name = self.user.screen_name;
+            [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+        }];
+        [sheet addButtonWithTitle:@"\U0001F3C3 Followers" handler:^{
+            UsersRequestFollowers *usersRequest = [[UsersRequestFollowers alloc] init];
+            usersRequest.screen_name = self.user.screen_name;
+            [weakself performSegueWithIdentifier:@"showUsers" sender:usersRequest];
+            
+        }];
+    }
 
     /*
     [sheet addButtonWithTitle:@"Logout" handler:^{
@@ -245,16 +259,9 @@
             [accounts setPassword:password forAccount:twitterAPI.user.screen_name];
             [Accounts setCurrentAccount:twitterAPI.user.screen_name];
             
-            User * user = [twitterAPI userShow:self user_id_str:@"760178030" /* "tweetgull" */];
-            NSNumber * following_status = user[@"following"];
-            BOOL following_status_bool = [following_status isKindOfClass:[NSNumber class]] && following_status.boolValue;
-            if(following_status_bool == NO){
-                [UIAlertView showAlertViewWithTitle:@"Do you follow @tweetgull ?" message:nil cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:@[NSLocalizedString(@"Yes", nil)] handler:^(UIAlertView *alertView, NSInteger result){
-                    if(result == 1){
-                        [twitterAPI follow:self user_id_str:@"760178030" /* "tweetgull" */];
-                    }
-                }];
-            }
+            [Misc askToFollowTweetGull:self twitterAPI:twitterAPI callback:^{
+                [Misc askToTweetAboutInstallation:self twitterAPI:twitterAPI];
+            }];
             
             callback();
         }else{
@@ -282,6 +289,7 @@
         } afterDelay:0];
     }else{
         [self fetchTweets];
+        [Misc askToTweetAboutInstallation:self twitterAPI:twitterAPI];
     }
 
 	// Do any additional setup after loading the view, typically from a nib.
@@ -645,7 +653,27 @@
         tweets = tweets_;
         [self.tableView reloadData];
         [self stopLoading];
-        if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
+        if([self.tweetsRequest isKindOfClass:[TweetsRequestSearch class]]){
+            TweetsRequestSearch *tweetsRequestSearch = (TweetsRequestSearch*)self.tweetsRequest;
+            NSArray *keywords = [[NSUserDefaults standardUserDefaults] objectForKey:@"searchKeywords"];
+            BOOL bFound = FALSE;
+            for(NSString *k in keywords){
+                if([k isEqual:tweetsRequestSearch.query]){
+                    bFound = TRUE;
+                }
+            }
+            if(!bFound){
+                NSMutableArray *newkeywords = [NSMutableArray arrayWithObject:tweetsRequestSearch.query];
+                [newkeywords addObjectsFromArray:keywords];
+                const int max_history = 20;
+                if(newkeywords.count >= max_history){
+                    [newkeywords removeObjectsInRange:NSMakeRange(max_history, newkeywords.count - max_history)];
+                }
+                [[NSUserDefaults standardUserDefaults] setObject:newkeywords forKey:@"searchKeywords"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+
+        }else if([self.tweetsRequest isKindOfClass:[TweetsRequestUserTimeline class]]){
 #if 0
             [[TwitterAPI defaultTwitterAPI] lookupUser:self id_str:self.user.id_str callback:^(User *user2){
                 self.user = user2;

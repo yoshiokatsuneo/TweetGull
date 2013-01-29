@@ -147,6 +147,9 @@
 		079C94B516665EE7009FEEC9 /* NetworkActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 079C94B416665EE7009FEEC9 /* NetworkActivityIndicator.m */; };
 		079FAC2C15D554BA00C50316 /* libBlocksKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 079FAC2B15D554BA00C50316 /* libBlocksKit.a */; };
 		07ABBBF315D1552A0023890E /* TwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 07ABBBF215D1552A0023890E /* TwitterAPI.m */; };
+		07AC127E16B6CC4F004F0685 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07AC127C16B6CC4F004F0685 /* SearchViewController.m */; };
+		07AC127F16B6CC4F004F0685 /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07AC127D16B6CC4F004F0685 /* SearchViewController.xib */; };
+		07AC128216B71808004F0685 /* Misc.m in Sources */ = {isa = PBXBuildFile; fileRef = 07AC128116B71808004F0685 /* Misc.m */; };
 		07BA47F71625A62400C91307 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BA47F61625A62400C91307 /* User.m */; };
 		07CC04C0167B7BAA0038918E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07CC04BF167B7BAA0038918E /* Icon.png */; };
 		07CC04C2167B7BB20038918E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07CC04C1167B7BB20038918E /* Icon@2x.png */; };
@@ -407,6 +410,11 @@
 		079FAC4C15D554E600C50316 /* UIWebView+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+BlocksKit.h"; sourceTree = "<group>"; };
 		07ABBBF115D1552A0023890E /* TwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAPI.h; sourceTree = "<group>"; };
 		07ABBBF215D1552A0023890E /* TwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAPI.m; sourceTree = "<group>"; };
+		07AC127B16B6CC4F004F0685 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
+		07AC127C16B6CC4F004F0685 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
+		07AC127D16B6CC4F004F0685 /* SearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
+		07AC128016B71808004F0685 /* Misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Misc.h; sourceTree = "<group>"; };
+		07AC128116B71808004F0685 /* Misc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Misc.m; sourceTree = "<group>"; };
 		07BA47F51625A62400C91307 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		07BA47F61625A62400C91307 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		07CC04BF167B7BAA0038918E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -585,6 +593,11 @@
 				077F759616134E3A00283971 /* UsersRequestFriends.h */,
 				077F759716134E3A00283971 /* UsersRequestFriends.m */,
 				07253675166F953400F8CDEF /* twitter_oauth_keys.h */,
+				07AC127B16B6CC4F004F0685 /* SearchViewController.h */,
+				07AC127C16B6CC4F004F0685 /* SearchViewController.m */,
+				07AC127D16B6CC4F004F0685 /* SearchViewController.xib */,
+				07AC128016B71808004F0685 /* Misc.h */,
+				07AC128116B71808004F0685 /* Misc.m */,
 			);
 			path = TweetGull;
 			sourceTree = "<group>";
@@ -996,6 +1009,7 @@
 				07CC04C2167B7BB20038918E /* Icon@2x.png in Resources */,
 				07CC04C4167B7BD10038918E /* Icon-72.png in Resources */,
 				07CC04C6167B7BD90038918E /* Icon-72@2x.png in Resources */,
+				07AC127F16B6CC4F004F0685 /* SearchViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1110,6 +1124,8 @@
 				077F759816134E3B00283971 /* UsersRequestFriends.m in Sources */,
 				07BA47F71625A62400C91307 /* User.m in Sources */,
 				079C94B516665EE7009FEEC9 /* NetworkActivityIndicator.m in Sources */,
+				07AC127E16B6CC4F004F0685 /* SearchViewController.m in Sources */,
+				07AC128216B71808004F0685 /* Misc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
